@@ -1,19 +1,52 @@
 {
   "name": "ts-battleship",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
+  "keywords": [
+    "battleship",
+    "game"
+  ],
+  "description": "A Battleship game",
+  "repository": "github:eldarlrd/ts-battleship",
+  "homepage": "https://eldarlrd.github.io/ts-battleship",
+  "author": "Eldar Pashazade <eldarlrd@pm.me> (https://eldarlrd.github.io)",
+  "license": "AGPL-3.0-only",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deployer": "pnpm build && gh-pages -b deploy -m 'build: Deployment' -d dist",
+    "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives",
+    "pretty": "prettier '{src,__{tests,mocks,snapshots}__}/**/*.{ts,tsx}' --write",
+    "format": "pnpm lint --fix && pnpm pretty"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "jsxSingleQuote": true,
+    "bracketSameLine": true,
+    "trailingComma": "none",
+    "arrowParens": "avoid"
   },
   "dependencies": {
     "solid-js": "^1.8.7"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.13.2",
+    "@typescript-eslint/parser": "^6.13.2",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-n": "^16.3.1",
+    "eslint-plugin-no-relative-import-paths": "^1.5.3",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-solid": "^0.13.0",
+    "gh-pages": "^6.1.0",
+    "prettier": "^3.1.0",
     "typescript": "^5.3.3",
-    "vite": "^5.0.6",
-    "vite-plugin-solid": "^2.7.2"
+    "vite": "^5.0.7",
+    "vite-plugin-solid": "^2.8.0"
   }
 }

@@ -1,7 +1,5 @@
-export const App = () => {
-  return (
-    <>
-      Hello, World!
-    </>
-  )
-}
+import { type JSXElement } from 'solid-js';
+
+export const App = (): JSXElement => {
+  return <>Hello, World!</>;
+};

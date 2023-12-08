@@ -1,0 +1,23 @@
+{
+  "name": "TS Battleship",
+  "short_name": "Battleship",
+  "dir": "ltr",
+  "lang": "en",
+  "categories": [
+    "entertainment",
+    "games"
+  ],
+  "orientation": "natural",
+  "theme_color": "#fff",
+  "background_color": "#fff",
+  "description": "A Battleship game",
+  "start_url": "https://eldarlrd.github.io/ts-battleship",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}
