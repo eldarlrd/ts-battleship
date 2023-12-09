@@ -1,7 +1,7 @@
 {
   "name": "ts-battleship",
   "private": true,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "keywords": [
     "battleship",
@@ -29,6 +29,9 @@
     "arrowParens": "avoid"
   },
   "dependencies": {
+    "@emotion/css": "^11.11.2",
+    "@fontsource-variable/stick-no-bills": "^5.0.18",
+    "solid-icons": "^1.1.0",
     "solid-js": "^1.8.7"
   },
   "devDependencies": {

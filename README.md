@@ -3,8 +3,10 @@
 [![License](https://img.shields.io/badge/dynamic/json?url=https://raw.githubusercontent.com/eldarlrd/ts-battleship/main/package.json&query=license&logo=open-source-initiative&logoColor=fff&label=license&labelColor=475569&color=c026d3)](https://github.com/eldarlrd/ts-battleship/blob/main/LICENSE)
 
 > TS Battleship is a web game built using
-> - **[Solid](https://solidjs.com)**
 > - **[TypeScript](https://typescriptlang.org)**
+> - **[Solid](https://solidjs.com)**
+> - **[Solid Icons](https://solid-icons.vercel.app)**
+> - **[Emotion](https://emotion.sh)**
 > - **[Vite](https://vitejs.dev)**
 >
 > based on the classic board game,  
