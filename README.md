@@ -7,6 +7,8 @@
 > - **[Solid](https://solidjs.com)**
 > - **[Solid Icons](https://solid-icons.vercel.app)**
 > - **[Emotion](https://emotion.sh)**
+> - **[Normalize](https://necolas.github.io/normalize.css)**
+> - **[Vitest](https://vitest.dev)**
 > - **[Vite](https://vitejs.dev)**
 >
 > based on the classic board game,  
@@ -32,6 +34,15 @@ pnpm preview
 ### Format Code (ESLint + Prettier)
 ```sh
 pnpm format
+```
+## Test
+### Run Watch
+```sh
+pnpm test
+```
+### Coverage Report
+```sh
+pnpm cover
 ```
 ## Deploy
 ```sh
