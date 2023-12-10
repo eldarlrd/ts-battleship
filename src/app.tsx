@@ -9,7 +9,7 @@ import '@fontsource-variable/stick-no-bills';
 
 const COLOR_VARIABLES = {
   primary: '#fff',
-  secondary: '#60a5fa'
+  secondary: '#60a5fa' // tw-blue-400
 };
 
 export const App = (): JSXElement => {

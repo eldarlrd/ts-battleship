@@ -1,7 +1,7 @@
 {
   "name": "ts-battleship",
   "private": true,
-  "version": "0.0.4",
+  "version": "0.0.5",
   "type": "module",
   "keywords": [
     "battleship",
@@ -18,7 +18,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "cover": "vitest run --coverage",
-    "deployer": "pnpm build && gh-pages -b deploy -m 'build: Deployment' -d dist",
+    "deployer": "pnpm build && gh-pages -b deploy -m 'build: deployment' -d dist",
     "lint": "eslint src --ext .ts,.tsx --report-unused-disable-directives",
     "pretty": "prettier '{src,__{tests,mocks,snapshots}__}/**/*.{ts,tsx}' --write",
     "format": "pnpm lint --fix && pnpm pretty"
