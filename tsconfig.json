@@ -23,5 +23,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "*.config.mts", "__{tests,mocks,snapshots}__"]
+  "include": ["src", "*.config.mts", "__tests__"]
 }

@@ -1,7 +1,13 @@
-export class Ship {
+interface ShipStats {
   length: number;
-  hits: number;
   sunk: boolean;
+  hit(): void;
+}
+
+export class Ship implements ShipStats {
+  public length: number;
+  public sunk: boolean;
+  private hits: number;
 
   constructor(length = 2) {
     this.length = length;
