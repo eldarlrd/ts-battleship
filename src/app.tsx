@@ -22,6 +22,7 @@ export const App = (): JSXElement => {
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
+        min-height: 100vh;
         min-height: 100svh;
         background-color: ${COLOR_VARIABLES.secondary};
         accent-color: ${COLOR_VARIABLES.primary};

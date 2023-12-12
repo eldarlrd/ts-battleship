@@ -9,7 +9,7 @@ export class Ship implements ShipStats {
   public sunk: boolean;
   private hits: number;
 
-  constructor(length = 2) {
+  public constructor(length = 2) {
     this.length = length;
     this.hits = 0;
     this.sunk = false;

@@ -9,14 +9,14 @@ export class Board {
   private grid: (Ship | null)[][];
   private impacts: Coordinates[];
 
-  constructor() {
+  public constructor() {
     this.grid = Array.from({ length: 10 }, () =>
       Array<Ship | null>(10).fill(null)
     );
     this.impacts = [];
   }
 
-  place(ship: Ship, start: Coordinates, isVertical: boolean): void {
+  public place(ship: Ship, start: Coordinates, isVertical: boolean): void {
     const { row, col } = start;
     const direction = isVertical ? 1 : 0;
 
@@ -24,7 +24,7 @@ export class Board {
       this.grid[row + i * direction][col + i * (1 - direction)] = ship;
   }
 
-  fire(coordinates: Coordinates): void {
+  public fire(coordinates: Coordinates): void {
     const { row, col } = coordinates;
     const target = this.grid[row][col];
 
@@ -39,7 +39,7 @@ export class Board {
       } else this.impacts.push(coordinates);
   }
 
-  isGameOver(): boolean {
+  public isGameOver(): boolean {
     return this.grid
       .flat()
       .filter(cell => cell !== null)
