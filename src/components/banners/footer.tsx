@@ -21,7 +21,7 @@ export const Footer = (): JSXElement => {
           border-radius: 0.125rem;
           text-decoration: none;
           color: #fff;
-          * {
+          svg {
             vertical-align: top;
           }
         `}>

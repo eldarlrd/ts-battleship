@@ -17,6 +17,7 @@ export class Board {
   }
 
   public place(ship: Ship, start: Coordinates, isVertical: boolean): void {
+    if (!this.isPlaceable(ship, start, isVertical)) return;
     const { row, col } = start;
     const direction = isVertical ? 1 : 0;
 
@@ -44,5 +45,49 @@ export class Board {
       .flat()
       .filter(cell => cell !== null)
       .every(ship => ship?.sunk);
+  }
+
+  private isPlaceable(
+    ship: Ship,
+    start: Coordinates,
+    isVertical: boolean
+  ): boolean {
+    const { row, col } = start;
+    const direction = isVertical ? 1 : 0;
+
+    for (let i = 0; i < ship.length; i++) {
+      const nextRow = row + i * direction;
+      const nextCol = col + i * (1 - direction);
+
+      if (nextRow < 0 || nextRow >= 10 || nextCol < 0 || nextCol >= 10)
+        return false;
+      if (this.grid[nextRow][nextCol] !== null) return false;
+      if (this.isAdjacent(nextRow, nextCol)) return false;
+    }
+    return true;
+  }
+
+  private isAdjacent(row: number, col: number): boolean {
+    const adjOffset = [
+      { row: -1, col: 0 },
+      { row: 1, col: 0 },
+      { row: 0, col: -1 },
+      { row: 0, col: 1 }
+    ];
+
+    for (const offset of adjOffset) {
+      const adjRow = row + offset.row;
+      const adjCol = col + offset.col;
+
+      if (
+        adjRow >= 0 &&
+        adjRow < 10 &&
+        adjCol >= 0 &&
+        adjCol < 10 &&
+        this.grid[adjRow][adjCol]
+      )
+        return true;
+    }
+    return false;
   }
 }
