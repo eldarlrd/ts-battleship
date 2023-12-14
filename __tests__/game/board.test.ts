@@ -39,6 +39,10 @@ describe('board class', () => {
       impacts: [{ row: 1, col: 1 }]
     };
 
+    // Correct hit
+    board.fire({ row: 1, col: 1 });
+
+    // Overlapping hit
     board.fire({ row: 1, col: 1 });
     expect(board).toMatchObject(hitBoard);
   });

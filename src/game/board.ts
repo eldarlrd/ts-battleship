@@ -5,7 +5,7 @@ interface Coordinates {
   col: number;
 }
 
-export class Board {
+class Board {
   private grid: (Ship | null)[][];
   private impacts: Coordinates[];
 
@@ -16,16 +16,17 @@ export class Board {
     this.impacts = [];
   }
 
-  public place(ship: Ship, start: Coordinates, isVertical: boolean): void {
-    if (!this.isPlaceable(ship, start, isVertical)) return;
+  public place(ship: Ship, start: Coordinates, isVertical: boolean): boolean {
+    if (!this.isPlaceable(ship, start, isVertical)) return false;
     const { row, col } = start;
     const direction = isVertical ? 1 : 0;
 
     for (let i = 0; i < ship.length; i++)
       this.grid[row + i * direction][col + i * (1 - direction)] = ship;
+    return true;
   }
 
-  public fire(coordinates: Coordinates): void {
+  public fire(coordinates: Coordinates): boolean {
     const { row, col } = coordinates;
     const target = this.grid[row][col];
 
@@ -33,11 +34,14 @@ export class Board {
       miss => miss.row === row && miss.col === col
     );
 
-    if (!isHitBefore)
+    if (!isHitBefore) {
       if (target) {
         target.hit();
         this.impacts.push(coordinates);
       } else this.impacts.push(coordinates);
+      return true;
+    }
+    return false;
   }
 
   public isGameOver(): boolean {
@@ -91,3 +95,5 @@ export class Board {
     return false;
   }
 }
+
+export { type Coordinates, Board };
