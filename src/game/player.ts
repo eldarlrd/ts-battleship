@@ -14,7 +14,7 @@ export class Player {
     this.isCurrPlayerOne = true;
   }
 
-  public playerTurn(coordinates: Coordinates): void {
+  public takeTurn(coordinates: Coordinates): void {
     const currentPlayerBoard = this.isCurrPlayerOne
       ? this.playerOneBoard
       : this.playerTwoBoard;
