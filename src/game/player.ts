@@ -2,11 +2,13 @@ import { Board, type Coordinates } from '@/game/board.ts';
 import { Ship } from '@/game/ship.ts';
 
 export class Player {
+  public playerVictorious: number | null;
   private playerOneBoard: Board;
   private playerTwoBoard: Board;
   private isCurrPlayerOne: boolean;
 
   public constructor() {
+    this.playerVictorious = null;
     this.playerOneBoard = new Board();
     this.playerTwoBoard = new Board();
     this.randomPlace(this.playerOneBoard);
@@ -57,8 +59,14 @@ export class Player {
     board.place(ship, coords, isVertical);
   }
 
-  private checkVictory(): void {
-    if (this.playerOneBoard.isGameOver()) console.log('Player 2 wins!');
-    else if (this.playerTwoBoard.isGameOver()) console.log('Player 1 wins!');
+  private checkVictory(): true | undefined {
+    if (this.playerOneBoard.isGameOver()) {
+      this.playerVictorious = 2;
+      return true;
+    }
+    if (this.playerTwoBoard.isGameOver()) {
+      this.playerVictorious = 1;
+      return true;
+    }
   }
 }
