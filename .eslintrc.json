@@ -54,6 +54,7 @@
     "vitest/no-test-prefixes": 2,
     "n/no-missing-import": 0,
     "no-unused-vars": 0,
+    "prefer-const": 2,
     "eqeqeq": 2
   }
 }

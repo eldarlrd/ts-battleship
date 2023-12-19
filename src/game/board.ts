@@ -6,8 +6,8 @@ interface Coordinates {
 }
 
 class Board {
-  private grid: (Ship | null)[][];
-  private impacts: Coordinates[];
+  public grid: (Ship | null)[][];
+  public impacts: Coordinates[];
 
   public constructor() {
     this.grid = Array.from({ length: 10 }, () =>
@@ -76,7 +76,11 @@ class Board {
       { row: -1, col: 0 },
       { row: 1, col: 0 },
       { row: 0, col: -1 },
-      { row: 0, col: 1 }
+      { row: 0, col: 1 },
+      { row: -1, col: -1 },
+      { row: -1, col: 1 },
+      { row: 1, col: -1 },
+      { row: 1, col: 1 }
     ];
 
     for (const offset of adjOffset) {

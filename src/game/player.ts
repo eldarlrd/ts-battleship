@@ -3,9 +3,9 @@ import { Ship } from '@/game/ship.ts';
 
 export class Player {
   public playerVictorious: number | null;
-  private playerOneBoard: Board;
-  private playerTwoBoard: Board;
-  private isCurrPlayerOne: boolean;
+  public playerOneBoard: Board;
+  public playerTwoBoard: Board;
+  public isCurrPlayerOne: boolean;
 
   public constructor() {
     this.playerVictorious = null;
