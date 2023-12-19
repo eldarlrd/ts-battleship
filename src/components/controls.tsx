@@ -7,8 +7,7 @@ export const Controls = (): JSXElement => {
       class={css`
         font-size: 2.5rem;
         font-weight: 600;
-      `}>
-      Controls
-    </div>
+      `}
+    />
   );
 };

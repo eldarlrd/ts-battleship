@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { For, type JSXElement } from 'solid-js';
 
-import { COLOR_VARIABLES } from '@/app.tsx';
+import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
 import { Player } from '@/game/player.ts';
 
 export const Gameboard = (props: { isPlayerOne: boolean }): JSXElement => {
@@ -13,7 +13,7 @@ export const Gameboard = (props: { isPlayerOne: boolean }): JSXElement => {
         font-size: 2.5rem;
         font-weight: 600;
         display: grid;
-        border: 1px solid ${COLOR_VARIABLES.primary};
+        border: 1px solid ${COLOR_VARIABLES.grid};
         grid-template-columns: repeat(10, 1fr);
         grid-template-rows: repeat(10, 1fr);
       `}>
@@ -33,13 +33,31 @@ export const Gameboard = (props: { isPlayerOne: boolean }): JSXElement => {
                   console.log((i() * 10 + j()).toString());
                 }}
                 class={css`
-                  color: #000;
                   background-color: ${gridElem
-                    ? '#000'
+                    ? COLOR_VARIABLES.ship
                     : COLOR_VARIABLES.primary};
-                  border: 1px solid ${COLOR_VARIABLES.secondary};
-                  padding: 10px;
+                  border: 1px solid ${COLOR_VARIABLES.grid};
+                  padding: 11px;
                   text-align: center;
+                  cursor: ${props.isPlayerOne ? null : 'pointer'};
+
+                  &:hover {
+                    background-color: ${props.isPlayerOne
+                      ? null
+                      : COLOR_VARIABLES.hit};
+                  }
+
+                  ${MEDIA_QUERIES.sm} {
+                    padding: 12px;
+                  }
+
+                  ${MEDIA_QUERIES.md} {
+                    padding: 14px;
+                  }
+
+                  ${MEDIA_QUERIES.lg} {
+                    padding: 1rem;
+                  }
                 `}
               />
             )}

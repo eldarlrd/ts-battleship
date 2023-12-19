@@ -20,7 +20,7 @@ export const Footer = (): JSXElement => {
         class={css`
           border-radius: 0.125rem;
           text-decoration: none;
-          color: #fff;
+          color: inherit;
           svg {
             vertical-align: top;
           }
