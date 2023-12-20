@@ -16,16 +16,27 @@ export class Player {
     this.isCurrPlayerOne = true;
   }
 
-  public takeTurn(coordinates: Coordinates): void {
+  public takeTurn(coordinates: Coordinates): boolean {
     const currentPlayerBoard = this.isCurrPlayerOne
-      ? this.playerOneBoard
-      : this.playerTwoBoard;
+      ? this.playerTwoBoard
+      : this.playerOneBoard;
 
     const isSuccessfulHit = currentPlayerBoard.fire(coordinates);
     if (isSuccessfulHit) {
       this.checkVictory();
       this.isCurrPlayerOne = !this.isCurrPlayerOne;
-    } else console.log('Has been hit before, try again.');
+      return true;
+    } else return false;
+  }
+
+  public computerTurn(): Coordinates {
+    let coordinates: Coordinates;
+    do {
+      const randomRow = ~~(Math.random() * 10);
+      const randomCol = ~~(Math.random() * 10);
+      coordinates = { row: randomRow, col: randomCol };
+    } while (!this.takeTurn(coordinates));
+    return coordinates;
   }
 
   private randomPlace(board: Board): void {

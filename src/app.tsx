@@ -8,13 +8,16 @@ import { Header } from '@/components/banners/header.tsx';
 import '@fontsource-variable/stick-no-bills';
 import { Controls } from '@/components/controls.tsx';
 import { Gameboard } from '@/components/gameboard.tsx';
+import { Player } from '@/game/player.ts';
 
 const COLOR_VARIABLES = {
   primary: '#f8fafc', // tw-slate-50
   secondary: '#60a5fa', // tw-blue-400
   ship: '#334155', // tw-slate-700
-  hit: '#cbd5e1', // tw-slate-300
-  grid: '#1e293b' // tw-slate-800
+  hover: '#cbd5e1', // tw-slate-300
+  grid: '#1e293b', // tw-slate-800
+  emptyHit: '#10b981', // tw-emerald-500
+  shipHit: '#f43f5e' // tw-rose-500
 };
 
 const MEDIA_QUERIES = {
@@ -24,6 +27,7 @@ const MEDIA_QUERIES = {
 };
 
 const App = (): JSXElement => {
+  const game = new Player();
   return (
     <div
       id='app'
@@ -91,7 +95,7 @@ const App = (): JSXElement => {
             <span>
               <FaSolidUser /> Player
             </span>
-            <Gameboard isPlayerOne={true} />
+            <Gameboard isPlayerOneBoard={true} game={game} />
           </span>
 
           <span
@@ -108,7 +112,7 @@ const App = (): JSXElement => {
             <span>
               <FaSolidRobot /> Computer
             </span>
-            <Gameboard isPlayerOne={false} />
+            <Gameboard isPlayerOneBoard={false} game={game} />
           </span>
         </div>
       </main>
