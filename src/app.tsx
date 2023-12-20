@@ -6,7 +6,7 @@ import 'normalize.css';
 import { Footer } from '@/components/banners/footer.tsx';
 import { Header } from '@/components/banners/header.tsx';
 import '@fontsource-variable/stick-no-bills';
-import { Controls } from '@/components/controls.tsx';
+// import { Controls } from '@/components/controls.tsx';
 import { Gameboard } from '@/components/gameboard.tsx';
 import { Player } from '@/game/player.ts';
 
@@ -17,7 +17,8 @@ const COLOR_VARIABLES = {
   hover: '#cbd5e1', // tw-slate-300
   grid: '#1e293b', // tw-slate-800
   emptyHit: '#10b981', // tw-emerald-500
-  shipHit: '#f43f5e' // tw-rose-500
+  shipHit: '#f59e0b', // tw-amber-500
+  shipSunk: '#f43f5e' // tw-rose-500
 };
 
 const MEDIA_QUERIES = {
@@ -57,7 +58,7 @@ const App = (): JSXElement => {
           justify-content: center;
           align-items: center;
         `}>
-        <Controls />
+        {/* <Controls /> */}
 
         <div
           class={css`

@@ -68,6 +68,8 @@ export class Player {
     }
 
     board.place(ship, coords, isVertical);
+    ship.isVertical = isVertical;
+    ship.coords = coords;
   }
 
   private checkVictory(): true | undefined {

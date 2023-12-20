@@ -1,3 +1,5 @@
+import { type Coordinates } from '@/game/board.ts';
+
 interface ShipStats {
   length: number;
   sunk: boolean;
@@ -7,12 +9,16 @@ interface ShipStats {
 export class Ship implements ShipStats {
   public length: number;
   public sunk: boolean;
+  public isVertical: boolean;
+  public coords: Coordinates;
   private hits: number;
 
   public constructor(length = 2) {
     this.length = length;
-    this.hits = 0;
     this.sunk = false;
+    this.coords = { row: 0, col: 0 };
+    this.isVertical = false;
+    this.hits = 0;
   }
 
   public hit(): void {

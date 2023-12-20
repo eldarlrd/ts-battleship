@@ -2,7 +2,6 @@ import { css } from '@emotion/css';
 import { For, type JSXElement } from 'solid-js';
 
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
-import { type Coordinates } from '@/game/board.ts';
 import { type Player } from '@/game/player.ts';
 
 export const Gameboard = (props: {
@@ -13,8 +12,10 @@ export const Gameboard = (props: {
     const isSuccessfulHit = props.game.takeTurn({ row, col });
     if (isSuccessfulHit) {
       checkImpact(row, col);
-      const compCoord = props.game.computerTurn();
-      checkImpact(compCoord.row, compCoord.col);
+      setTimeout((): void => {
+        const compCoord = props.game.computerTurn();
+        checkImpact(compCoord.row, compCoord.col);
+      }, 150);
     }
   };
 
@@ -23,62 +24,80 @@ export const Gameboard = (props: {
       (!props.game.isCurrPlayerOne ? 'p2-' : 'p1-') + (cellRow * 10 + cellCol)
     );
 
-    const emptyImpacts: Coordinates[] = [];
-    const shipImpacts: Coordinates[] = [];
+    if (!props.game.isCurrPlayerOne)
+      props.game.playerTwoBoard.impacts.forEach(impact => {
+        const { row, col } = impact;
+        const cell = props.game.playerTwoBoard.grid[row][col];
+        if (!cell) {
+          if (
+            props.game.playerTwoBoard.impacts.some(
+              impact => impact.row === cellRow && impact.col === cellCol
+            ) &&
+            element
+          ) {
+            element.style.backgroundColor = COLOR_VARIABLES.emptyHit;
+            element.style.cursor = 'default';
+          }
+        } else {
+          if (
+            props.game.playerTwoBoard.impacts.some(
+              impact => impact.row === cellRow && impact.col === cellCol
+            ) &&
+            element
+          ) {
+            if (cell.sunk) {
+              for (let i = 0; i < cell.length; i++) {
+                const currRow = cell.isVertical ? cell.coords.row + i : row;
+                const currCol = cell.isVertical ? col : cell.coords.col + i;
 
-    props.game.playerTwoBoard.impacts.forEach(impact => {
-      const { row, col } = impact;
-      if (!props.game.playerTwoBoard.grid[row][col]) {
-        emptyImpacts.push(impact);
-        if (
-          emptyImpacts.some(
-            impact => impact.row === cellRow && impact.col === cellCol
-          ) &&
-          element
-        ) {
-          element.style.backgroundColor = COLOR_VARIABLES.emptyHit;
-          element.style.cursor = 'default';
+                const element = document.getElementById(
+                  'p2-' + (currRow * 10 + currCol)
+                );
+                if (element)
+                  element.style.backgroundColor = COLOR_VARIABLES.shipSunk;
+              }
+            } else element.style.backgroundColor = COLOR_VARIABLES.shipHit;
+            element.style.cursor = 'default';
+          }
         }
-      } else if (props.game.playerTwoBoard.grid[row][col]) {
-        shipImpacts.push(impact);
-        if (
-          shipImpacts.some(
-            impact => impact.row === cellRow && impact.col === cellCol
-          ) &&
-          element
-        ) {
-          element.style.backgroundColor = COLOR_VARIABLES.shipHit;
-          element.style.cursor = 'default';
-        }
-      }
-    });
+      });
+    else
+      props.game.playerOneBoard.impacts.forEach(impact => {
+        const { row, col } = impact;
+        const cell = props.game.playerOneBoard.grid[row][col];
+        if (!cell) {
+          if (
+            props.game.playerOneBoard.impacts.some(
+              impact => impact.row === cellRow && impact.col === cellCol
+            ) &&
+            element
+          ) {
+            element.style.backgroundColor = COLOR_VARIABLES.emptyHit;
+            element.style.cursor = 'default';
+          }
+        } else {
+          if (
+            props.game.playerOneBoard.impacts.some(
+              impact => impact.row === cellRow && impact.col === cellCol
+            ) &&
+            element
+          ) {
+            if (cell.sunk) {
+              for (let i = 0; i < cell.length; i++) {
+                const currRow = cell.isVertical ? cell.coords.row + i : row;
+                const currCol = cell.isVertical ? col : cell.coords.col + i;
 
-    props.game.playerOneBoard.impacts.forEach(impact => {
-      const { row, col } = impact;
-      if (!props.game.playerOneBoard.grid[row][col]) {
-        emptyImpacts.push(impact);
-        if (
-          emptyImpacts.some(
-            impact => impact.row === cellRow && impact.col === cellCol
-          ) &&
-          element
-        ) {
-          element.style.backgroundColor = COLOR_VARIABLES.emptyHit;
-          element.style.cursor = 'default';
+                const element = document.getElementById(
+                  'p1-' + (currRow * 10 + currCol)
+                );
+                if (element)
+                  element.style.backgroundColor = COLOR_VARIABLES.shipSunk;
+              }
+            } else element.style.backgroundColor = COLOR_VARIABLES.shipHit;
+            element.style.cursor = 'default';
+          }
         }
-      } else if (props.game.playerOneBoard.grid[row][col]) {
-        shipImpacts.push(impact);
-        if (
-          shipImpacts.some(
-            impact => impact.row === cellRow && impact.col === cellCol
-          ) &&
-          element
-        ) {
-          element.style.backgroundColor = COLOR_VARIABLES.shipHit;
-          element.style.cursor = 'default';
-        }
-      }
-    });
+      });
   };
 
   return (
