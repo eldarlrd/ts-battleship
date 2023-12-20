@@ -8,6 +8,7 @@ import { Header } from '@/components/banners/header.tsx';
 import '@fontsource-variable/stick-no-bills';
 // import { Controls } from '@/components/controls.tsx';
 import { Gameboard } from '@/components/gameboard.tsx';
+import { Modal } from '@/components/modal.tsx';
 import { Player } from '@/game/player.ts';
 
 const COLOR_VARIABLES = {
@@ -50,6 +51,8 @@ const App = (): JSXElement => {
           color: ${COLOR_VARIABLES.secondary};
         }
       `}>
+      <Modal />
+
       <Header />
       <main
         class={css`

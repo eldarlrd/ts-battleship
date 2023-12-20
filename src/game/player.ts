@@ -6,6 +6,7 @@ export class Player {
   public playerOneBoard: Board;
   public playerTwoBoard: Board;
   public isCurrPlayerOne: boolean;
+  public pve: boolean;
 
   public constructor() {
     this.playerVictorious = null;
@@ -14,6 +15,7 @@ export class Player {
     this.randomPlace(this.playerOneBoard);
     this.randomPlace(this.playerTwoBoard);
     this.isCurrPlayerOne = true;
+    this.pve = true;
   }
 
   public takeTurn(coordinates: Coordinates): boolean {

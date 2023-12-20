@@ -12,10 +12,11 @@ export const Gameboard = (props: {
     const isSuccessfulHit = props.game.takeTurn({ row, col });
     if (isSuccessfulHit) {
       checkImpact(row, col);
-      setTimeout((): void => {
-        const compCoord = props.game.computerTurn();
-        checkImpact(compCoord.row, compCoord.col);
-      }, 150);
+      if (props.game.pve)
+        setTimeout((): void => {
+          const compCoord = props.game.computerTurn();
+          checkImpact(compCoord.row, compCoord.col);
+        }, 150);
     }
   };
 

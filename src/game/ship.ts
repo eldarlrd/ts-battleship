@@ -9,8 +9,8 @@ interface ShipStats {
 export class Ship implements ShipStats {
   public length: number;
   public sunk: boolean;
-  public isVertical: boolean;
   public coords: Coordinates;
+  public isVertical: boolean;
   private hits: number;
 
   public constructor(length = 2) {
