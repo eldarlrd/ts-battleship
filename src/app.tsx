@@ -67,7 +67,7 @@ const App = (): JSXElement => {
           class={css`
             display: inherit;
             justify-content: center;
-            flex-direction: column-reverse;
+            flex-direction: column;
             align-items: center;
             font-size: 1.75rem;
             gap: 1.5rem;

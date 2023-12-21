@@ -9,10 +9,11 @@ export const Gameboard = (props: {
   game: Player;
 }): JSXElement => {
   const attackCell = (row: number, col: number): void => {
+    if (props.game.playerVictorious) return;
     const isSuccessfulHit = props.game.takeTurn({ row, col });
     if (isSuccessfulHit) {
       checkImpact(row, col);
-      if (props.game.pve)
+      if (props.game.pve && !props.game.playerVictorious)
         setTimeout((): void => {
           const compCoord = props.game.computerTurn();
           checkImpact(compCoord.row, compCoord.col);
