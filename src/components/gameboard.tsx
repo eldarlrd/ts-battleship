@@ -135,7 +135,7 @@ export const Gameboard = (props: {
                     ? COLOR_VARIABLES.ship
                     : COLOR_VARIABLES.primary};
                   border: 1px solid ${COLOR_VARIABLES.grid};
-                  padding: 11px;
+                  padding: 13px;
                   text-align: center;
                   cursor: ${!props.isPlayerOneBoard && 'pointer'};
 
@@ -144,16 +144,12 @@ export const Gameboard = (props: {
                     COLOR_VARIABLES.hover};
                   }
 
-                  ${MEDIA_QUERIES.sm} {
-                    padding: 12px;
-                  }
-
                   ${MEDIA_QUERIES.md} {
-                    padding: 14px;
+                    padding: 1rem;
                   }
 
                   ${MEDIA_QUERIES.lg} {
-                    padding: 1rem;
+                    padding: 1.25rem;
                   }
                 `}
               />

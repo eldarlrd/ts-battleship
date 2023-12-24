@@ -51,7 +51,7 @@ const App = (): JSXElement => {
           color: ${COLOR_VARIABLES.secondary};
         }
       `}>
-      <Modal />
+      {!game.playerVictorious && <Modal game={game} />}
 
       <Header />
       <main
