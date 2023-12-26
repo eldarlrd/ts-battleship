@@ -131,7 +131,6 @@ export const Gameboard = (props: {
                 ).toString()}`}
                 onClick={() => {
                   !props.isPlayerOneBoard && attackCell(i(), j());
-                  console.log(props.game.playerVictorious);
                 }}
                 class={css`
                   background-color: ${gridElem && props.isPlayerOneBoard

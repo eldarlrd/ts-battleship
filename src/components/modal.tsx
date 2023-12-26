@@ -1,11 +1,43 @@
 import { css } from '@emotion/css';
-import { type JSXElement } from 'solid-js';
+import { createEffect, onCleanup, type JSXElement } from 'solid-js';
 
 import { type Player } from '@/game/player.ts';
 
+// eslint-disable-next-line prefer-const
+let overlay: HTMLDivElement = document.getElementById(
+  'overlay'
+) as HTMLDivElement;
+
+// eslint-disable-next-line prefer-const
+let victor: HTMLHeadingElement = document.getElementById(
+  'victor'
+) as HTMLHeadingElement;
+
 export const Modal = (props: { game: Player }): JSXElement => {
+  createEffect(() => {
+    const handleModal = (): void => {
+      if (props.game.playerVictorious) {
+        overlay.style.display = 'flex';
+        if (props.game.pve)
+          victor.innerText =
+            props.game.playerVictorious === 1 ? 'Player wins' : 'Computer wins';
+        else
+          victor.innerText =
+            props.game.playerVictorious === 1
+              ? 'Player 1 wins'
+              : 'Player 2 wins';
+      }
+    };
+
+    document.addEventListener('attack', handleModal);
+    onCleanup(() => {
+      document.removeEventListener('attack', handleModal);
+    });
+  });
+
   return (
     <div
+      ref={overlay}
       id='overlay'
       class={css`
         display: none;
@@ -29,7 +61,9 @@ export const Modal = (props: { game: Player }): JSXElement => {
           border-radius: 5px;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         `}>
-        <h1 id='victor'>{props.game.playerVictorious}</h1>
+        <h1 ref={victor} id='victor'>
+          {props.game.playerVictorious}
+        </h1>
       </section>
     </div>
   );
