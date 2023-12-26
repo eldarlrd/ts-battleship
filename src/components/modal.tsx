@@ -8,7 +8,7 @@ export const Modal = (props: { game: Player }): JSXElement => {
     <div
       id='overlay'
       class={css`
-        display: ${props.game.playerVictorious ? 'none' : 'flex'};
+        display: none;
         position: fixed;
         top: 0;
         left: 0;
@@ -22,15 +22,14 @@ export const Modal = (props: { game: Player }): JSXElement => {
         font-weight: 600;
       `}>
       <section
-        id='modal'
         class={css`
-          display: ${props.game.playerVictorious ? 'none' : 'flex'};
+          display: inherit;
           background: #000;
           padding: 20px;
           border-radius: 5px;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         `}>
-        Modal
+        <h1 id='victor'>{props.game.playerVictorious}</h1>
       </section>
     </div>
   );

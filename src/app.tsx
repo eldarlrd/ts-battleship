@@ -1,6 +1,6 @@
 import { css } from '@emotion/css';
 import { FaSolidRobot, FaSolidUser } from 'solid-icons/fa';
-import { type JSXElement } from 'solid-js';
+import { type JSXElement, createEffect } from 'solid-js';
 import 'normalize.css';
 
 import { Footer } from '@/components/banners/footer.tsx';
@@ -30,6 +30,21 @@ const MEDIA_QUERIES = {
 
 const App = (): JSXElement => {
   const game = new Player();
+
+  const handleModal = (): void => {
+    const overlay = document.getElementById('overlay');
+    const victor = document.getElementById('victor');
+    if (overlay && game.playerVictorious) overlay.style.display = 'flex';
+    if (victor) {
+      if (game.playerVictorious === 1) victor.innerText = 'Player wins';
+      else if (game.playerVictorious === 2) victor.innerText = 'Computer wins';
+    }
+  };
+
+  createEffect(() => {
+    document.addEventListener('attack', handleModal);
+  });
+
   return (
     <div
       id='app'
@@ -51,7 +66,7 @@ const App = (): JSXElement => {
           color: ${COLOR_VARIABLES.secondary};
         }
       `}>
-      {!game.playerVictorious && <Modal game={game} />}
+      <Modal game={game} />
 
       <Header />
       <main

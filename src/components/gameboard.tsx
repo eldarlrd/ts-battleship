@@ -13,10 +13,12 @@ export const Gameboard = (props: {
     const isSuccessfulHit = props.game.takeTurn({ row, col });
     if (isSuccessfulHit) {
       checkImpact(row, col);
+      document.dispatchEvent(new Event('attack'));
       if (props.game.pve && !props.game.playerVictorious)
         setTimeout((): void => {
           const compCoord = props.game.computerTurn();
           checkImpact(compCoord.row, compCoord.col);
+          document.dispatchEvent(new Event('attack'));
         }, 150);
     }
   };
@@ -129,6 +131,7 @@ export const Gameboard = (props: {
                 ).toString()}`}
                 onClick={() => {
                   !props.isPlayerOneBoard && attackCell(i(), j());
+                  console.log(props.game.playerVictorious);
                 }}
                 class={css`
                   background-color: ${gridElem && props.isPlayerOneBoard
