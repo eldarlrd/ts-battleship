@@ -1,7 +1,13 @@
 import { css } from '@emotion/css';
-import { createEffect, onCleanup, type JSXElement } from 'solid-js';
+import {
+  createEffect,
+  onCleanup,
+  type JSXElement,
+  type Setter
+} from 'solid-js';
 
-import { type Player } from '@/game/player.ts';
+import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
+import { Player } from '@/game/player.ts';
 
 // eslint-disable-next-line prefer-const
 let overlay: HTMLDivElement = document.getElementById(
@@ -13,19 +19,24 @@ let victor: HTMLHeadingElement = document.getElementById(
   'victor'
 ) as HTMLHeadingElement;
 
-export const Modal = (props: { game: Player }): JSXElement => {
+export const Modal = (props: {
+  game: Player;
+  setGame: Setter<Player>;
+}): JSXElement => {
   createEffect(() => {
     const handleModal = (): void => {
       if (props.game.playerVictorious) {
         overlay.style.display = 'flex';
         if (props.game.pve)
           victor.innerText =
-            props.game.playerVictorious === 1 ? 'Player wins' : 'Computer wins';
+            props.game.playerVictorious === 1
+              ? 'Player Wins!'
+              : 'Computer Wins...';
         else
           victor.innerText =
             props.game.playerVictorious === 1
-              ? 'Player 1 wins'
-              : 'Player 2 wins';
+              ? 'Player 1 Wins!'
+              : 'Player 2 Wins!';
       }
     };
 
@@ -46,24 +57,77 @@ export const Modal = (props: { game: Player }): JSXElement => {
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.75);
         justify-content: center;
         align-items: center;
         z-index: 1;
-        font-size: 2.5rem;
-        font-weight: 600;
       `}>
       <section
         class={css`
           display: inherit;
-          background: #000;
-          padding: 20px;
-          border-radius: 5px;
-          box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+          background: ${COLOR_VARIABLES.primary};
+          flex-direction: column;
+          padding: 1rem;
+          margin: 1rem;
+          gap: 0.75rem;
+          line-height: 1rem;
+          border: 2px solid ${COLOR_VARIABLES.secondary};
+          border-radius: 0.25rem;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+          ${MEDIA_QUERIES.sm} {
+            padding: 3rem;
+          }
+
+          ${MEDIA_QUERIES.md} {
+            padding: 4rem;
+          }
+
+          ${MEDIA_QUERIES.lg} {
+            padding: 5rem;
+          }
         `}>
-        <h1 ref={victor} id='victor'>
+        <h1
+          ref={victor}
+          id='victor'
+          class={css`
+            font-size: 2.5rem;
+            text-align: center;
+            line-height: 1em;
+          `}>
           {props.game.playerVictorious}
         </h1>
+        <button
+          type='button'
+          onClick={() => {
+            props.setGame(new Player());
+            overlay.style.display = 'none';
+          }}
+          class={css`
+            border: 0;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 1.5rem;
+            font-weight: 500;
+            padding: 0.75rem;
+            background-color: ${COLOR_VARIABLES.secondary};
+            color: ${COLOR_VARIABLES.grid};
+            outline: 2px solid transparent;
+            transition-property: background-color, outline-color;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+
+            &:hover {
+              background-color: ${COLOR_VARIABLES.hover};
+              outline: 2px solid ${COLOR_VARIABLES.grid};
+            }
+
+            &:focus {
+              outline: 2px solid ${COLOR_VARIABLES.grid};
+            }
+          `}>
+          New Game
+        </button>
       </section>
     </div>
   );

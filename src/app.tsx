@@ -1,6 +1,6 @@
 import { css } from '@emotion/css';
 import { FaSolidRobot, FaSolidUser } from 'solid-icons/fa';
-import { type JSXElement } from 'solid-js';
+import { createSignal, type JSXElement } from 'solid-js';
 import 'normalize.css';
 
 import { Footer } from '@/components/banners/footer.tsx';
@@ -12,8 +12,8 @@ import { Modal } from '@/components/modal.tsx';
 import { Player } from '@/game/player.ts';
 
 const COLOR_VARIABLES = {
-  primary: '#f8fafc', // tw-slate-50
-  secondary: '#60a5fa', // tw-blue-400
+  primary: '#60a5fa', // tw-blue-400
+  secondary: '#f8fafc', // tw-slate-50
   ship: '#334155', // tw-slate-700
   hover: '#cbd5e1', // tw-slate-300
   grid: '#1e293b', // tw-slate-800
@@ -29,7 +29,7 @@ const MEDIA_QUERIES = {
 };
 
 const App = (): JSXElement => {
-  const game = new Player();
+  const [game, setGame] = createSignal(new Player());
   return (
     <div
       id='app'
@@ -42,16 +42,16 @@ const App = (): JSXElement => {
         user-select: none;
         min-height: 100vh;
         min-height: 100svh;
-        background-color: ${COLOR_VARIABLES.secondary};
-        accent-color: ${COLOR_VARIABLES.primary};
-        color: ${COLOR_VARIABLES.primary};
+        background-color: ${COLOR_VARIABLES.primary};
+        accent-color: ${COLOR_VARIABLES.secondary};
+        color: ${COLOR_VARIABLES.secondary};
 
         *::selection {
-          background-color: ${COLOR_VARIABLES.primary};
-          color: ${COLOR_VARIABLES.secondary};
+          background-color: ${COLOR_VARIABLES.secondary};
+          color: ${COLOR_VARIABLES.primary};
         }
       `}>
-      <Modal game={game} />
+      <Modal game={game()} setGame={setGame} />
 
       <Header />
       <main
@@ -99,7 +99,7 @@ const App = (): JSXElement => {
             <span>
               <FaSolidUser /> Player
             </span>
-            <Gameboard isPlayerOneBoard={true} game={game} />
+            <Gameboard isPlayerOneBoard={true} game={game()} />
           </span>
 
           <span
@@ -116,7 +116,7 @@ const App = (): JSXElement => {
             <span>
               <FaSolidRobot /> Computer
             </span>
-            <Gameboard isPlayerOneBoard={false} game={game} />
+            <Gameboard isPlayerOneBoard={false} game={game()} />
           </span>
         </div>
       </main>

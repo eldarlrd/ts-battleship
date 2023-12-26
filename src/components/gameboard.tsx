@@ -135,7 +135,7 @@ export const Gameboard = (props: {
                 class={css`
                   background-color: ${gridElem && props.isPlayerOneBoard
                     ? COLOR_VARIABLES.ship
-                    : COLOR_VARIABLES.primary};
+                    : COLOR_VARIABLES.secondary};
                   border: 1px solid ${COLOR_VARIABLES.grid};
                   padding: 13px;
                   text-align: center;
