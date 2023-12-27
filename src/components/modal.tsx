@@ -83,16 +83,6 @@ export const Modal = (props: {
             padding: 5rem;
           }
         `}>
-        <h1
-          ref={victor}
-          id='victor'
-          class={css`
-            font-size: 2.5rem;
-            text-align: center;
-            line-height: 1em;
-          `}>
-          {props.game.playerVictorious}
-        </h1>
         <button
           type='button'
           onClick={() => {
@@ -104,6 +94,7 @@ export const Modal = (props: {
             border-radius: 0.125rem;
             cursor: pointer;
             font-size: 1.5rem;
+            min-width: 7.625rem;
             font-weight: 500;
             padding: 0.75rem;
             background-color: ${COLOR_VARIABLES.secondary};

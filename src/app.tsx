@@ -35,6 +35,8 @@ let overlay: HTMLDivElement = document.getElementById(
 
 const App = (): JSXElement => {
   const [game, setGame] = createSignal(new Player());
+  const [isControlUp, setIsControlUp] = createSignal<boolean>(true);
+
   return (
     <div
       id='app'
@@ -57,7 +59,9 @@ const App = (): JSXElement => {
         }
       `}>
       <Modal game={game()} setGame={setGame} overlay={overlay} />
-      <Controls />
+      {isControlUp() && (
+        <Controls setGame={setGame} setIsControlUp={setIsControlUp} />
+      )}
 
       <Header />
       <main
@@ -138,6 +142,7 @@ const App = (): JSXElement => {
             font-size: 1.5rem;
             font-weight: 500;
             padding: 0.75rem;
+            min-width: 7.625rem;
             margin-top: 2rem;
             background-color: ${COLOR_VARIABLES.secondary};
             color: ${COLOR_VARIABLES.grid};
