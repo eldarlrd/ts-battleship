@@ -10,11 +10,6 @@ import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
 import { Player } from '@/game/player.ts';
 
 // eslint-disable-next-line prefer-const
-let overlay: HTMLDivElement = document.getElementById(
-  'overlay'
-) as HTMLDivElement;
-
-// eslint-disable-next-line prefer-const
 let victor: HTMLHeadingElement = document.getElementById(
   'victor'
 ) as HTMLHeadingElement;
@@ -22,11 +17,12 @@ let victor: HTMLHeadingElement = document.getElementById(
 export const Modal = (props: {
   game: Player;
   setGame: Setter<Player>;
+  overlay: HTMLDivElement;
 }): JSXElement => {
   createEffect(() => {
     const handleModal = (): void => {
       if (props.game.playerVictorious) {
-        overlay.style.display = 'flex';
+        props.overlay.style.display = 'flex';
         if (props.game.pve)
           victor.innerText =
             props.game.playerVictorious === 1
@@ -48,7 +44,7 @@ export const Modal = (props: {
 
   return (
     <div
-      ref={overlay}
+      ref={props.overlay}
       id='overlay'
       class={css`
         display: none;
@@ -72,7 +68,7 @@ export const Modal = (props: {
           gap: 0.75rem;
           line-height: 1rem;
           border: 2px solid ${COLOR_VARIABLES.secondary};
-          border-radius: 0.25rem;
+          border-radius: 0.125rem;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 
           ${MEDIA_QUERIES.sm} {
@@ -101,29 +97,22 @@ export const Modal = (props: {
           type='button'
           onClick={() => {
             props.setGame(new Player());
-            overlay.style.display = 'none';
+            props.overlay.style.display = 'none';
           }}
           class={css`
             border: 0;
-            border-radius: 0.25rem;
+            border-radius: 0.125rem;
             cursor: pointer;
             font-size: 1.5rem;
             font-weight: 500;
             padding: 0.75rem;
             background-color: ${COLOR_VARIABLES.secondary};
             color: ${COLOR_VARIABLES.grid};
-            outline: 2px solid transparent;
-            transition-property: background-color, outline-color;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-duration: 150ms;
+            outline: 2px solid ${COLOR_VARIABLES.grid};
+            transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
             &:hover {
               background-color: ${COLOR_VARIABLES.hover};
-              outline: 2px solid ${COLOR_VARIABLES.grid};
-            }
-
-            &:focus {
-              outline: 2px solid ${COLOR_VARIABLES.grid};
             }
           `}>
           New Game
