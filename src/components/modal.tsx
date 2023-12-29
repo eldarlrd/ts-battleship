@@ -17,6 +17,7 @@ let victor: HTMLHeadingElement = document.getElementById(
 export const Modal = (props: {
   game: Player;
   setGame: Setter<Player>;
+  setIsControlUp: Setter<boolean>;
   overlay: HTMLDivElement;
 }): JSXElement => {
   createEffect(() => {
@@ -53,7 +54,7 @@ export const Modal = (props: {
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.75);
+        background-color: rgba(0, 0, 0, 0.75);
         justify-content: center;
         align-items: center;
         z-index: 1;
@@ -61,12 +62,12 @@ export const Modal = (props: {
       <section
         class={css`
           display: inherit;
-          background: ${COLOR_VARIABLES.primary};
           flex-direction: column;
           padding: 1rem;
           margin: 1rem;
           gap: 0.75rem;
           line-height: 1rem;
+          background-color: ${COLOR_VARIABLES.primary};
           border: 2px solid ${COLOR_VARIABLES.secondary};
           border-radius: 0.125rem;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -88,6 +89,7 @@ export const Modal = (props: {
           onClick={() => {
             props.setGame(new Player());
             props.overlay.style.display = 'none';
+            props.setIsControlUp(true);
           }}
           class={css`
             border: 0;
