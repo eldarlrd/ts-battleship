@@ -1,7 +1,7 @@
 /**
  * @license AGPL-3.0-only
  * TS Battleship - A Battleship game
- * Copyright (C) 2023 Eldar Pashazade <eldarlrd@pm.me>
+ * Copyright (C) 2023-2024 Eldar Pashazade <eldarlrd@pm.me>
  *
  * This file is part of TS Battleship.
  *

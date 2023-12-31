@@ -8,11 +8,15 @@ export const Footer = (): JSXElement => {
   return (
     <footer
       class={css`
+        display: flex;
+        flex-direction: column;
+        text-align: center;
         font-size: 1.25rem;
         font-weight: 600;
         margin: 1rem;
+        gap: 0.5rem;
       `}>
-      © 2023 {''}
+      © 2023 - 2024
       <a
         title='Go to the Source'
         target='_blank'

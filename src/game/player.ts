@@ -8,11 +8,11 @@ export class Player {
   public isCurrPlayerOne: boolean;
   public pve: boolean;
 
-  public constructor() {
+  public constructor(isRandom = false) {
     this.playerVictorious = null;
     this.playerOneBoard = new Board();
     this.playerTwoBoard = new Board();
-    this.randomPlace(this.playerOneBoard);
+    if (isRandom) this.randomPlace(this.playerOneBoard);
     this.randomPlace(this.playerTwoBoard);
     this.isCurrPlayerOne = true;
     this.pve = true;

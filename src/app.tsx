@@ -64,103 +64,112 @@ const App = (): JSXElement => {
         setIsControlUp={setIsControlUp}
         overlay={overlay}
       />
-      {isControlUp() && (
-        <Controls setGame={setGame} setIsControlUp={setIsControlUp} />
-      )}
 
       <Header />
-      <main
-        class={css`
-          display: inherit;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          margin: 1.5rem auto;
-        `}>
-        <div
+
+      {isControlUp() && (
+        <Controls
+          game={game()}
+          setGame={setGame}
+          setIsControlUp={setIsControlUp}
+        />
+      )}
+
+      {!isControlUp() && (
+        <main
           class={css`
             display: inherit;
-            justify-content: center;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-            font-size: 1.75rem;
-            gap: 1.5rem;
-
-            ${MEDIA_QUERIES.sm} {
-              flex-direction: row;
-              gap: 2rem;
-            }
-
-            ${MEDIA_QUERIES.md} {
-              gap: 2.5rem;
-            }
-
-            ${MEDIA_QUERIES.lg} {
-              gap: 3rem;
-            }
+            margin: 1.5rem auto;
           `}>
-          <span
+          <div
             class={css`
               display: inherit;
-              flex-direction: column;
               justify-content: center;
-              gap: 0.25rem;
+              flex-direction: column;
+              align-items: center;
+              font-size: 1.75rem;
+              gap: 1.5rem;
 
-              svg {
-                font-size: 1.25rem;
+              ${MEDIA_QUERIES.sm} {
+                flex-direction: row;
+                gap: 2rem;
+              }
+
+              ${MEDIA_QUERIES.md} {
+                gap: 2.5rem;
+              }
+
+              ${MEDIA_QUERIES.lg} {
+                gap: 3rem;
               }
             `}>
-            <span>
-              <FaSolidUser /> Player
-            </span>
-            <Gameboard isPlayerOneBoard={true} game={game()} />
-          </span>
+            <span
+              class={css`
+                display: inherit;
+                flex-direction: column;
+                justify-content: center;
+                gap: 0.25rem;
 
-          <span
+                svg {
+                  font-size: 1.25rem;
+                }
+              `}>
+              <span>
+                <FaSolidUser /> Player
+              </span>
+              <Gameboard isPlayerOneBoard={true} game={game()} />
+            </span>
+
+            <span
+              class={css`
+                display: inherit;
+                flex-direction: column;
+                justify-content: center;
+                gap: 0.25rem;
+
+                svg {
+                  font-size: 1.5rem;
+                }
+              `}>
+              <span>
+                <FaSolidRobot /> Computer
+              </span>
+              <Gameboard isPlayerOneBoard={false} game={game()} />
+            </span>
+          </div>
+
+          <button
+            type='button'
+            onClick={() => {
+              setGame(new Player());
+              setIsControlUp(true);
+            }}
             class={css`
-              display: inherit;
-              flex-direction: column;
-              justify-content: center;
-              gap: 0.25rem;
+              border: 0;
+              border-radius: 0.125rem;
+              cursor: pointer;
+              font-size: 1.5rem;
+              font-weight: 500;
+              padding: 0.75rem;
+              min-width: 7.625rem;
+              margin-top: 2rem;
+              background-color: ${COLOR_VARIABLES.secondary};
+              color: ${COLOR_VARIABLES.grid};
+              outline: 2px solid ${COLOR_VARIABLES.grid};
+              transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
-              svg {
-                font-size: 1.5rem;
+              &:hover {
+                background-color: ${COLOR_VARIABLES.hover};
               }
             `}>
-            <span>
-              <FaSolidRobot /> Computer
-            </span>
-            <Gameboard isPlayerOneBoard={false} game={game()} />
-          </span>
-        </div>
+            New Game
+          </button>
+        </main>
+      )}
 
-        <button
-          type='button'
-          onClick={() => {
-            setGame(new Player());
-            setIsControlUp(true);
-          }}
-          class={css`
-            border: 0;
-            border-radius: 0.125rem;
-            cursor: pointer;
-            font-size: 1.5rem;
-            font-weight: 500;
-            padding: 0.75rem;
-            min-width: 7.625rem;
-            margin-top: 2rem;
-            background-color: ${COLOR_VARIABLES.secondary};
-            color: ${COLOR_VARIABLES.grid};
-            outline: 2px solid ${COLOR_VARIABLES.grid};
-            transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
-
-            &:hover {
-              background-color: ${COLOR_VARIABLES.hover};
-            }
-          `}>
-          New Game
-        </button>
-      </main>
       <Footer />
     </div>
   );

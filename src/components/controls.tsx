@@ -1,28 +1,28 @@
 import { css } from '@emotion/css';
+import { FaSolidUser } from 'solid-icons/fa';
 import { IoDice } from 'solid-icons/io';
-import { type Setter, type JSXElement } from 'solid-js';
+import { type Setter, type JSXElement, createSignal } from 'solid-js';
 
-import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
+import { COLOR_VARIABLES } from '@/app.tsx';
+import { Gameboard } from '@/components/gameboard.tsx';
 import { Player } from '@/game/player.ts';
 
 export const Controls = (props: {
+  game: Player;
   setGame: Setter<Player>;
   setIsControlUp: Setter<boolean>;
 }): JSXElement => {
+  const [isDoneSetup, setIsDoneSetup] = createSignal(false);
+
   return (
     <div
       id='controls'
       class={css`
         display: flex;
-        position: fixed;
-        top: 0;
-        left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(0, 0, 0, 0.75);
         justify-content: center;
         align-items: center;
-        z-index: 1;
       `}>
       <section
         class={css`
@@ -36,23 +36,34 @@ export const Controls = (props: {
           border: 2px solid ${COLOR_VARIABLES.secondary};
           border-radius: 0.125rem;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-
-          ${MEDIA_QUERIES.sm} {
-            padding: 3rem;
-          }
-
-          ${MEDIA_QUERIES.md} {
-            padding: 4rem;
-          }
-
-          ${MEDIA_QUERIES.lg} {
-            padding: 5rem;
-          }
         `}>
-        <span>
+        <h1
+          class={css`
+            text-align: center;
+          `}>
+          New Game
+        </h1>
+        <span
+          class={css`
+            font-size: 1.75rem;
+
+            svg {
+              font-size: 1.25rem;
+            }
+          `}>
+          <FaSolidUser /> Player
+        </span>
+        <Gameboard isPlayerOneBoard={true} game={props.game} />
+        <span
+          class={css`
+            text-align: end;
+          `}>
           <button
             type='button'
-            onClick={() => props.setGame(new Player())}
+            onClick={() => {
+              props.setGame(new Player(true));
+              setIsDoneSetup(true);
+            }}
             class={css`
               border: 0;
               border-radius: 0.125rem;
@@ -76,7 +87,10 @@ export const Controls = (props: {
 
         <button
           type='button'
-          onClick={() => props.setIsControlUp(false)}
+          disabled={!isDoneSetup()}
+          onClick={() => {
+            props.setIsControlUp(false);
+          }}
           class={css`
             border: 0;
             border-radius: 0.125rem;
@@ -91,6 +105,11 @@ export const Controls = (props: {
             transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
             &:hover {
+              background-color: ${COLOR_VARIABLES.hover};
+            }
+
+            &:disabled {
+              cursor: not-allowed;
               background-color: ${COLOR_VARIABLES.hover};
             }
           `}>
