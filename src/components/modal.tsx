@@ -84,6 +84,17 @@ export const Modal = (props: {
             padding: 5rem;
           }
         `}>
+        <h1
+          ref={victor}
+          id='victor'
+          class={css`
+            font-size: 2.5rem;
+            text-align: center;
+            line-height: 1em;
+          `}>
+          {props.game.playerVictorious}
+        </h1>
+
         <button
           type='button'
           onClick={() => {
