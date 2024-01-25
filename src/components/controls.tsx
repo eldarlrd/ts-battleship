@@ -54,7 +54,9 @@ export const Controls = (props: {
           <FaSolidUser /> Player
         </span>
         <Gameboard isPlayerOneBoard={true} game={props.game} />
-        <span
+
+        <div
+          id='ship-panel'
           class={css`
             text-align: end;
           `}>
@@ -83,7 +85,7 @@ export const Controls = (props: {
             `}>
             <IoDice />
           </button>
-        </span>
+        </div>
 
         <button
           type='button'
