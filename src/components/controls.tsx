@@ -56,10 +56,13 @@ export const Controls = (props: {
         <Gameboard isPlayerOneBoard={true} game={props.game} />
 
         <div
-          id='ship-panel'
+          id='panel'
           class={css`
-            text-align: end;
+            display: inherit;
+            justify-content: flex-end;
           `}>
+          <div id='ship-selection' class={css``} />
+
           <button
             type='button'
             onClick={() => {
