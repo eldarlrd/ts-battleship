@@ -3,6 +3,7 @@ import { FaSolidRobot, FaSolidUser } from 'solid-icons/fa';
 import { createSignal, type JSXElement } from 'solid-js';
 import 'normalize.css';
 
+import restartSound from '@/assets/sfx/restart.opus';
 import { Footer } from '@/components/banners/footer.tsx';
 import { Header } from '@/components/banners/header.tsx';
 import '@fontsource-variable/stick-no-bills';
@@ -37,6 +38,8 @@ const App = (): JSXElement => {
   const [game, setGame] = createSignal(new Player());
   const [isControlUp, setIsControlUp] = createSignal(true);
 
+  const restartAudio = new Audio(restartSound);
+
   return (
     <div
       id='app'
@@ -62,6 +65,7 @@ const App = (): JSXElement => {
         game={game()}
         setGame={setGame}
         setIsControlUp={setIsControlUp}
+        restartAudio={restartAudio}
         overlay={overlay}
       />
 
@@ -146,6 +150,7 @@ const App = (): JSXElement => {
             onClick={() => {
               setGame(new Player());
               setIsControlUp(true);
+              void restartAudio.play();
             }}
             class={css`
               border: 0;

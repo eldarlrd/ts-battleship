@@ -15,7 +15,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       strategies: 'injectManifest',
       injectManifest: {
-        globPatterns: ['**/*.{html,css,js,png,woff2,webmanifest}']
+        globPatterns: ['**/*.{html,css,js,png,opus,woff2,webmanifest}']
       }
     })
   ],

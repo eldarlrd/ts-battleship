@@ -7,6 +7,8 @@ import {
 } from 'solid-js';
 
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
+import defeatSound from '@/assets/sfx/defeat.opus';
+import victorySound from '@/assets/sfx/victory.opus';
 import { Player } from '@/game/player.ts';
 
 // eslint-disable-next-line prefer-const
@@ -18,22 +20,31 @@ export const Modal = (props: {
   game: Player;
   setGame: Setter<Player>;
   setIsControlUp: Setter<boolean>;
+  restartAudio: HTMLAudioElement;
   overlay: HTMLDivElement;
 }): JSXElement => {
+  const victoryAudio = new Audio(victorySound);
+  const defeatAudio = new Audio(defeatSound);
+
   createEffect(() => {
     const handleModal = (): void => {
       if (props.game.playerVictorious) {
         props.overlay.style.display = 'flex';
         if (props.game.pve)
-          victor.innerText =
-            props.game.playerVictorious === 1
-              ? 'Player Wins!'
-              : 'Computer Wins...';
-        else
+          if (props.game.playerVictorious === 1) {
+            victor.innerText = 'Player Wins!';
+            void victoryAudio.play();
+          } else {
+            victor.innerText = 'Computer Wins...';
+            void defeatAudio.play();
+          }
+        else {
+          void victoryAudio.play();
           victor.innerText =
             props.game.playerVictorious === 1
               ? 'Player 1 Wins!'
               : 'Player 2 Wins!';
+        }
       }
     };
 
@@ -101,6 +112,7 @@ export const Modal = (props: {
             props.setGame(new Player());
             props.overlay.style.display = 'none';
             props.setIsControlUp(true);
+            void props.restartAudio.play();
           }}
           class={css`
             border: 0;
