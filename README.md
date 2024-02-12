@@ -8,6 +8,7 @@
 > - **[Solid Icons](https://solid-icons.vercel.app)**
 > - **[Emotion](https://emotion.sh)**
 > - **[Normalize](https://necolas.github.io/normalize.css)**
+> - **[Vite PWA](https://vite-pwa-org.netlify.app)**
 > - **[Vitest](https://vitest.dev)**
 > - **[Vite](https://vitejs.dev)**
 >

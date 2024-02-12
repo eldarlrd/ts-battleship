@@ -24,3 +24,19 @@ import { App } from '@/app.tsx';
 
 const root = document.getElementById('root');
 if (root) render(() => <App />, root);
+
+const registerSW = (): void => {
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker
+        .register('/ts-battleship/sw.js', {
+          scope: '/ts-battleship/'
+        })
+        .catch((error: unknown) => {
+          if (error instanceof Error) console.error(error);
+        });
+    });
+  }
+};
+
+registerSW();
