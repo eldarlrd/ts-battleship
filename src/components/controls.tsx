@@ -4,6 +4,7 @@ import { IoDice } from 'solid-icons/io';
 import { type Setter, type JSXElement, createSignal } from 'solid-js';
 
 import { COLOR_VARIABLES } from '@/app.tsx';
+import restartSound from '@/assets/sfx/restart.opus';
 import { Gameboard } from '@/components/gameboard.tsx';
 import { Player } from '@/game/player.ts';
 
@@ -13,6 +14,7 @@ export const Controls = (props: {
   setIsControlUp: Setter<boolean>;
 }): JSXElement => {
   const [isDoneSetup, setIsDoneSetup] = createSignal(false);
+  const restartAudio = new Audio(restartSound);
 
   return (
     <div
@@ -95,6 +97,7 @@ export const Controls = (props: {
           disabled={!isDoneSetup()}
           onClick={() => {
             props.setIsControlUp(false);
+            void restartAudio.play();
           }}
           class={css`
             border: 0;

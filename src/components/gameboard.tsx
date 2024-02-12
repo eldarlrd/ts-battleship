@@ -42,27 +42,25 @@ export const Gameboard = (props: {
             element.style.backgroundColor = COLOR_VARIABLES.emptyHit;
             element.style.cursor = 'default';
           }
-        } else {
-          if (
-            props.game.playerTwoBoard.impacts.some(
-              impact => impact.row === cellRow && impact.col === cellCol
-            ) &&
-            element
-          ) {
-            if (cell.sunk) {
-              for (let i = 0; i < cell.length; i++) {
-                const currRow = cell.isVertical ? cell.coords.row + i : row;
-                const currCol = cell.isVertical ? col : cell.coords.col + i;
+        } else if (
+          props.game.playerTwoBoard.impacts.some(
+            impact => impact.row === cellRow && impact.col === cellCol
+          ) &&
+          element
+        ) {
+          if (cell.sunk)
+            for (let i = 0; i < cell.length; i++) {
+              const currRow = cell.isVertical ? cell.coords.row + i : row;
+              const currCol = cell.isVertical ? col : cell.coords.col + i;
 
-                const element = document.getElementById(
-                  'p2-' + (currRow * 10 + currCol)
-                );
-                if (element)
-                  element.style.backgroundColor = COLOR_VARIABLES.shipSunk;
-              }
-            } else element.style.backgroundColor = COLOR_VARIABLES.shipHit;
-            element.style.cursor = 'default';
-          }
+              const element = document.getElementById(
+                'p2-' + (currRow * 10 + currCol)
+              );
+              if (element)
+                element.style.backgroundColor = COLOR_VARIABLES.shipSunk;
+            }
+          else element.style.backgroundColor = COLOR_VARIABLES.shipHit;
+          element.style.cursor = 'default';
         }
       });
     else
@@ -79,27 +77,25 @@ export const Gameboard = (props: {
             element.style.backgroundColor = COLOR_VARIABLES.emptyHit;
             element.style.cursor = 'default';
           }
-        } else {
-          if (
-            props.game.playerOneBoard.impacts.some(
-              impact => impact.row === cellRow && impact.col === cellCol
-            ) &&
-            element
-          ) {
-            if (cell.sunk) {
-              for (let i = 0; i < cell.length; i++) {
-                const currRow = cell.isVertical ? cell.coords.row + i : row;
-                const currCol = cell.isVertical ? col : cell.coords.col + i;
+        } else if (
+          props.game.playerOneBoard.impacts.some(
+            impact => impact.row === cellRow && impact.col === cellCol
+          ) &&
+          element
+        ) {
+          if (cell.sunk)
+            for (let i = 0; i < cell.length; i++) {
+              const currRow = cell.isVertical ? cell.coords.row + i : row;
+              const currCol = cell.isVertical ? col : cell.coords.col + i;
 
-                const element = document.getElementById(
-                  'p1-' + (currRow * 10 + currCol)
-                );
-                if (element)
-                  element.style.backgroundColor = COLOR_VARIABLES.shipSunk;
-              }
-            } else element.style.backgroundColor = COLOR_VARIABLES.shipHit;
-            element.style.cursor = 'default';
-          }
+              const element = document.getElementById(
+                'p1-' + (currRow * 10 + currCol)
+              );
+              if (element)
+                element.style.backgroundColor = COLOR_VARIABLES.shipSunk;
+            }
+          else element.style.backgroundColor = COLOR_VARIABLES.shipHit;
+          element.style.cursor = 'default';
         }
       });
   };

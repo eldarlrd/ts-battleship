@@ -3,10 +3,10 @@ import { FaSolidRobot, FaSolidUser } from 'solid-icons/fa';
 import { createSignal, type JSXElement } from 'solid-js';
 import 'normalize.css';
 
-import restartSound from '@/assets/sfx/restart.opus';
 import { Footer } from '@/components/banners/footer.tsx';
 import { Header } from '@/components/banners/header.tsx';
 import '@fontsource-variable/stick-no-bills';
+import { NewGame } from '@/components/buttons/newGame.tsx';
 import { Controls } from '@/components/controls.tsx';
 import { Gameboard } from '@/components/gameboard.tsx';
 import { Modal } from '@/components/modal.tsx';
@@ -38,8 +38,6 @@ const App = (): JSXElement => {
   const [game, setGame] = createSignal(new Player());
   const [isControlUp, setIsControlUp] = createSignal(true);
 
-  const restartAudio = new Audio(restartSound);
-
   return (
     <div
       id='app'
@@ -65,7 +63,6 @@ const App = (): JSXElement => {
         game={game()}
         setGame={setGame}
         setIsControlUp={setIsControlUp}
-        restartAudio={restartAudio}
         overlay={overlay}
       />
 
@@ -94,6 +91,7 @@ const App = (): JSXElement => {
               justify-content: center;
               flex-direction: column;
               align-items: center;
+              margin-bottom: 2rem;
               font-size: 1.75rem;
               gap: 1.5rem;
 
@@ -145,33 +143,11 @@ const App = (): JSXElement => {
             </span>
           </div>
 
-          <button
-            type='button'
-            onClick={() => {
-              setGame(new Player());
-              setIsControlUp(true);
-              void restartAudio.play();
-            }}
-            class={css`
-              border: 0;
-              border-radius: 0.125rem;
-              cursor: pointer;
-              font-size: 1.5rem;
-              font-weight: 500;
-              padding: 0.75rem;
-              min-width: 7.625rem;
-              margin-top: 2rem;
-              background-color: ${COLOR_VARIABLES.secondary};
-              color: ${COLOR_VARIABLES.grid};
-              outline: 2px solid ${COLOR_VARIABLES.grid};
-              transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
-
-              &:hover {
-                background-color: ${COLOR_VARIABLES.hover};
-              }
-            `}>
-            New Game
-          </button>
+          <NewGame
+            setGame={setGame}
+            setIsControlUp={setIsControlUp}
+            overlay={overlay}
+          />
         </main>
       )}
 

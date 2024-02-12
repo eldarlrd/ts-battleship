@@ -9,7 +9,8 @@ import {
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
 import defeatSound from '@/assets/sfx/defeat.opus';
 import victorySound from '@/assets/sfx/victory.opus';
-import { Player } from '@/game/player.ts';
+import { NewGame } from '@/components/buttons/newGame.tsx';
+import { type Player } from '@/game/player.ts';
 
 // eslint-disable-next-line prefer-const
 let victor: HTMLHeadingElement = document.getElementById(
@@ -20,7 +21,6 @@ export const Modal = (props: {
   game: Player;
   setGame: Setter<Player>;
   setIsControlUp: Setter<boolean>;
-  restartAudio: HTMLAudioElement;
   overlay: HTMLDivElement;
 }): JSXElement => {
   const victoryAudio = new Audio(victorySound);
@@ -106,33 +106,11 @@ export const Modal = (props: {
           {props.game.playerVictorious}
         </h1>
 
-        <button
-          type='button'
-          onClick={() => {
-            props.setGame(new Player());
-            props.overlay.style.display = 'none';
-            props.setIsControlUp(true);
-            void props.restartAudio.play();
-          }}
-          class={css`
-            border: 0;
-            border-radius: 0.125rem;
-            cursor: pointer;
-            font-size: 1.5rem;
-            min-width: 7.625rem;
-            font-weight: 500;
-            padding: 0.75rem;
-            background-color: ${COLOR_VARIABLES.secondary};
-            color: ${COLOR_VARIABLES.grid};
-            outline: 2px solid ${COLOR_VARIABLES.grid};
-            transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
-
-            &:hover {
-              background-color: ${COLOR_VARIABLES.hover};
-            }
-          `}>
-          New Game
-        </button>
+        <NewGame
+          setGame={props.setGame}
+          setIsControlUp={props.setIsControlUp}
+          overlay={props.overlay}
+        />
       </section>
     </div>
   );

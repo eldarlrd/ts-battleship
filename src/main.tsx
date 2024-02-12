@@ -26,7 +26,7 @@ const root = document.getElementById('root');
 if (root) render(() => <App />, root);
 
 const registerSW = (): void => {
-  if ('serviceWorker' in navigator) {
+  if ('serviceWorker' in navigator)
     window.addEventListener('load', () => {
       navigator.serviceWorker
         .register('/ts-battleship/sw.js', {
@@ -36,7 +36,6 @@ const registerSW = (): void => {
           if (error instanceof Error) console.error(error);
         });
     });
-  }
 };
 
 registerSW();
