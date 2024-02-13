@@ -97,7 +97,9 @@ export const Controls = (props: {
           disabled={!isDoneSetup()}
           onClick={() => {
             props.setIsControlUp(false);
-            void restartAudio.play();
+            restartAudio.play().catch((error: unknown) => {
+              if (error instanceof Error) console.error(error);
+            });
           }}
           class={css`
             border: 0;

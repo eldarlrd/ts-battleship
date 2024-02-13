@@ -26,6 +26,12 @@ export const Modal = (props: {
   const victoryAudio = new Audio(victorySound);
   const defeatAudio = new Audio(defeatSound);
 
+  const playAudio = (audio: HTMLAudioElement): void => {
+    audio.play().catch((error: unknown) => {
+      if (error instanceof Error) console.error(error);
+    });
+  };
+
   createEffect(() => {
     const handleModal = (): void => {
       if (props.game.playerVictorious) {
@@ -33,13 +39,13 @@ export const Modal = (props: {
         if (props.game.pve)
           if (props.game.playerVictorious === 1) {
             victor.innerText = 'Player Wins!';
-            void victoryAudio.play();
+            playAudio(victoryAudio);
           } else {
             victor.innerText = 'Computer Wins...';
-            void defeatAudio.play();
+            playAudio(defeatAudio);
           }
         else {
-          void victoryAudio.play();
+          playAudio(victoryAudio);
           victor.innerText =
             props.game.playerVictorious === 1
               ? 'Player 1 Wins!'

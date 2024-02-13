@@ -143,11 +143,7 @@ const App = (): JSXElement => {
             </span>
           </div>
 
-          <NewGame
-            setGame={setGame}
-            setIsControlUp={setIsControlUp}
-            overlay={overlay}
-          />
+          <NewGame setGame={setGame} setIsControlUp={setIsControlUp} />
         </main>
       )}
 

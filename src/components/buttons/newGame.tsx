@@ -7,7 +7,7 @@ import { Player } from '@/game/player.ts';
 export const NewGame = (props: {
   setGame: Setter<Player>;
   setIsControlUp: Setter<boolean>;
-  overlay: HTMLDivElement;
+  overlay?: HTMLDivElement;
 }): JSXElement => {
   return (
     <button
@@ -15,7 +15,7 @@ export const NewGame = (props: {
       onClick={() => {
         props.setGame(new Player());
         props.setIsControlUp(true);
-        props.overlay.style.display = 'none';
+        if (props.overlay) props.overlay.style.display = 'none';
       }}
       class={css`
         border: 0;
