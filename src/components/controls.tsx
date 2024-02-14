@@ -1,10 +1,11 @@
 import { css } from '@emotion/css';
-import { FaSolidUser } from 'solid-icons/fa';
-import { IoDice } from 'solid-icons/io';
+import { FaSolidUser, FaSolidRotateRight } from 'solid-icons/fa';
+import { IoDice, IoTrashBin } from 'solid-icons/io';
 import { type Setter, type JSXElement, createSignal } from 'solid-js';
 
-import { COLOR_VARIABLES } from '@/app.tsx';
+import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
 import restartSound from '@/assets/sfx/restart.opus';
+import { BoardControl } from '@/components/buttons/boardControl.tsx';
 import { Gameboard } from '@/components/gameboard.tsx';
 import { Player } from '@/game/player.ts';
 
@@ -62,34 +63,34 @@ export const Controls = (props: {
           class={css`
             display: inherit;
             justify-content: flex-end;
+            gap: 0.5rem;
           `}>
           <div id='ship-selection' class={css``} />
 
-          <button
-            type='button'
-            onClick={() => {
+          <BoardControl
+            handleAction={() => {
+              console.log('rotate');
+            }}
+            icon={<FaSolidRotateRight />}
+            title='Rotate'
+          />
+
+          <BoardControl
+            handleAction={() => {
               props.setGame(new Player(true));
               setIsDoneSetup(true);
             }}
-            class={css`
-              border: 0;
-              border-radius: 0.125rem;
-              cursor: pointer;
-              font-size: 1.5rem;
-              font-weight: 500;
-              line-height: 1rem;
-              padding: 0.75rem;
-              background-color: ${COLOR_VARIABLES.secondary};
-              color: ${COLOR_VARIABLES.grid};
-              outline: 2px solid ${COLOR_VARIABLES.grid};
-              transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            icon={<IoDice />}
+            title='Randomize'
+          />
 
-              &:hover {
-                background-color: ${COLOR_VARIABLES.hover};
-              }
-            `}>
-            <IoDice />
-          </button>
+          <BoardControl
+            handleAction={() => {
+              console.log('clear');
+            }}
+            icon={<IoTrashBin />}
+            title='Clear'
+          />
         </div>
 
         <button
@@ -108,7 +109,7 @@ export const Controls = (props: {
             font-size: 1.5rem;
             font-weight: 500;
             min-width: 7.625rem;
-            padding: 0.75rem;
+            padding: 0.5rem;
             background-color: ${COLOR_VARIABLES.secondary};
             color: ${COLOR_VARIABLES.grid};
             outline: 2px solid ${COLOR_VARIABLES.grid};
@@ -121,6 +122,10 @@ export const Controls = (props: {
             &:disabled {
               cursor: not-allowed;
               background-color: ${COLOR_VARIABLES.hover};
+            }
+
+            ${MEDIA_QUERIES.md} {
+              padding: 0.75rem;
             }
           `}>
           Start
