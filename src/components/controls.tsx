@@ -1,5 +1,5 @@
 import { css } from '@emotion/css';
-import { FaSolidUser, FaSolidRotateRight } from 'solid-icons/fa';
+import { FaSolidUser, FaSolidRotateRight, FaSolidShip } from 'solid-icons/fa';
 import { IoDice, IoTrashBin } from 'solid-icons/io';
 import { type Setter, type JSXElement, createSignal } from 'solid-js';
 
@@ -62,35 +62,69 @@ export const Controls = (props: {
           id='panel'
           class={css`
             display: inherit;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
             gap: 0.5rem;
           `}>
-          <div id='ship-selection' class={css``} />
+          <span
+            id='ship-selection'
+            class={css`
+              font-size: 1.5rem;
 
-          <BoardControl
-            handleAction={() => {
-              console.log('rotate');
-            }}
-            icon={<FaSolidRotateRight />}
-            title='Rotate'
-          />
+              svg {
+                font-size: 1rem;
+              }
 
-          <BoardControl
-            handleAction={() => {
-              props.setGame(new Player(true));
-              setIsDoneSetup(true);
-            }}
-            icon={<IoDice />}
-            title='Randomize'
-          />
+              ${MEDIA_QUERIES.md} {
+                font-size: 1.625rem;
 
-          <BoardControl
-            handleAction={() => {
-              console.log('clear');
-            }}
-            icon={<IoTrashBin />}
-            title='Clear'
-          />
+                svg {
+                  font-size: 1.125rem;
+                }
+              }
+
+              ${MEDIA_QUERIES.lg} {
+                font-size: 1.75rem;
+
+                svg {
+                  font-size: 1.25rem;
+                }
+              }
+            `}>
+            <FaSolidShip /> 5 Carrier
+          </span>
+
+          <span
+            class={css`
+              display: inherit;
+              gap: 0.5rem;
+            `}>
+            <BoardControl
+              handleAction={() => {
+                console.log('rotate');
+              }}
+              icon={<FaSolidRotateRight />}
+              title='Rotate'
+            />
+
+            <BoardControl
+              handleAction={() => {
+                props.setGame(new Player(true));
+                setIsDoneSetup(true);
+              }}
+              icon={<IoDice />}
+              title='Randomize'
+            />
+
+            <BoardControl
+              handleAction={() => {
+                props.setGame(new Player());
+                setIsDoneSetup(false);
+              }}
+              icon={<IoTrashBin />}
+              title='Clear'
+            />
+          </span>
         </div>
 
         <button
