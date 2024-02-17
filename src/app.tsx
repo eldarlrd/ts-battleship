@@ -122,7 +122,12 @@ const App = (): JSXElement => {
               <span>
                 <FaSolidUser /> Player
               </span>
-              <Gameboard isPlayerOneBoard={true} game={game()} />
+              <Gameboard
+                isPlayerOneBoard={true}
+                isPlacing={false}
+                isVertical={false}
+                game={game()}
+              />
             </span>
 
             <span
@@ -139,7 +144,12 @@ const App = (): JSXElement => {
               <span>
                 <FaSolidRobot /> Computer
               </span>
-              <Gameboard isPlayerOneBoard={false} game={game()} />
+              <Gameboard
+                isPlayerOneBoard={false}
+                isPlacing={false}
+                isVertical={false}
+                game={game()}
+              />
             </span>
           </div>
 

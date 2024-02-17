@@ -1,13 +1,91 @@
 import { css } from '@emotion/css';
-import { For, type JSXElement } from 'solid-js';
+import { type JSXElement, For } from 'solid-js';
 
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
 import { type Player } from '@/game/player.ts';
+import { Ship } from '@/game/ship.ts';
 
 export const Gameboard = (props: {
   isPlayerOneBoard: boolean;
+  isPlacing: boolean;
+  isVertical: boolean;
   game: Player;
 }): JSXElement => {
+  const placeShip = (row: number, col: number): void => {
+    let ship: Ship | null = null;
+
+    switch (props.game.playerOneBoard.shipsPlaced) {
+      case 0:
+        ship = new Ship(5); // Carrier
+        break;
+      case 1:
+        ship = new Ship(4); // Battleship
+        break;
+      case 2:
+        ship = new Ship(3); // Destroyer
+        break;
+      case 3:
+        ship = new Ship(3); // Submarine
+        break;
+      case 4:
+        ship = new Ship(2); // Patrol Boat
+    }
+
+    if (
+      ship &&
+      props.game.successfullyPlace(
+        props.game.playerOneBoard,
+        ship,
+        false,
+        row,
+        col,
+        props.isVertical
+      )
+    ) {
+      const cell = props.game.playerOneBoard.grid[row][col];
+      if (cell)
+        for (let i = 0; i < cell.length; i++) {
+          const currRow = cell.isVertical ? cell.coords.row + i : row;
+          const currCol = cell.isVertical ? col : cell.coords.col + i;
+
+          const element = document.getElementById(
+            'p1-' + (currRow * 10 + currCol)
+          );
+          if (element) element.style.backgroundColor = COLOR_VARIABLES.ship;
+        }
+
+      props.game.playerOneBoard.shipsPlaced++;
+      if (props.game.playerOneBoard.shipsPlaced === 5) {
+        const element = document.getElementById('start-button');
+        if (element) (element as HTMLButtonElement).disabled = false;
+      }
+
+      const element = document.getElementById('ship-info');
+      if (element)
+        switch (props.game.playerOneBoard.shipsPlaced) {
+          case 1:
+            ship = new Ship(5); // Carrier
+            element.innerText = '4 Battleship';
+            break;
+          case 2:
+            ship = new Ship(4); // Battleship
+            element.innerText = '3 Destroyer';
+            break;
+          case 3:
+            ship = new Ship(3); // Destroyer
+            element.innerText = '3 Submarine';
+            break;
+          case 4:
+            ship = new Ship(3); // Submarine
+            element.innerText = '2 Patrol Boat';
+            break;
+          case 5:
+            ship = new Ship(2); // Patrol Boat
+            element.innerText = 'All Placed';
+        }
+    }
+  };
+
   const attackCell = (row: number, col: number): void => {
     if (props.game.playerVictorious) return;
     const isSuccessfulHit = props.game.takeTurn({ row, col });
@@ -121,11 +199,13 @@ export const Gameboard = (props: {
             {(gridElem, j) => (
               <button
                 type='button'
-                id={`${props.isPlayerOneBoard ? 'p1-' : 'p2-'}${(
-                  i() * 10 +
-                  j()
-                ).toString()}`}
+                id={`${props.isPlayerOneBoard ? 'p1-' : 'p2-'}${i() * 10 + j()}`}
                 onClick={() => {
+                  if (
+                    props.isPlacing &&
+                    props.game.playerOneBoard.shipsPlaced < 5
+                  )
+                    placeShip(i(), j());
                   !props.isPlayerOneBoard && attackCell(i(), j());
                 }}
                 class={css`

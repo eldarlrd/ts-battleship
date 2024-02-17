@@ -8,12 +8,14 @@ interface Coordinates {
 class Board {
   public grid: (Ship | null)[][];
   public impacts: Coordinates[];
+  public shipsPlaced: number;
 
   public constructor() {
     this.grid = Array.from({ length: 10 }, () =>
       Array<Ship | null>(10).fill(null)
     );
     this.impacts = [];
+    this.shipsPlaced = 0;
   }
 
   public place(ship: Ship, start: Coordinates, isVertical: boolean): boolean {

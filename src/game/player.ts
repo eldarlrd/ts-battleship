@@ -41,37 +41,62 @@ export class Player {
     return coordinates;
   }
 
-  private randomPlace(board: Board): void {
+  public successfullyPlace(
+    board: Board,
+    ship: Ship,
+    isRandom: boolean,
+    manualRow = 0,
+    manualCol = 0,
+    isVertical = false
+  ): boolean {
+    let coords: Coordinates;
+
+    if (isRandom) {
+      let randomIsVertical = Math.random() < 0.5;
+      coords = {
+        row: ~~(Math.random() * 10),
+        col: ~~(Math.random() * 10)
+      };
+
+      while (!board.place(ship, coords, randomIsVertical)) {
+        randomIsVertical = Math.random() < 0.5;
+        coords = {
+          row: ~~(Math.random() * 10),
+          col: ~~(Math.random() * 10)
+        };
+      }
+
+      ship.isVertical = randomIsVertical;
+    } else {
+      coords = {
+        row: manualRow,
+        col: manualCol
+      };
+
+      if (!board.place(ship, coords, isVertical)) {
+        console.log('Invalid Placement!');
+        return false;
+      }
+
+      ship.isVertical = isVertical;
+    }
+
+    ship.coords = coords;
+    board.place(ship, coords, ship.isVertical);
+    return true;
+  }
+
+  private randomPlace(board: Board, isRandom = true): void {
     const carrier = new Ship(5);
     const battleship = new Ship(4);
     const destroyer = new Ship(3);
     const submarine = new Ship(3);
     const patrolBoat = new Ship(2);
-    this.successfullyPlace(board, carrier);
-    this.successfullyPlace(board, battleship);
-    this.successfullyPlace(board, destroyer);
-    this.successfullyPlace(board, submarine);
-    this.successfullyPlace(board, patrolBoat);
-  }
-
-  private successfullyPlace(board: Board, ship: Ship): void {
-    let isVertical = Math.random() < 0.5;
-    let coords: Coordinates = {
-      row: Math.floor(Math.random() * 10),
-      col: Math.floor(Math.random() * 10)
-    };
-
-    while (!board.place(ship, coords, isVertical)) {
-      isVertical = Math.random() < 0.5;
-      coords = {
-        row: ~~(Math.random() * 10),
-        col: ~~(Math.random() * 10)
-      };
-    }
-
-    board.place(ship, coords, isVertical);
-    ship.isVertical = isVertical;
-    ship.coords = coords;
+    this.successfullyPlace(board, carrier, isRandom);
+    this.successfullyPlace(board, battleship, isRandom);
+    this.successfullyPlace(board, destroyer, isRandom);
+    this.successfullyPlace(board, submarine, isRandom);
+    this.successfullyPlace(board, patrolBoat, isRandom);
   }
 
   private checkVictory(): true | undefined {

@@ -1,5 +1,10 @@
 import { css } from '@emotion/css';
-import { FaSolidUser, FaSolidRotateRight, FaSolidShip } from 'solid-icons/fa';
+import {
+  FaSolidUser,
+  FaSolidRightLong,
+  FaSolidDownLong,
+  FaSolidShip
+} from 'solid-icons/fa';
 import { IoDice, IoTrashBin } from 'solid-icons/io';
 import { type Setter, type JSXElement, createSignal } from 'solid-js';
 
@@ -15,6 +20,7 @@ export const Controls = (props: {
   setIsControlUp: Setter<boolean>;
 }): JSXElement => {
   const [isDoneSetup, setIsDoneSetup] = createSignal(false);
+  const [isVertical, setIsVertical] = createSignal(false);
   const restartAudio = new Audio(restartSound);
 
   return (
@@ -56,7 +62,12 @@ export const Controls = (props: {
           `}>
           <FaSolidUser /> Player
         </span>
-        <Gameboard isPlayerOneBoard={true} game={props.game} />
+        <Gameboard
+          isPlayerOneBoard={true}
+          isPlacing={true}
+          isVertical={isVertical()}
+          game={props.game}
+        />
 
         <div
           id='panel'
@@ -73,6 +84,7 @@ export const Controls = (props: {
 
               svg {
                 font-size: 1rem;
+                padding-right: 0.375rem;
               }
 
               ${MEDIA_QUERIES.md} {
@@ -91,7 +103,8 @@ export const Controls = (props: {
                 }
               }
             `}>
-            <FaSolidShip /> 5 Carrier
+            <FaSolidShip />
+            <span id='ship-info'>5 Carrier</span>
           </span>
 
           <span
@@ -101,16 +114,19 @@ export const Controls = (props: {
             `}>
             <BoardControl
               handleAction={() => {
-                console.log('rotate');
+                setIsVertical(prev => !prev);
               }}
-              icon={<FaSolidRotateRight />}
+              icon={isVertical() ? <FaSolidDownLong /> : <FaSolidRightLong />}
               title='Rotate'
             />
 
             <BoardControl
               handleAction={() => {
                 props.setGame(new Player(true));
+                props.game.playerOneBoard.shipsPlaced = 5;
                 setIsDoneSetup(true);
+                const element = document.getElementById('ship-info');
+                if (element) element.innerText = 'All Placed';
               }}
               icon={<IoDice />}
               title='Randomize'
@@ -120,6 +136,10 @@ export const Controls = (props: {
               handleAction={() => {
                 props.setGame(new Player());
                 setIsDoneSetup(false);
+                let element = document.getElementById('ship-info');
+                if (element) element.innerText = '5 Carrier';
+                element = document.getElementById('start-button');
+                if (element) (element as HTMLButtonElement).disabled = true;
               }}
               icon={<IoTrashBin />}
               title='Clear'
@@ -129,6 +149,7 @@ export const Controls = (props: {
 
         <button
           type='button'
+          id='start-button'
           disabled={!isDoneSetup()}
           onClick={() => {
             props.setIsControlUp(false);
