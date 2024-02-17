@@ -143,7 +143,7 @@ export const Controls = (props: {
                 props.setGame(new Player(true));
                 props.game.playerBoard.shipsPlaced = 5;
                 setIsDoneSetup(true);
-                shipInfo().innerText = 'All Placed';
+                shipInfo().innerText = 'All Ships Ready!';
               }}
               icon={<IoDice />}
               title='Randomize'

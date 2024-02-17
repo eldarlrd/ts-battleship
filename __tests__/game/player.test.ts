@@ -20,7 +20,7 @@ describe('player interface', () => {
     expect(game.playerVictorious).not.toBe(0);
   });
 
-  it('player places ships manually', () => {
+  it('players place ships manually', () => {
     const game = new Player();
     const shipLengthArr = [5, 4, 3, 3, 2];
     const shipLength = shipLengthArr[game.playerBoard.shipsPlaced];

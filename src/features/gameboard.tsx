@@ -43,7 +43,10 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
           const element = document.getElementById(
             playerId + (currRow * 10 + currCol)
           );
-          if (element) element.style.backgroundColor = COLOR_VARIABLES.ship;
+          if (element) {
+            element.style.backgroundColor = COLOR_VARIABLES.ship;
+            element.style.cursor = 'default';
+          }
         }
 
       props.game.playerBoard.shipsPlaced++;
@@ -61,7 +64,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
         ];
         props.shipInfo.innerText =
           props.game.playerBoard.shipsPlaced === 5
-            ? 'All Placed'
+            ? 'All Ships Ready!'
             : shipNames[props.game.playerBoard.shipsPlaced];
       }
     }
@@ -133,7 +136,6 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
 
   return (
     <section
-      id={props.isPlacing ? 'placing-board' : ''}
       class={css`
         font-size: 2.5rem;
         font-weight: 600;
@@ -141,6 +143,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
         border: 1px solid ${COLOR_VARIABLES.grid};
         grid-template-columns: repeat(10, 1fr);
         grid-template-rows: repeat(10, 1fr);
+        position: relative;
       `}>
       <For each={props.game.playerBoard.grid}>
         {(gridRow, i) => (
@@ -161,10 +164,13 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
                   border: 1px solid ${COLOR_VARIABLES.grid};
                   padding: ${props.isPlacing ? '14.5px' : '15.5px'};
                   text-align: center;
-                  cursor: ${!props.isPlayerBoard && 'pointer'};
+                  cursor: ${(!props.isPlayerBoard ||
+                    (props.isPlacing && !gridElem)) &&
+                  'pointer'};
 
                   &:hover {
-                    background-color: ${!props.isPlayerBoard &&
+                    background-color: ${(!props.isPlayerBoard ||
+                      (props.isPlacing && !gridElem)) &&
                     COLOR_VARIABLES.hover};
                   }
 

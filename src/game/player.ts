@@ -70,10 +70,7 @@ export class Player {
         col: manualCol
       };
 
-      if (!board.place(ship, coords, isVertical)) {
-        console.log('Invalid placement');
-        return false;
-      }
+      if (!board.place(ship, coords, isVertical)) return false;
 
       ship.isVertical = isVertical;
     }
