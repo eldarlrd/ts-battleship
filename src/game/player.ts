@@ -71,7 +71,7 @@ export class Player {
       };
 
       if (!board.place(ship, coords, isVertical)) {
-        console.log('Invalid Placement!');
+        console.log('Invalid placement');
         return false;
       }
 

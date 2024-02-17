@@ -1,8 +1,9 @@
 import { Player } from '@/game/player.ts';
+import { Ship } from '@/game/ship.ts';
 
 describe('player interface', () => {
   it('players take turns', () => {
-    const game = new Player();
+    const game = new Player(true);
 
     while (!game.playerVictorious)
       for (let row = 0; row < 10; row++)
@@ -12,10 +13,37 @@ describe('player interface', () => {
   });
 
   it('computer takes a turn', () => {
-    const game = new Player();
+    const game = new Player(true);
 
     while (!game.playerVictorious) game.computerTurn();
 
     expect(game.playerVictorious).not.toBe(0);
+  });
+
+  it('player places ships manually', () => {
+    const game = new Player();
+    const shipLengthArr = [5, 4, 3, 3, 2];
+    const shipLength = shipLengthArr[game.playerBoard.shipsPlaced];
+    const ship = new Ship(shipLength);
+
+    const validPlacement = game.successfullyPlace(
+      game.playerBoard,
+      ship,
+      false,
+      0,
+      0,
+      false
+    );
+
+    const invalidPlacement = game.successfullyPlace(
+      game.playerBoard,
+      ship,
+      false,
+      1,
+      5,
+      true
+    );
+
+    expect([validPlacement, invalidPlacement]).toStrictEqual([true, false]);
   });
 });

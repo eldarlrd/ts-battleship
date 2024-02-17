@@ -1,3 +1,4 @@
+import shipSunk from '@/assets/sfx/shipSunk.opus';
 import { type Coordinates } from '@/game/board.ts';
 
 interface ShipStats {
@@ -29,6 +30,10 @@ export class Ship implements ShipStats {
   }
 
   private isSunk(): void {
-    if (this.hits === this.length) this.sunk = true;
+    if (this.hits === this.length) {
+      this.sunk = true;
+      const shipSunkAudio = new Audio(shipSunk);
+      void shipSunkAudio.play();
+    }
   }
 }
