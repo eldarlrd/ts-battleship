@@ -5,16 +5,20 @@ import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
 import { type Player } from '@/game/player.ts';
 import { Ship } from '@/game/ship.ts';
 
-export const Gameboard = (props: {
-  isPlayerOneBoard: boolean;
+interface GameboardSettings {
+  isPlayerBoard: boolean;
   isPlacing: boolean;
   isVertical: boolean;
   game: Player;
-}): JSXElement => {
+  shipInfo?: HTMLSpanElement;
+  startButton?: HTMLButtonElement;
+}
+
+export const Gameboard = (props: GameboardSettings): JSXElement => {
   const placeShip = (row: number, col: number): void => {
     let ship: Ship | null = null;
 
-    switch (props.game.playerOneBoard.shipsPlaced) {
+    switch (props.game.playerBoard.shipsPlaced) {
       case 0:
         ship = new Ship(5); // Carrier
         break;
@@ -34,7 +38,7 @@ export const Gameboard = (props: {
     if (
       ship &&
       props.game.successfullyPlace(
-        props.game.playerOneBoard,
+        props.game.playerBoard,
         ship,
         false,
         row,
@@ -42,7 +46,7 @@ export const Gameboard = (props: {
         props.isVertical
       )
     ) {
-      const cell = props.game.playerOneBoard.grid[row][col];
+      const cell = props.game.playerBoard.grid[row][col];
       if (cell)
         for (let i = 0; i < cell.length; i++) {
           const currRow = cell.isVertical ? cell.coords.row + i : row;
@@ -54,34 +58,26 @@ export const Gameboard = (props: {
           if (element) element.style.backgroundColor = COLOR_VARIABLES.ship;
         }
 
-      props.game.playerOneBoard.shipsPlaced++;
-      if (props.game.playerOneBoard.shipsPlaced === 5) {
-        const element = document.getElementById('start-button');
-        if (element) (element as HTMLButtonElement).disabled = false;
-      }
+      props.game.playerBoard.shipsPlaced++;
+      if (props.game.playerBoard.shipsPlaced === 5)
+        if (props.startButton) props.startButton.disabled = false;
 
-      const element = document.getElementById('ship-info');
-      if (element)
-        switch (props.game.playerOneBoard.shipsPlaced) {
+      if (props.shipInfo)
+        switch (props.game.playerBoard.shipsPlaced) {
           case 1:
-            ship = new Ship(5); // Carrier
-            element.innerText = '4 Battleship';
+            props.shipInfo.innerText = '4 Battleship';
             break;
           case 2:
-            ship = new Ship(4); // Battleship
-            element.innerText = '3 Destroyer';
+            props.shipInfo.innerText = '3 Destroyer';
             break;
           case 3:
-            ship = new Ship(3); // Destroyer
-            element.innerText = '3 Submarine';
+            props.shipInfo.innerText = '3 Submarine';
             break;
           case 4:
-            ship = new Ship(3); // Submarine
-            element.innerText = '2 Patrol Boat';
+            props.shipInfo.innerText = '2 Patrol Boat';
             break;
           case 5:
-            ship = new Ship(2); // Patrol Boat
-            element.innerText = 'All Placed';
+            props.shipInfo.innerText = 'All Placed';
         }
     }
   };
@@ -92,7 +88,7 @@ export const Gameboard = (props: {
     if (isSuccessfulHit) {
       checkImpact(row, col);
       document.dispatchEvent(new Event('attack'));
-      if (props.game.pve && !props.game.playerVictorious)
+      if (!props.game.playerVictorious)
         setTimeout((): void => {
           const compCoord = props.game.computerTurn();
           checkImpact(compCoord.row, compCoord.col);
@@ -102,80 +98,50 @@ export const Gameboard = (props: {
   };
 
   const checkImpact = (cellRow: number, cellCol: number): void => {
+    const playerId = props.game.isCurrPlayerOne ? 'p1-' : 'p2-';
+    const currBoard = props.game.isCurrPlayerOne
+      ? props.game.playerBoard
+      : props.game.computerBoard;
+
     const element = document.getElementById(
-      (!props.game.isCurrPlayerOne ? 'p2-' : 'p1-') + (cellRow * 10 + cellCol)
+      playerId + (cellRow * 10 + cellCol)
     );
 
-    if (!props.game.isCurrPlayerOne)
-      props.game.playerTwoBoard.impacts.forEach(impact => {
-        const { row, col } = impact;
-        const cell = props.game.playerTwoBoard.grid[row][col];
-        if (!cell) {
-          if (
-            props.game.playerTwoBoard.impacts.some(
-              impact => impact.row === cellRow && impact.col === cellCol
-            ) &&
-            element
-          ) {
-            element.style.backgroundColor = COLOR_VARIABLES.emptyHit;
-            element.style.cursor = 'default';
-          }
-        } else if (
-          props.game.playerTwoBoard.impacts.some(
+    currBoard.impacts.forEach(impact => {
+      const { row, col } = impact;
+      const cell = currBoard.grid[row][col];
+
+      if (!cell) {
+        if (
+          currBoard.impacts.some(
             impact => impact.row === cellRow && impact.col === cellCol
           ) &&
           element
         ) {
-          if (cell.sunk)
-            for (let i = 0; i < cell.length; i++) {
-              const currRow = cell.isVertical ? cell.coords.row + i : row;
-              const currCol = cell.isVertical ? col : cell.coords.col + i;
-
-              const element = document.getElementById(
-                'p2-' + (currRow * 10 + currCol)
-              );
-              if (element)
-                element.style.backgroundColor = COLOR_VARIABLES.shipSunk;
-            }
-          else element.style.backgroundColor = COLOR_VARIABLES.shipHit;
+          element.style.backgroundColor = COLOR_VARIABLES.emptyHit;
           element.style.cursor = 'default';
         }
-      });
-    else
-      props.game.playerOneBoard.impacts.forEach(impact => {
-        const { row, col } = impact;
-        const cell = props.game.playerOneBoard.grid[row][col];
-        if (!cell) {
-          if (
-            props.game.playerOneBoard.impacts.some(
-              impact => impact.row === cellRow && impact.col === cellCol
-            ) &&
-            element
-          ) {
-            element.style.backgroundColor = COLOR_VARIABLES.emptyHit;
-            element.style.cursor = 'default';
+      } else if (
+        currBoard.impacts.some(
+          impact => impact.row === cellRow && impact.col === cellCol
+        ) &&
+        element
+      ) {
+        if (cell.sunk)
+          for (let i = 0; i < cell.length; i++) {
+            const currRow = cell.isVertical ? cell.coords.row + i : row;
+            const currCol = cell.isVertical ? col : cell.coords.col + i;
+
+            const element = document.getElementById(
+              playerId + (currRow * 10 + currCol)
+            );
+            if (element)
+              element.style.backgroundColor = COLOR_VARIABLES.shipSunk;
           }
-        } else if (
-          props.game.playerOneBoard.impacts.some(
-            impact => impact.row === cellRow && impact.col === cellCol
-          ) &&
-          element
-        ) {
-          if (cell.sunk)
-            for (let i = 0; i < cell.length; i++) {
-              const currRow = cell.isVertical ? cell.coords.row + i : row;
-              const currCol = cell.isVertical ? col : cell.coords.col + i;
-
-              const element = document.getElementById(
-                'p1-' + (currRow * 10 + currCol)
-              );
-              if (element)
-                element.style.backgroundColor = COLOR_VARIABLES.shipSunk;
-            }
-          else element.style.backgroundColor = COLOR_VARIABLES.shipHit;
-          element.style.cursor = 'default';
-        }
-      });
+        else element.style.backgroundColor = COLOR_VARIABLES.shipHit;
+        element.style.cursor = 'default';
+      }
+    });
   };
 
   return (
@@ -190,35 +156,32 @@ export const Gameboard = (props: {
       `}>
       <For
         each={
-          props.isPlayerOneBoard
-            ? props.game.playerOneBoard.grid
-            : props.game.playerTwoBoard.grid
+          props.isPlayerBoard
+            ? props.game.playerBoard.grid
+            : props.game.computerBoard.grid
         }>
         {(gridRow, i) => (
           <For each={gridRow}>
             {(gridElem, j) => (
               <button
                 type='button'
-                id={`${props.isPlayerOneBoard ? 'p1-' : 'p2-'}${i() * 10 + j()}`}
+                id={`${props.isPlayerBoard ? 'p1-' : 'p2-'}${i() * 10 + j()}`}
                 onClick={() => {
-                  if (
-                    props.isPlacing &&
-                    props.game.playerOneBoard.shipsPlaced < 5
-                  )
+                  if (props.isPlacing && props.game.playerBoard.shipsPlaced < 5)
                     placeShip(i(), j());
-                  !props.isPlayerOneBoard && attackCell(i(), j());
+                  !props.isPlayerBoard && attackCell(i(), j());
                 }}
                 class={css`
-                  background-color: ${gridElem && props.isPlayerOneBoard
+                  background-color: ${gridElem && props.isPlayerBoard
                     ? COLOR_VARIABLES.ship
                     : COLOR_VARIABLES.secondary};
                   border: 1px solid ${COLOR_VARIABLES.grid};
                   padding: 13px;
                   text-align: center;
-                  cursor: ${!props.isPlayerOneBoard && 'pointer'};
+                  cursor: ${!props.isPlayerBoard && 'pointer'};
 
                   &:hover {
-                    background-color: ${!props.isPlayerOneBoard &&
+                    background-color: ${!props.isPlayerBoard &&
                     COLOR_VARIABLES.hover};
                   }
 

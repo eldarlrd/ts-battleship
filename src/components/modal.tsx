@@ -36,20 +36,12 @@ export const Modal = (props: {
     const handleModal = (): void => {
       if (props.game.playerVictorious) {
         props.overlay.style.display = 'flex';
-        if (props.game.pve)
-          if (props.game.playerVictorious === 1) {
-            victor.innerText = 'Player Wins!';
-            playAudio(victoryAudio);
-          } else {
-            victor.innerText = 'Computer Wins...';
-            playAudio(defeatAudio);
-          }
-        else {
+        if (props.game.playerVictorious === 1) {
+          victor.innerText = 'Player Wins!';
           playAudio(victoryAudio);
-          victor.innerText =
-            props.game.playerVictorious === 1
-              ? 'Player 1 Wins!'
-              : 'Player 2 Wins!';
+        } else {
+          victor.innerText = 'Computer Wins...';
+          playAudio(defeatAudio);
         }
       }
     };

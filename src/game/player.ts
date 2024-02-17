@@ -2,26 +2,24 @@ import { Board, type Coordinates } from '@/game/board.ts';
 import { Ship } from '@/game/ship.ts';
 
 export class Player {
-  public playerVictorious: number | null;
-  public playerOneBoard: Board;
-  public playerTwoBoard: Board;
+  public playerVictorious: number;
+  public playerBoard: Board;
+  public computerBoard: Board;
   public isCurrPlayerOne: boolean;
-  public pve: boolean;
 
   public constructor(isRandom = false) {
-    this.playerVictorious = null;
-    this.playerOneBoard = new Board();
-    this.playerTwoBoard = new Board();
-    if (isRandom) this.randomPlace(this.playerOneBoard);
-    this.randomPlace(this.playerTwoBoard);
+    this.playerVictorious = 0;
+    this.playerBoard = new Board();
+    this.computerBoard = new Board();
+    if (isRandom) this.randomPlace(this.playerBoard);
+    this.randomPlace(this.computerBoard);
     this.isCurrPlayerOne = true;
-    this.pve = true;
   }
 
   public takeTurn(coordinates: Coordinates): boolean {
     const currentPlayerBoard = this.isCurrPlayerOne
-      ? this.playerTwoBoard
-      : this.playerOneBoard;
+      ? this.computerBoard
+      : this.playerBoard;
 
     const isSuccessfulHit = currentPlayerBoard.fire(coordinates);
     if (isSuccessfulHit) {
@@ -50,7 +48,6 @@ export class Player {
     isVertical = false
   ): boolean {
     let coords: Coordinates;
-
     if (isRandom) {
       let randomIsVertical = Math.random() < 0.5;
       coords = {
@@ -100,11 +97,11 @@ export class Player {
   }
 
   private checkVictory(): true | undefined {
-    if (this.playerOneBoard.isGameOver()) {
+    if (this.playerBoard.isGameOver()) {
       this.playerVictorious = 2;
       return true;
     }
-    if (this.playerTwoBoard.isGameOver()) {
+    if (this.computerBoard.isGameOver()) {
       this.playerVictorious = 1;
       return true;
     }

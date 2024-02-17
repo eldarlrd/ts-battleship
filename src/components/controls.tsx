@@ -6,7 +6,12 @@ import {
   FaSolidShip
 } from 'solid-icons/fa';
 import { IoDice, IoTrashBin } from 'solid-icons/io';
-import { type Setter, type JSXElement, createSignal } from 'solid-js';
+import {
+  type Setter,
+  type JSXElement,
+  createSignal,
+  createEffect
+} from 'solid-js';
 
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
 import restartSound from '@/assets/sfx/restart.opus';
@@ -21,7 +26,18 @@ export const Controls = (props: {
 }): JSXElement => {
   const [isDoneSetup, setIsDoneSetup] = createSignal(false);
   const [isVertical, setIsVertical] = createSignal(false);
+  const [shipInfo, setShipInfo] = createSignal((<></>) as HTMLSpanElement);
+  const [startButton, setStartButton] = createSignal(
+    (<></>) as HTMLButtonElement
+  );
   const restartAudio = new Audio(restartSound);
+
+  createEffect(() => {
+    setShipInfo(document.getElementById('ship-info') as HTMLSpanElement);
+    setStartButton(
+      document.getElementById('start-button') as HTMLButtonElement
+    );
+  });
 
   return (
     <div
@@ -63,10 +79,12 @@ export const Controls = (props: {
           <FaSolidUser /> Player
         </span>
         <Gameboard
-          isPlayerOneBoard={true}
+          isPlayerBoard={true}
           isPlacing={true}
           isVertical={isVertical()}
           game={props.game}
+          shipInfo={shipInfo()}
+          startButton={startButton()}
         />
 
         <div
@@ -123,10 +141,9 @@ export const Controls = (props: {
             <BoardControl
               handleAction={() => {
                 props.setGame(new Player(true));
-                props.game.playerOneBoard.shipsPlaced = 5;
+                props.game.playerBoard.shipsPlaced = 5;
                 setIsDoneSetup(true);
-                const element = document.getElementById('ship-info');
-                if (element) element.innerText = 'All Placed';
+                shipInfo().innerText = 'All Placed';
               }}
               icon={<IoDice />}
               title='Randomize'
@@ -136,10 +153,8 @@ export const Controls = (props: {
               handleAction={() => {
                 props.setGame(new Player());
                 setIsDoneSetup(false);
-                let element = document.getElementById('ship-info');
-                if (element) element.innerText = '5 Carrier';
-                element = document.getElementById('start-button');
-                if (element) (element as HTMLButtonElement).disabled = true;
+                shipInfo().innerText = '5 Carrier';
+                startButton().disabled = true;
               }}
               icon={<IoTrashBin />}
               title='Clear'

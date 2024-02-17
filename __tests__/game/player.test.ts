@@ -8,7 +8,7 @@ describe('player interface', () => {
       for (let row = 0; row < 10; row++)
         for (let col = 0; col < 10; col++) game.takeTurn({ row, col });
 
-    expect(game.playerVictorious).not.toBeNull();
+    expect(game.playerVictorious).not.toBe(0);
   });
 
   it('computer takes a turn', () => {
@@ -16,6 +16,6 @@ describe('player interface', () => {
 
     while (!game.playerVictorious) game.computerTurn();
 
-    expect(game.playerVictorious).not.toBeNull();
+    expect(game.playerVictorious).not.toBe(0);
   });
 });
