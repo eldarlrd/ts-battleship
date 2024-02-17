@@ -7,9 +7,9 @@ import { Footer } from '@/components/banners/footer.tsx';
 import { Header } from '@/components/banners/header.tsx';
 import '@fontsource-variable/stick-no-bills';
 import { NewGame } from '@/components/buttons/newGame.tsx';
-import { Controls } from '@/components/controls.tsx';
-import { Gameboard } from '@/components/gameboard.tsx';
-import { Modal } from '@/components/modal.tsx';
+import { Controls } from '@/features/controls.tsx';
+import { Gameboard } from '@/features/gameboard.tsx';
+import { Modal } from '@/features/modal.tsx';
 import { Player } from '@/game/player.ts';
 
 const COLOR_VARIABLES = {

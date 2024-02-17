@@ -133,6 +133,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
 
   return (
     <section
+      id={props.isPlacing ? 'placing-board' : ''}
       class={css`
         font-size: 2.5rem;
         font-weight: 600;
@@ -158,7 +159,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
                     ? COLOR_VARIABLES.ship
                     : COLOR_VARIABLES.secondary};
                   border: 1px solid ${COLOR_VARIABLES.grid};
-                  padding: 13px;
+                  padding: ${props.isPlacing ? '14.5px' : '15.5px'};
                   text-align: center;
                   cursor: ${!props.isPlayerBoard && 'pointer'};
 
@@ -167,8 +168,12 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
                     COLOR_VARIABLES.hover};
                   }
 
+                  ${MEDIA_QUERIES.sm} {
+                    padding: ${props.isPlacing ? '16.5px' : '13.5px'};
+                  }
+
                   ${MEDIA_QUERIES.md} {
-                    padding: 1rem;
+                    padding: ${props.isPlacing ? '18.5px' : '16.5px'};
                   }
 
                   ${MEDIA_QUERIES.lg} {
