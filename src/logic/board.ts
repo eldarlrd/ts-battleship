@@ -1,4 +1,4 @@
-import { type Ship } from '@/game/ship.ts';
+import { type Ship } from '@/logic/ship.ts';
 
 interface Coordinates {
   row: number;

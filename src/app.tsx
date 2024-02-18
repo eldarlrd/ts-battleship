@@ -10,7 +10,7 @@ import { NewGame } from '@/components/buttons/newGame.tsx';
 import { Controls } from '@/features/controls.tsx';
 import { Gameboard } from '@/features/gameboard.tsx';
 import { Modal } from '@/features/modal.tsx';
-import { Player } from '@/game/player.ts';
+import { Player } from '@/logic/player.ts';
 
 const COLOR_VARIABLES = {
   primary: '#60a5fa', // tw-blue-400

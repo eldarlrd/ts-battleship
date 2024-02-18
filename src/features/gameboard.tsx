@@ -2,8 +2,8 @@ import { css } from '@emotion/css';
 import { type JSXElement, For } from 'solid-js';
 
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
-import { type Player } from '@/game/player.ts';
-import { Ship } from '@/game/ship.ts';
+import { type Player } from '@/logic/player.ts';
+import { Ship } from '@/logic/ship.ts';
 
 interface GameboardSettings {
   isPlayerBoard: boolean;

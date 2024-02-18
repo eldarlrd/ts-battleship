@@ -17,7 +17,7 @@ import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
 import restartSound from '@/assets/sfx/restart.opus';
 import { BoardControl } from '@/components/buttons/boardControl.tsx';
 import { Gameboard } from '@/features/gameboard.tsx';
-import { Player } from '@/game/player.ts';
+import { Player } from '@/logic/player.ts';
 
 export const Controls = (props: {
   game: Player;

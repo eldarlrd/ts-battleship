@@ -1,5 +1,5 @@
 import shipSunk from '@/assets/sfx/shipSunk.opus';
-import { type Coordinates } from '@/game/board.ts';
+import { type Coordinates } from '@/logic/board.ts';
 
 interface ShipStats {
   length: number;

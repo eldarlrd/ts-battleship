@@ -1,11 +1,12 @@
-import { Board, type Coordinates } from '@/game/board.ts';
-import { Ship } from '@/game/ship.ts';
+import { Board, type Coordinates } from '@/logic/board.ts';
+import { Ship } from '@/logic/ship.ts';
 
 export class Player {
   public playerVictorious: number;
   public playerBoard: Board;
   public computerBoard: Board;
   public isCurrPlayerOne: boolean;
+  private lastHit: Coordinates | null;
 
   public constructor(isRandom = false) {
     this.playerVictorious = 0;
@@ -14,6 +15,7 @@ export class Player {
     if (isRandom) this.randomPlace(this.playerBoard);
     this.randomPlace(this.computerBoard);
     this.isCurrPlayerOne = true;
+    this.lastHit = null;
   }
 
   public takeTurn(coordinates: Coordinates): boolean {
@@ -30,12 +32,7 @@ export class Player {
   }
 
   public computerTurn(): Coordinates {
-    let coordinates: Coordinates;
-    do {
-      const randomRow = ~~(Math.random() * 10);
-      const randomCol = ~~(Math.random() * 10);
-      coordinates = { row: randomRow, col: randomCol };
-    } while (!this.takeTurn(coordinates));
+    const coordinates = this.getRandom();
     return coordinates;
   }
 
@@ -78,6 +75,44 @@ export class Player {
     ship.coords = coords;
     board.place(ship, coords, ship.isVertical);
     return true;
+  }
+
+  // private getAdjacent(): Coordinates {
+  //   const { row, col } = this.lastHit!;
+
+  //   const possibleMoves: Coordinates[] = [
+  //     { row: row - 1, col },
+  //     { row: row + 1, col },
+  //     { row, col: col - 1 },
+  //     { row, col: col + 1 },
+  //   ];
+
+  //   const validMoves = possibleMoves.filter(
+  //     (move) =>
+  //       move.row >= 0 &&
+  //       move.row < 10 &&
+  //       move.col >= 0 &&
+  //       move.col < 10 &&
+  //       !this.takeTurn(move)
+  //   );
+
+  //   if (validMoves.length > 0) {
+  //     const randomIndex = ~~(Math.random() * validMoves.length);
+  //     return validMoves[randomIndex];
+  //   }
+
+  //   return this.getRandom();
+  // }
+
+  private getRandom(): Coordinates {
+    let coordinates: Coordinates;
+
+    do {
+      const randomRow = ~~(Math.random() * 10);
+      const randomCol = ~~(Math.random() * 10);
+      coordinates = { row: randomRow, col: randomCol };
+    } while (!this.takeTurn(coordinates));
+    return coordinates;
   }
 
   private randomPlace(board: Board, isRandom = true): void {

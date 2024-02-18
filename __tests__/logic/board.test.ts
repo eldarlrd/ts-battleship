@@ -1,5 +1,5 @@
-import { Board } from '@/game/board.ts';
-import { Ship } from '@/game/ship.ts';
+import { Board } from '@/logic/board.ts';
+import { Ship } from '@/logic/ship.ts';
 
 describe('board class', () => {
   const cleanBoard = {

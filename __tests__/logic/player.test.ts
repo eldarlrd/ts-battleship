@@ -1,5 +1,5 @@
-import { Player } from '@/game/player.ts';
-import { Ship } from '@/game/ship.ts';
+import { Player } from '@/logic/player.ts';
+import { Ship } from '@/logic/ship.ts';
 
 describe('player interface', () => {
   it('players take turns', () => {

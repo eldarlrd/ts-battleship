@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { type JSXElement, type Setter } from 'solid-js';
 
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
-import { Player } from '@/game/player.ts';
+import { Player } from '@/logic/player.ts';
 
 export const NewGame = (props: {
   setGame: Setter<Player>;

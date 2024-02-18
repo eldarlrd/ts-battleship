@@ -10,7 +10,7 @@ import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
 import defeatSound from '@/assets/sfx/defeat.opus';
 import victorySound from '@/assets/sfx/victory.opus';
 import { NewGame } from '@/components/buttons/newGame.tsx';
-import { type Player } from '@/game/player.ts';
+import { type Player } from '@/logic/player.ts';
 
 // eslint-disable-next-line prefer-const
 let victor: HTMLHeadingElement = document.getElementById(

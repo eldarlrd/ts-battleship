@@ -28,6 +28,6 @@ export default defineConfig({
     restoreMocks: true,
     environment: 'jsdom',
     include: ['__tests__/**/*.{test,spec}.{ts,tsx}'],
-    coverage: { all: true, include: ['src/game/*.{ts,tsx}'] }
+    coverage: { all: true, include: ['src/logic/*.{ts,tsx}'] }
   }
 });
