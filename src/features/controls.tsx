@@ -185,8 +185,14 @@ export const Controls = (props: {
             outline: 2px solid ${COLOR_VARIABLES.grid};
             transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
-            &:hover {
+            &:active {
               background-color: ${COLOR_VARIABLES.hover};
+            }
+
+            ${MEDIA_QUERIES.mouse} {
+              &:hover {
+                background-color: ${COLOR_VARIABLES.hover};
+              }
             }
 
             &:disabled {

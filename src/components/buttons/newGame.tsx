@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { type JSXElement, type Setter } from 'solid-js';
 
-import { COLOR_VARIABLES } from '@/app.tsx';
+import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
 import { Player } from '@/game/player.ts';
 
 export const NewGame = (props: {
@@ -30,8 +30,14 @@ export const NewGame = (props: {
         outline: 2px solid ${COLOR_VARIABLES.grid};
         transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
-        &:hover {
+        &:active {
           background-color: ${COLOR_VARIABLES.hover};
+        }
+
+        ${MEDIA_QUERIES.mouse} {
+          &:hover {
+            background-color: ${COLOR_VARIABLES.hover};
+          }
         }
       `}>
       New Game

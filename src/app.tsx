@@ -26,7 +26,8 @@ const COLOR_VARIABLES = {
 const MEDIA_QUERIES = {
   sm: '@media (min-width: 40rem)', // tw-sm
   md: '@media (min-width: 48rem)', // tw-md
-  lg: '@media (min-width: 64rem)' // tw-lg
+  lg: '@media (min-width: 64rem)', // tw-lg
+  mouse: '@media (pointer: fine)'
 };
 
 // eslint-disable-next-line prefer-const

@@ -168,10 +168,12 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
                     (props.isPlacing && !gridElem)) &&
                   'pointer'};
 
-                  &:hover {
-                    background-color: ${(!props.isPlayerBoard ||
-                      (props.isPlacing && !gridElem)) &&
-                    COLOR_VARIABLES.hover};
+                  ${MEDIA_QUERIES.mouse} {
+                    &:hover {
+                      background-color: ${(!props.isPlayerBoard ||
+                        (props.isPlacing && !gridElem)) &&
+                      COLOR_VARIABLES.hover};
+                    }
                   }
 
                   ${MEDIA_QUERIES.sm} {

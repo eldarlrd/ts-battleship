@@ -2,7 +2,7 @@ import { css } from '@emotion/css';
 import { FaBrandsGithub } from 'solid-icons/fa';
 import { type JSXElement } from 'solid-js';
 
-import { COLOR_VARIABLES } from '@/app.tsx';
+import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
 
 export const Footer = (): JSXElement => {
   return (
@@ -29,8 +29,14 @@ export const Footer = (): JSXElement => {
           color: inherit;
           transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
-          &:hover {
+          &:active {
             color: ${COLOR_VARIABLES.grid};
+          }
+
+          ${MEDIA_QUERIES.mouse} {
+            &:hover {
+              color: ${COLOR_VARIABLES.grid};
+            }
           }
 
           svg {
