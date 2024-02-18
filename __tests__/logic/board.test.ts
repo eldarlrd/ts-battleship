@@ -14,8 +14,8 @@ describe('board class', () => {
   it('places a ship', () => {
     const carrier = new Ship(5);
     const battleship = new Ship(4);
-    const submarine = new Ship(3);
     const destroyer = new Ship(3);
+    const submarine = new Ship(3);
     const patrolBoat = new Ship(2);
 
     // Correct placement
@@ -47,11 +47,24 @@ describe('board class', () => {
     expect(board).toMatchObject(hitBoard);
   });
 
-  it('checks if all ships are sunk', () => {
+  it('hits adjacent cells of a sunk ship', () => {
+    const adjOffsets = [
+      { row: 4, col: 6 },
+      { row: 6, col: 6 },
+      { row: 5, col: 7 },
+      { row: 4, col: 5 },
+      { row: 4, col: 7 },
+      { row: 6, col: 5 },
+      { row: 6, col: 7 }
+    ];
+
     // Sinking the Patrol Boat
     board.fire({ row: 5, col: 5 });
     board.fire({ row: 5, col: 6 });
+    expect(board.hitAdjacent({ row: 5, col: 6 })).toStrictEqual(adjOffsets);
+  });
 
+  it('checks if all ships are sunk', () => {
     // Sinking the Submarine
     board.fire({ row: 2, col: 2 });
     board.fire({ row: 3, col: 2 });

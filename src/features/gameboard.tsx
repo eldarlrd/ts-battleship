@@ -125,8 +125,25 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
             const element = document.getElementById(
               playerId + (currRow * 10 + currCol)
             );
-            if (element)
+
+            if (element) {
               element.style.backgroundColor = COLOR_VARIABLES.shipSunk;
+              const adjCells = currBoard.hitAdjacent({
+                row: currRow,
+                col: currCol
+              });
+
+              adjCells.forEach(coord => {
+                const adjHit = document.getElementById(
+                  playerId + (coord.row * 10 + coord.col)
+                );
+
+                if (adjHit) {
+                  adjHit.style.backgroundColor = COLOR_VARIABLES.emptyHit;
+                  adjHit.style.cursor = 'default';
+                }
+              });
+            }
           }
         else element.style.backgroundColor = COLOR_VARIABLES.shipHit;
         element.style.cursor = 'default';

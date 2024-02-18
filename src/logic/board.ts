@@ -46,6 +46,17 @@ class Board {
     return false;
   }
 
+  public hitAdjacent(coordinates: Coordinates): Coordinates[] {
+    return this.getAdjacent(coordinates).filter(coord => {
+      const { row, col } = coord;
+      if (this.grid[row][col] === null) {
+        this.fire(coord);
+        return true;
+      }
+      return false;
+    });
+  }
+
   public isGameOver(): boolean {
     return this.grid
       .flat()
@@ -73,8 +84,9 @@ class Board {
     return true;
   }
 
-  private isAdjacent(row: number, col: number): boolean {
-    const adjOffset = [
+  private getAdjacent(coordinates: Coordinates): Coordinates[] {
+    const { row, col } = coordinates;
+    const adjOffsets = [
       { row: -1, col: 0 },
       { row: 1, col: 0 },
       { row: 0, col: -1 },
@@ -85,20 +97,24 @@ class Board {
       { row: 1, col: 1 }
     ];
 
-    for (const offset of adjOffset) {
-      const adjRow = row + offset.row;
-      const adjCol = col + offset.col;
+    return adjOffsets
+      .map(offset => ({
+        row: row + offset.row,
+        col: col + offset.col
+      }))
+      .filter(
+        coord =>
+          coord.row >= 0 &&
+          coord.row < this.grid.length &&
+          coord.col >= 0 &&
+          coord.col < this.grid[0].length
+      );
+  }
 
-      if (
-        adjRow >= 0 &&
-        adjRow < 10 &&
-        adjCol >= 0 &&
-        adjCol < 10 &&
-        this.grid[adjRow][adjCol]
-      )
-        return true;
-    }
-    return false;
+  private isAdjacent(row: number, col: number): boolean {
+    return this.getAdjacent({ row, col }).some(
+      coord => this.grid[coord.row][coord.col] !== null
+    );
   }
 }
 
