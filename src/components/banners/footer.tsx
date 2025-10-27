@@ -16,12 +16,12 @@ export const Footer = (): JSXElement => {
         margin: 1rem;
         gap: 0.5rem;
       `}>
-      © 2023 - 2024
+      © 2023 - 2025
       <a
-        title='Go to the Source'
+        title='Source'
         target='_blank'
         type='text/html'
-        rel='noopener noreferrer nofollow external author'
+        rel='noreferrer external author'
         href='https://github.com/eldarlrd/ts-battleship'
         class={css`
           border-radius: 0.125rem;

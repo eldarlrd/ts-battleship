@@ -33,6 +33,7 @@ export class Ship implements ShipStats {
     if (this.hits === this.length) {
       this.sunk = true;
       const shipSunkAudio = new Audio(shipSunk);
+
       void shipSunkAudio.play();
     }
   }

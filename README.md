@@ -7,10 +7,10 @@
 > - **[Solid](https://solidjs.com)**
 > - **[Solid Icons](https://solid-icons.vercel.app)**
 > - **[Emotion](https://emotion.sh)**
-> - **[Normalize](https://necolas.github.io/normalize.css)**
+> - **[modern-normalize](https://github.com/sindresorhus/modern-normalize)**
 > - **[Vite PWA](https://vite-pwa-org.netlify.app)**
 > - **[Vitest](https://vitest.dev)**
-> - **[Vite](https://vitejs.dev)**
+> - **[Vite](https://vite.dev)**
 >
 > based on the classic board game with a PvE component.
 
@@ -19,21 +19,25 @@
 pnpm i
 ```
 ## Develop
-### Run Env.
+### Run Env
 ```sh
 pnpm dev
 ```
-### Prod. Build
+### Prod Build
 ```sh
-pnpm build
+pnpm bundle
 ```
-### Preview Prod. Build
+### Preview Prod Build
 ```sh
 pnpm preview
 ```
 ### Format Code (ESLint + Prettier)
 ```sh
 pnpm format
+```
+### Cut Orphans (Knip)
+```sh
+pnpm cut
 ```
 ## Test
 ### Run Watch

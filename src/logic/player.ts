@@ -17,20 +17,22 @@ export class Player {
   }
 
   public takeTurn(coordinates: Coordinates): boolean {
-    const currentPlayerBoard = this.isCurrPlayerOne
-      ? this.computerBoard
-      : this.playerBoard;
+    const currentPlayerBoard =
+      this.isCurrPlayerOne ? this.computerBoard : this.playerBoard;
 
     const isSuccessfulHit = currentPlayerBoard.fire(coordinates);
+
     if (isSuccessfulHit) {
       this.checkVictory();
       this.isCurrPlayerOne = !this.isCurrPlayerOne;
+
       return true;
     } else return false;
   }
 
   public computerTurn(): Coordinates {
     const coordinates = this.hitRandom();
+
     return coordinates;
   }
 
@@ -43,8 +45,10 @@ export class Player {
     isVertical = false
   ): boolean {
     let coords: Coordinates;
+
     if (isRandom) {
       let randomIsVertical = Math.random() < 0.5;
+
       coords = {
         row: ~~(Math.random() * 10),
         col: ~~(Math.random() * 10)
@@ -72,16 +76,20 @@ export class Player {
 
     ship.coords = coords;
     board.place(ship, coords, ship.isVertical);
+
     return true;
   }
 
   private hitRandom(): Coordinates {
     let coordinates: Coordinates;
+
     do {
       const randomRow = ~~(Math.random() * 10);
       const randomCol = ~~(Math.random() * 10);
+
       coordinates = { row: randomRow, col: randomCol };
     } while (!this.takeTurn(coordinates));
+
     return coordinates;
   }
 
@@ -91,6 +99,7 @@ export class Player {
     const destroyer = new Ship(3);
     const submarine = new Ship(3);
     const patrolBoat = new Ship(2);
+
     this.successfullyPlace(board, carrier, isRandom);
     this.successfullyPlace(board, battleship, isRandom);
     this.successfullyPlace(board, destroyer, isRandom);
@@ -101,10 +110,12 @@ export class Player {
   private checkVictory(): true | undefined {
     if (this.playerBoard.isGameOver()) {
       this.playerVictorious = 2;
+
       return true;
     }
     if (this.computerBoard.isGameOver()) {
       this.playerVictorious = 1;
+
       return true;
     }
   }

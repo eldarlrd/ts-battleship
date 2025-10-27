@@ -2,6 +2,7 @@ import { Ship } from '@/logic/ship.ts';
 
 describe('ship class', () => {
   const battleship = new Ship(4);
+
   it('returns a new ship object', () => {
     const intactShip = {
       length: 4,

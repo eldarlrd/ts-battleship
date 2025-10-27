@@ -1,8 +1,9 @@
+/// <reference types='vitest/config' />
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import solid from 'vite-plugin-solid';
 
-// https://vitejs.dev/config
+// https://vite.dev/config
 export default defineConfig({
   base: '/ts-battleship/',
   plugins: [
@@ -28,6 +29,6 @@ export default defineConfig({
     restoreMocks: true,
     environment: 'jsdom',
     include: ['__tests__/**/*.{test,spec}.{ts,tsx}'],
-    coverage: { all: true, include: ['src/logic/*.{ts,tsx}'] }
+    coverage: { include: ['src/logic/*.{ts,tsx}'] }
   }
 });

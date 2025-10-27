@@ -25,6 +25,7 @@ class Board {
 
     for (let i = 0; i < ship.length; i++)
       this.grid[row + i * direction][col + i * (1 - direction)] = ship;
+
     return true;
   }
 
@@ -41,18 +42,23 @@ class Board {
         target.hit();
         this.impacts.push(coordinates);
       } else this.impacts.push(coordinates);
+
       return true;
     }
+
     return false;
   }
 
   public hitAdjacent(coordinates: Coordinates): Coordinates[] {
     return this.getAdjacent(coordinates).filter(coord => {
       const { row, col } = coord;
+
       if (this.grid[row][col] === null) {
         this.fire(coord);
+
         return true;
       }
+
       return false;
     });
   }
@@ -61,7 +67,7 @@ class Board {
     return this.grid
       .flat()
       .filter(cell => cell !== null)
-      .every(ship => ship?.sunk);
+      .every(ship => ship.sunk);
   }
 
   private isPlaceable(
@@ -81,6 +87,7 @@ class Board {
       if (this.grid[nextRow][nextCol] !== null) return false;
       if (this.isAdjacent(nextRow, nextCol)) return false;
     }
+
     return true;
   }
 

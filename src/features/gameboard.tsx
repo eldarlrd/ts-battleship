@@ -41,8 +41,9 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
           const currCol = cell.isVertical ? col : cell.coords.col + i;
 
           const element = document.getElementById(
-            playerId + (currRow * 10 + currCol)
+            playerId + (currRow * 10 + currCol).toString()
           );
+
           if (element) {
             element.style.backgroundColor = COLOR_VARIABLES.ship;
             element.style.cursor = 'default';
@@ -62,10 +63,11 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
           '3 Submarine',
           '2 Patrol Boat'
         ];
+
         props.shipInfo.innerText =
-          props.game.playerBoard.shipsPlaced === 5
-            ? 'All Ships Ready!'
-            : shipNames[props.game.playerBoard.shipsPlaced];
+          props.game.playerBoard.shipsPlaced === 5 ?
+            'All Ships Ready!'
+          : shipNames[props.game.playerBoard.shipsPlaced];
       }
     }
   };
@@ -82,6 +84,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
       if (!props.game.playerVictorious)
         setTimeout((): void => {
           const compCoord = props.game.computerTurn();
+
           checkImpact(compCoord.row, compCoord.col);
           document.dispatchEvent(new Event('attack'));
         }, 150);
@@ -90,11 +93,12 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
 
   const checkImpact = (cellRow: number, cellCol: number): void => {
     const playerId = props.game.isCurrPlayerOne ? 'p1-' : 'p2-';
-    const currBoard = props.game.isCurrPlayerOne
-      ? props.game.playerBoard
+    const currBoard =
+      props.game.isCurrPlayerOne ?
+        props.game.playerBoard
       : props.game.computerBoard;
     const element = document.getElementById(
-      playerId + (cellRow * 10 + cellCol)
+      playerId + (cellRow * 10 + cellCol).toString()
     );
 
     currBoard.impacts.forEach(impact => {
@@ -123,7 +127,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
             const currCol = cell.isVertical ? col : cell.coords.col + i;
 
             const element = document.getElementById(
-              playerId + (currRow * 10 + currCol)
+              playerId + (currRow * 10 + currCol).toString()
             );
 
             if (element) {
@@ -135,7 +139,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
 
               adjCells.forEach(coord => {
                 const adjHit = document.getElementById(
-                  playerId + (coord.row * 10 + coord.col)
+                  playerId + (coord.row * 10 + coord.col).toString()
                 );
 
                 if (adjHit) {
@@ -168,16 +172,16 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
             {(gridElem, j) => (
               <button
                 type='button'
-                id={`${props.isPlayerBoard ? 'p1-' : 'p2-'}${i() * 10 + j()}`}
+                id={`${props.isPlayerBoard ? 'p1-' : 'p2-'}${(i() * 10 + j()).toString()}`}
                 onClick={() => {
                   if (props.isPlacing && props.game.playerBoard.shipsPlaced < 5)
                     placeShip(i(), j());
-                  !props.isPlayerBoard && attackCell(i(), j());
+                  if (!props.isPlayerBoard) attackCell(i(), j());
                 }}
                 class={css`
-                  background-color: ${gridElem && props.isPlayerBoard
-                    ? COLOR_VARIABLES.ship
-                    : COLOR_VARIABLES.secondary};
+                  background-color: ${gridElem && props.isPlayerBoard ?
+                    COLOR_VARIABLES.ship
+                  : COLOR_VARIABLES.secondary};
                   border: 1px solid ${COLOR_VARIABLES.grid};
                   padding: ${props.isPlacing ? '14.5px' : '15.5px'};
                   text-align: center;

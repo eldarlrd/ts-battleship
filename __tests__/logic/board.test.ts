@@ -7,6 +7,7 @@ describe('board class', () => {
     impacts: []
   };
   const board = new Board();
+
   it('returns a new board object', () => {
     expect(board).toMatchObject(cleanBoard);
   });

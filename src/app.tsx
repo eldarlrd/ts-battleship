@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { FaSolidRobot, FaSolidUser } from 'solid-icons/fa';
 import { createSignal, type JSXElement } from 'solid-js';
-import 'normalize.css';
+import 'modern-normalize/modern-normalize.css';
 
 import { Footer } from '@/components/banners/footer.tsx';
 import { Header } from '@/components/banners/header.tsx';
@@ -49,8 +49,7 @@ const App = (): JSXElement => {
         justify-content: space-between;
         align-items: center;
         user-select: none;
-        min-height: 100vh;
-        min-height: 100svh;
+        min-height: 100dvh;
         background-color: ${COLOR_VARIABLES.primary};
         accent-color: ${COLOR_VARIABLES.secondary};
         color: ${COLOR_VARIABLES.secondary};

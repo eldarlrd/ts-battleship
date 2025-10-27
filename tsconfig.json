@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "useDefineForClassFields": true,
+    "target": "ESNext",
     "module": "ESNext",
-    "lib": ["ES2022", "DOM", "DOM.Iterable", "WebWorker"],
+    "useDefineForClassFields": true,
+    "lib": ["ESNext", "DOM", "WebWorker"],
+    "tsBuildInfoFile": "node_modules/.tmp/tsconfig.tsbuildinfo",
     "skipLibCheck": true,
     "composite": true,
     // Bundler
@@ -16,7 +17,10 @@
     "noEmit": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "paths": { "@/*": ["./src/*"] },
+    "paths": {
+      "@/*": ["./src/*"],
+      "#/*": ["./src/assets/*"]
+    },
     // Linting
     "strict": true,
     "noUnusedLocals": true,
