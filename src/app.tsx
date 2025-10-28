@@ -18,7 +18,6 @@ let overlay = document.getElementById('overlay') as HTMLDivElement;
 
 /*
   TODO: Game Revamp
-   • Ship Size Redone
    • Smarter AI
    • PvP Mode
 */
@@ -41,7 +40,7 @@ export const App = (): JSXElement => {
         accent-color: ${COLOR_VARIABLES.secondary};
         color: ${COLOR_VARIABLES.secondary};
 
-        ::selection {
+        *::selection {
           background-color: ${COLOR_VARIABLES.secondary};
           color: ${COLOR_VARIABLES.primary};
         }
