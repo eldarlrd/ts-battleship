@@ -31,9 +31,7 @@ export class Player {
   }
 
   public computerTurn(): Coordinates {
-    const coordinates = this.hitRandom();
-
-    return coordinates;
+    return this.hitRandom();
   }
 
   public successfullyPlace(

@@ -34,6 +34,7 @@ describe('ship class', () => {
     battleship.hit();
     battleship.hit();
     battleship.hit();
+    battleship.hit(); // Sad Path Extra Hit
     expect(battleship).toMatchObject(sunkShip);
   });
 });

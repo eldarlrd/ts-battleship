@@ -6,16 +6,14 @@ import {
   type Setter
 } from 'solid-js';
 
-import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
-import defeatSound from '@/assets/sfx/defeat.opus';
-import victorySound from '@/assets/sfx/victory.opus';
+import defeatSound from '#/sfx/defeat.opus';
+import victorySound from '#/sfx/victory.opus';
 import { NewGame } from '@/components/buttons/newGame.tsx';
+import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { type Player } from '@/logic/player.ts';
 
 // eslint-disable-next-line prefer-const
-let victor: HTMLHeadingElement = document.getElementById(
-  'victor'
-) as HTMLHeadingElement;
+let victor = document.getElementById('victor') as HTMLHeadingElement;
 
 export const Modal = (props: {
   game: Player;

@@ -7,35 +7,22 @@ import { Footer } from '@/components/banners/footer.tsx';
 import { Header } from '@/components/banners/header.tsx';
 import '@fontsource-variable/stick-no-bills';
 import { NewGame } from '@/components/buttons/newGame.tsx';
+import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { Controls } from '@/features/controls.tsx';
 import { Gameboard } from '@/features/gameboard.tsx';
 import { Modal } from '@/features/modal.tsx';
 import { Player } from '@/logic/player.ts';
 
-const COLOR_VARIABLES = {
-  primary: '#60a5fa', // tw-blue-400
-  secondary: '#f8fafc', // tw-slate-50
-  ship: '#334155', // tw-slate-700
-  hover: '#cbd5e1', // tw-slate-300
-  grid: '#1e293b', // tw-slate-800
-  emptyHit: '#10b981', // tw-emerald-500
-  shipHit: '#f59e0b', // tw-amber-500
-  shipSunk: '#f43f5e' // tw-rose-500
-};
-
-const MEDIA_QUERIES = {
-  sm: '@media (min-width: 40rem)', // tw-sm
-  md: '@media (min-width: 48rem)', // tw-md
-  lg: '@media (min-width: 64rem)', // tw-lg
-  mouse: '@media (pointer: fine)'
-};
-
 // eslint-disable-next-line prefer-const
-let overlay: HTMLDivElement = document.getElementById(
-  'overlay'
-) as HTMLDivElement;
+let overlay = document.getElementById('overlay') as HTMLDivElement;
 
-const App = (): JSXElement => {
+/*
+  TODO: Game Revamp
+   • Ship Size Redone
+   • Smarter AI
+   • PvP Mode
+*/
+export const App = (): JSXElement => {
   const [game, setGame] = createSignal(new Player());
   const [isControlUp, setIsControlUp] = createSignal(true);
 
@@ -54,7 +41,7 @@ const App = (): JSXElement => {
         accent-color: ${COLOR_VARIABLES.secondary};
         color: ${COLOR_VARIABLES.secondary};
 
-        *::selection {
+        ::selection {
           background-color: ${COLOR_VARIABLES.secondary};
           color: ${COLOR_VARIABLES.primary};
         }
@@ -161,8 +148,6 @@ const App = (): JSXElement => {
     </div>
   );
 };
-
-export { COLOR_VARIABLES, MEDIA_QUERIES, App };
 
 // Easter Egg
 console.log('Pride of a nation, a beast made of steel!');

@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { type JSXElement, For } from 'solid-js';
 
-import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
+import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { type Player } from '@/logic/player.ts';
 import { Ship } from '@/logic/ship.ts';
 

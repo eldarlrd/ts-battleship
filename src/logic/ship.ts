@@ -1,4 +1,4 @@
-import shipSunk from '@/assets/sfx/shipSunk.opus';
+import shipSunk from '#/sfx/shipSunk.opus';
 import { type Coordinates } from '@/logic/board.ts';
 
 interface ShipStats {

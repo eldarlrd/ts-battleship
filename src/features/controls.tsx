@@ -13,9 +13,9 @@ import {
   createEffect
 } from 'solid-js';
 
-import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/app.tsx';
-import restartSound from '@/assets/sfx/restart.opus';
+import restartSound from '#/sfx/restart.opus';
 import { BoardControl } from '@/components/buttons/boardControl.tsx';
+import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { Gameboard } from '@/features/gameboard.tsx';
 import { Player } from '@/logic/player.ts';
 

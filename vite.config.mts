@@ -20,9 +20,7 @@ export default defineConfig({
       }
     })
   ],
-  resolve: {
-    alias: { '@': '/src' }
-  },
+  resolve: { alias: { '@': '/src', '#': '/src/assets' } },
   // https://vitest.dev/config
   test: {
     globals: true,
