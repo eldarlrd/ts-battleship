@@ -1,6 +1,7 @@
 import { css } from '@emotion/css';
 import { type JSXElement, For } from 'solid-js';
 
+import { SHIPS } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { type Player } from '@/logic/player.ts';
 import { Ship } from '@/logic/ship.ts';
@@ -56,18 +57,10 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
         if (props.startButton) props.startButton.disabled = false;
 
       if (props.shipInfo) {
-        const shipNames = [
-          '5 Carrier',
-          '4 Battleship',
-          '3 Destroyer',
-          '3 Submarine',
-          '2 Patrol Boat'
-        ];
-
         props.shipInfo.innerText =
           props.game.playerBoard.shipsPlaced === 5 ?
             'All Ships Ready!'
-          : shipNames[props.game.playerBoard.shipsPlaced];
+          : SHIPS[props.game.playerBoard.shipsPlaced];
       }
     }
   };

@@ -13,7 +13,7 @@ const MEDIA_QUERIES = {
   sm: '@media (min-width: 40rem)', // tw-sm
   md: '@media (min-width: 48rem)', // tw-md
   lg: '@media (min-width: 64rem)', // tw-lg
-  mouse: '@media (pointer: fine)'
+  mouse: '@media (hover: hover)'
 } as const;
 
 export { COLOR_VARIABLES, MEDIA_QUERIES };
