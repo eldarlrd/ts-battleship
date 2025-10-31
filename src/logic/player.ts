@@ -113,7 +113,7 @@ export class Player {
     };
 
     for (const shipLength of this.remainingShipLengths) {
-      const weight = getWeight(length);
+      const weight = getWeight(shipLength);
 
       // Try Horizontal
       for (let row = 0; row < 10; row++)
