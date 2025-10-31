@@ -20,7 +20,7 @@
 
 import { render } from 'solid-js/web';
 
-import { App } from '@/app.tsx';
+import { App } from '@/App.tsx';
 
 const root = document.getElementById('root');
 

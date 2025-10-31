@@ -14,9 +14,9 @@ import {
 } from 'solid-js';
 
 import restartSound from '#/sfx/restart.opus';
-import { BoardControl } from '@/components/buttons/boardControl.tsx';
+import { BoardControl } from '@/components/buttons/BoardControl.tsx';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
-import { Gameboard } from '@/features/gameboard.tsx';
+import { Gameboard } from '@/features/Gameboard.tsx';
 import { Player } from '@/logic/player.ts';
 
 export const Controls = (props: {

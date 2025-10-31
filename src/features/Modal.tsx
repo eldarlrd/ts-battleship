@@ -8,7 +8,7 @@ import {
 
 import defeatSound from '#/sfx/defeat.opus';
 import victorySound from '#/sfx/victory.opus';
-import { NewGame } from '@/components/buttons/newGame.tsx';
+import { NewGame } from '@/components/buttons/NewGame.tsx';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { type Player } from '@/logic/player.ts';
 

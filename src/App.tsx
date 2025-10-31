@@ -3,14 +3,14 @@ import { FaSolidRobot, FaSolidUser } from 'solid-icons/fa';
 import { createSignal, type JSXElement } from 'solid-js';
 import 'modern-normalize/modern-normalize.css';
 
-import { Footer } from '@/components/banners/footer.tsx';
-import { Header } from '@/components/banners/header.tsx';
+import { Footer } from '@/components/banners/Footer.tsx';
+import { Header } from '@/components/banners/Header.tsx';
 import '@fontsource-variable/stick-no-bills';
-import { NewGame } from '@/components/buttons/newGame.tsx';
+import { NewGame } from '@/components/buttons/NewGame.tsx';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
-import { Controls } from '@/features/controls.tsx';
-import { Gameboard } from '@/features/gameboard.tsx';
-import { Modal } from '@/features/modal.tsx';
+import { Controls } from '@/features/Controls.tsx';
+import { Gameboard } from '@/features/Gameboard.tsx';
+import { Modal } from '@/features/Modal.tsx';
 import { Player } from '@/logic/player.ts';
 
 // eslint-disable-next-line prefer-const
