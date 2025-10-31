@@ -15,7 +15,12 @@ describe('player interface', () => {
   it('computer takes a turn', () => {
     const game = new Player(true);
 
-    while (!game.playerVictorious) game.computerTurn();
+    while (!game.playerVictorious)
+      for (let row = 0; row < 10; row++)
+        for (let col = 0; col < 10; col++) {
+          game.takeTurn({ row, col });
+          game.computerTurn();
+        }
 
     expect(game.playerVictorious).not.toBe(0);
   });

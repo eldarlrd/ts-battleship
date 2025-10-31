@@ -18,7 +18,7 @@ let overlay = document.getElementById('overlay') as HTMLDivElement;
 
 /*
   TODO: Game Revamp
-   • Smarter AI
+   • Test AI
    • PvP Mode
 */
 export const App = (): JSXElement => {
