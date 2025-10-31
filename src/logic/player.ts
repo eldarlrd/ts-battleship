@@ -13,6 +13,9 @@ export class Player {
   private hitHistory: Coordinates[];
   private currentDirection: { row: number; col: number } | null;
 
+  // Density Heatmap
+  private remainingShipLengths: number[];
+
   public constructor(isRandom = false) {
     this.playerVictorious = 0;
     this.playerBoard = new Board();
@@ -25,6 +28,8 @@ export class Player {
     this.targetQueue = [];
     this.hitHistory = [];
     this.currentDirection = null;
+
+    this.remainingShipLengths = [5, 4, 3, 3, 2];
   }
 
   public takeTurn(coordinates: Coordinates): boolean {
@@ -42,7 +47,7 @@ export class Player {
   }
 
   public computerTurn(): Coordinates {
-    return this.targetMode ? this.smartTarget() : this.hitRandom();
+    return this.targetMode ? this.smartTarget() : this.hitWithHeatmap();
   }
 
   public successfullyPlace(
@@ -89,6 +94,98 @@ export class Player {
     return true;
   }
 
+  private generateHeatmap(): number[][] {
+    const heatmap = Array.from(
+      { length: 10 },
+      () => Array(10).fill(0) as number[]
+    );
+
+    for (const shipLength of this.remainingShipLengths) {
+      // Try Horizontal
+      for (let row = 0; row < 10; row++)
+        for (let col = 0; col <= 10 - shipLength; col++)
+          if (this.canPlaceShip(row, col, shipLength, false))
+            for (let i = 0; i < shipLength; i++) heatmap[row][col + i]++;
+
+      // Try Vertical
+      for (let row = 0; row <= 10 - shipLength; row++)
+        for (let col = 0; col < 10; col++)
+          if (this.canPlaceShip(row, col, shipLength, true))
+            for (let i = 0; i < shipLength; i++) heatmap[row + i][col]++;
+    }
+
+    return heatmap;
+  }
+
+  private canPlaceShip(
+    row: number,
+    col: number,
+    length: number,
+    isVertical: boolean
+  ): boolean {
+    for (let i = 0; i < length; i++) {
+      const checkRow = isVertical ? row + i : row;
+      const checkCol = isVertical ? col : col + i;
+
+      const isHit = this.playerBoard.impacts.some(
+        impact => impact.row === checkRow && impact.col === checkCol
+      );
+
+      if (isHit) {
+        const cell = this.playerBoard.grid[checkRow][checkCol];
+
+        if (cell === null) return false;
+      }
+    }
+
+    return true;
+  }
+
+  private hitWithHeatmap(): Coordinates {
+    const heatmap = this.generateHeatmap();
+    let maxHeat = -1;
+    const bestTargets: Coordinates[] = [];
+
+    for (let row = 0; row < 10; row++)
+      for (let col = 0; col < 10; col++)
+        if (this.isValidTarget({ row, col }))
+          if (heatmap[row][col] > maxHeat) {
+            maxHeat = heatmap[row][col];
+            bestTargets.length = 0;
+            bestTargets.push({ row, col });
+          } else if (heatmap[row][col] === maxHeat)
+            bestTargets.push({ row, col });
+
+    const coordinates =
+      bestTargets[~~(Math.random() * bestTargets.length)] ||
+      this.getRandomValidTarget();
+
+    this.takeTurn(coordinates);
+
+    const cell = this.playerBoard.grid[coordinates.row][coordinates.col];
+
+    if (cell !== null && !cell.sunk) {
+      this.targetMode = true;
+      this.hitHistory.push(coordinates);
+      this.addCardinalDirections(coordinates);
+    }
+
+    return coordinates;
+  }
+
+  private getRandomValidTarget(): Coordinates {
+    let coordinates: Coordinates;
+
+    do {
+      coordinates = {
+        row: ~~(Math.random() * 10),
+        col: ~~(Math.random() * 10)
+      };
+    } while (!this.isValidTarget(coordinates));
+
+    return coordinates;
+  }
+
   private smartTarget(): Coordinates {
     let coordinates: Coordinates | null = null;
 
@@ -104,7 +201,7 @@ export class Player {
     if (coordinates === null) {
       this.resetTargetMode();
 
-      return this.hitRandom();
+      return this.hitWithHeatmap();
     }
 
     const cell = this.playerBoard.grid[coordinates.row][coordinates.col];
@@ -114,8 +211,15 @@ export class Player {
     if (cell !== null) {
       this.hitHistory.push(coordinates);
 
-      if (cell.sunk) this.resetTargetMode();
-      else this.updateTargetStrategy(coordinates);
+      this.hitHistory.push(coordinates);
+
+      if (cell.sunk) {
+        const shipLength = cell.length;
+        const index = this.remainingShipLengths.indexOf(shipLength);
+
+        if (index > -1) this.remainingShipLengths.splice(index, 1);
+        this.resetTargetMode();
+      } else this.updateTargetStrategy(coordinates);
     } else if (this.currentDirection !== null && this.hitHistory.length > 0)
       this.reverseDirection();
 
@@ -215,27 +319,6 @@ export class Player {
     this.targetQueue = [];
     this.hitHistory = [];
     this.currentDirection = null;
-  }
-
-  private hitRandom(): Coordinates {
-    let coordinates: Coordinates;
-
-    do {
-      const randomRow = ~~(Math.random() * 10);
-      const randomCol = ~~(Math.random() * 10);
-
-      coordinates = { row: randomRow, col: randomCol };
-    } while (!this.takeTurn(coordinates));
-
-    const cell = this.playerBoard.grid[coordinates.row][coordinates.col];
-
-    if (cell !== null && !cell.sunk) {
-      this.targetMode = true;
-      this.hitHistory.push(coordinates);
-      this.addCardinalDirections(coordinates);
-    }
-
-    return coordinates;
   }
 
   private randomPlace(board: Board, isRandom = true): void {
