@@ -7,14 +7,18 @@ export class Player {
   public computerBoard: Board;
   public isCurrPlayerOne: boolean;
 
-  // Computer Targeting System
+  // * Computer Targeting System
   private targetMode: boolean;
   private targetQueue: Coordinates[];
   private hitHistory: Coordinates[];
   private currentDirection: { row: number; col: number } | null;
 
-  // Density Heatmap
-  private remainingShipLengths: number[];
+  // * Density Heatmap
+  private readonly remainingShipLengths: number[];
+
+  // * Parity Targeting: Checkerboard Pattern
+  private useParity: boolean;
+  private readonly parityOffset: number;
 
   public constructor(isRandom = false) {
     this.playerVictorious = 0;
@@ -30,6 +34,9 @@ export class Player {
     this.currentDirection = null;
 
     this.remainingShipLengths = [5, 4, 3, 3, 2];
+
+    this.useParity = true;
+    this.parityOffset = Math.random() < 0.5 ? 0 : 1;
   }
 
   public takeTurn(coordinates: Coordinates): boolean {
@@ -100,18 +107,27 @@ export class Player {
       () => Array(10).fill(0) as number[]
     );
 
+    // * Priority Target Weights
+    const getWeight = (length: number): number => {
+      return Math.pow(length, 1.5);
+    };
+
     for (const shipLength of this.remainingShipLengths) {
+      const weight = getWeight(length);
+
       // Try Horizontal
       for (let row = 0; row < 10; row++)
         for (let col = 0; col <= 10 - shipLength; col++)
           if (this.canPlaceShip(row, col, shipLength, false))
-            for (let i = 0; i < shipLength; i++) heatmap[row][col + i]++;
+            for (let i = 0; i < shipLength; i++)
+              heatmap[row][col + i] += weight;
 
       // Try Vertical
       for (let row = 0; row <= 10 - shipLength; row++)
         for (let col = 0; col < 10; col++)
           if (this.canPlaceShip(row, col, shipLength, true))
-            for (let i = 0; i < shipLength; i++) heatmap[row + i][col]++;
+            for (let i = 0; i < shipLength; i++)
+              heatmap[row + i][col] += weight;
     }
 
     return heatmap;
@@ -141,20 +157,39 @@ export class Player {
     return true;
   }
 
+  private matchesParity(coord: Coordinates): boolean {
+    return (coord.row + coord.col) % 2 === this.parityOffset;
+  }
+
   private hitWithHeatmap(): Coordinates {
     const heatmap = this.generateHeatmap();
     let maxHeat = -1;
     const bestTargets: Coordinates[] = [];
 
+    const smallestShip = Math.min(...this.remainingShipLengths);
+
+    if (smallestShip > 2) this.useParity = false;
+
     for (let row = 0; row < 10; row++)
-      for (let col = 0; col < 10; col++)
-        if (this.isValidTarget({ row, col }))
+      for (let col = 0; col < 10; col++) {
+        const coord = { row, col };
+
+        if (this.useParity && !this.matchesParity(coord)) continue;
+
+        if (this.isValidTarget(coord))
           if (heatmap[row][col] > maxHeat) {
             maxHeat = heatmap[row][col];
             bestTargets.length = 0;
-            bestTargets.push({ row, col });
-          } else if (heatmap[row][col] === maxHeat)
-            bestTargets.push({ row, col });
+            bestTargets.push(coord);
+          } else if (heatmap[row][col] === maxHeat) bestTargets.push(coord);
+      }
+
+    // Disable Parity if no targets
+    if (bestTargets.length === 0 && this.useParity) {
+      this.useParity = false;
+
+      return this.hitWithHeatmap();
+    }
 
     const coordinates =
       bestTargets[~~(Math.random() * bestTargets.length)] ||
@@ -166,6 +201,7 @@ export class Player {
 
     if (cell !== null && !cell.sunk) {
       this.targetMode = true;
+      this.useParity = false;
       this.hitHistory.push(coordinates);
       this.addCardinalDirections(coordinates);
     }
@@ -209,8 +245,6 @@ export class Player {
     this.takeTurn(coordinates);
 
     if (cell !== null) {
-      this.hitHistory.push(coordinates);
-
       this.hitHistory.push(coordinates);
 
       if (cell.sunk) {
@@ -319,6 +353,13 @@ export class Player {
     this.targetQueue = [];
     this.hitHistory = [];
     this.currentDirection = null;
+
+    // Reset Parity
+    if (this.remainingShipLengths.length > 0) {
+      const smallestShip = Math.min(...this.remainingShipLengths);
+
+      this.useParity = smallestShip === 2;
+    }
   }
 
   private randomPlace(board: Board, isRandom = true): void {
