@@ -69,6 +69,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     if (props.game.playerVictorious) return;
 
     const isSuccessfulHit = props.game.takeTurn({ row, col });
+    const moveDelay = 150;
 
     if (isSuccessfulHit) {
       checkImpact(row, col);
@@ -80,7 +81,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
 
           checkImpact(compCoord.row, compCoord.col);
           document.dispatchEvent(new Event('attack'));
-        }, 150);
+        }, moveDelay);
     }
   };
 

@@ -13,7 +13,7 @@ import {
   createEffect
 } from 'solid-js';
 
-import restartSound from '#/sfx/restart.opus';
+import newGameSound from '#/sfx/new-game.opus';
 import { BoardControl } from '@/components/buttons/BoardControl.tsx';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { Gameboard } from '@/features/Gameboard.tsx';
@@ -30,7 +30,7 @@ export const Controls = (props: {
   const [startButton, setStartButton] = createSignal(
     (<></>) as HTMLButtonElement
   );
-  const restartAudio = new Audio(restartSound);
+  const newGameAudio = new Audio(newGameSound);
 
   createEffect(() => {
     setShipInfo(document.getElementById('ship-info') as HTMLSpanElement);
@@ -168,7 +168,7 @@ export const Controls = (props: {
           disabled={!isDoneSetup()}
           onClick={() => {
             props.setIsControlUp(false);
-            restartAudio.play().catch((error: unknown) => {
+            newGameAudio.play().catch((error: unknown) => {
               if (error instanceof Error) console.error(error);
             });
           }}
