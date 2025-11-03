@@ -10,7 +10,7 @@
   "display": "standalone",
   "orientation": "natural",
   "theme_color": "#60a5fa",
-  "background_color": "#60a5fa",
+  "background_color": "#f8fafc",
   "description": "A Battleship game",
   "start_url": "https://eldarlrd.is-a.dev/ts-battleship/",
   "icons": [
