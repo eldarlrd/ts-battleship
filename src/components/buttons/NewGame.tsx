@@ -24,18 +24,18 @@ export const NewGame = (props: {
       font-weight: 500;
       padding: 0.75rem;
       min-width: 7.625rem;
-      background-color: ${COLOR_VARIABLES.secondary};
+      background: ${COLOR_VARIABLES.secondary};
       color: ${COLOR_VARIABLES.grid};
       outline: 2px solid ${COLOR_VARIABLES.grid};
       transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
       &:active {
-        background-color: ${COLOR_VARIABLES.hover};
+        background: ${COLOR_VARIABLES.hover};
       }
 
       ${MEDIA_QUERIES.mouse} {
         &:hover {
-          background-color: ${COLOR_VARIABLES.hover};
+          background: ${COLOR_VARIABLES.hover};
         }
       }
     `}>

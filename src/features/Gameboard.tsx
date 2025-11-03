@@ -53,12 +53,12 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
 
       props.game.playerBoard.shipsPlaced++;
 
-      if (props.game.playerBoard.shipsPlaced === 5)
+      if (props.game.playerBoard.shipsPlaced >= 5)
         if (props.startButton) props.startButton.disabled = false;
 
       if (props.shipInfo) {
         props.shipInfo.innerText =
-          props.game.playerBoard.shipsPlaced === 5 ?
+          props.game.playerBoard.shipsPlaced >= 5 ?
             'All Ships Ready!'
           : SHIPS[props.game.playerBoard.shipsPlaced];
       }
@@ -148,6 +148,85 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     });
   };
 
+  const handleCellHover = (
+    row: number,
+    col: number,
+    isEntering: boolean
+  ): void => {
+    if (
+      !props.isPlacing ||
+      !props.isPlayerBoard ||
+      props.game.playerBoard.shipsPlaced >= 5
+    )
+      return;
+
+    const shipLengthArr = [5, 4, 3, 3, 2];
+    const shipLength = shipLengthArr[props.game.playerBoard.shipsPlaced];
+    const playerId = 'p1-';
+
+    let canPlace = true;
+    const elementsToStyle: HTMLElement[] = [];
+
+    const potentialCoords: { row: number; col: number }[] = [];
+
+    for (let i = 0; i < shipLength; i++) {
+      const currRow = props.isVertical ? row + i : row;
+      const currCol = props.isVertical ? col : col + i;
+
+      potentialCoords.push({ row: currRow, col: currCol });
+    }
+
+    for (const coord of potentialCoords) {
+      // Out of Bounds Check
+      if (coord.row >= 10 || coord.col >= 10) {
+        canPlace = false;
+        break;
+      }
+
+      // Overlap Check
+      if (props.game.playerBoard.grid[coord.row][coord.col]) {
+        canPlace = false;
+        break;
+      }
+
+      // Adjacency Check
+      for (let r = coord.row - 1; r <= coord.row + 1; r++) {
+        for (let c = coord.col - 1; c <= coord.col + 1; c++) {
+          if (r === coord.row && c === coord.col) continue;
+          if (r < 0 || r >= 10 || c < 0 || c >= 10) continue;
+
+          const isPartOfNewShip = potentialCoords.some(
+            pCoord => pCoord.row === r && pCoord.col === c
+          );
+
+          if (isPartOfNewShip) continue;
+
+          if (props.game.playerBoard.grid[r][c]) {
+            canPlace = false;
+            break;
+          }
+        }
+        if (!canPlace) break;
+      }
+      if (!canPlace) break;
+    }
+
+    for (const coord of potentialCoords)
+      if (coord.row < 10 && coord.col < 10) {
+        const elementId = playerId + (coord.row * 10 + coord.col).toString();
+        const element = document.getElementById(elementId);
+
+        if (element) elementsToStyle.push(element);
+      }
+
+    const hoverState = canPlace ? 'valid' : 'invalid';
+
+    elementsToStyle.forEach(el => {
+      if (isEntering) el.dataset.shipHover = hoverState;
+      else delete el.dataset.shipHover;
+    });
+  };
+
   return (
     <section
       class={css`
@@ -171,8 +250,14 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
                     placeShip(i(), j());
                   if (!props.isPlayerBoard) attackCell(i(), j());
                 }}
+                onMouseEnter={() => {
+                  handleCellHover(i(), j(), true);
+                }}
+                onMouseLeave={() => {
+                  handleCellHover(i(), j(), false);
+                }}
                 class={css`
-                  background-color: ${gridElem && props.isPlayerBoard ?
+                  background: ${gridElem && props.isPlayerBoard ?
                     COLOR_VARIABLES.ship
                   : COLOR_VARIABLES.secondary};
                   border: 1px solid ${COLOR_VARIABLES.grid};
@@ -182,10 +267,17 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
                     (props.isPlacing && !gridElem)) &&
                   'pointer'};
 
+                  &[data-ship-hover='valid'] {
+                    background: ${COLOR_VARIABLES.hover};
+                  }
+
+                  &[data-ship-hover='invalid'] {
+                    background: ${COLOR_VARIABLES.outOfBounds};
+                  }
+
                   ${MEDIA_QUERIES.mouse} {
                     &:hover {
-                      background-color: ${(!props.isPlayerBoard ||
-                        (props.isPlacing && !gridElem)) &&
+                      background: ${!props.isPlayerBoard &&
                       COLOR_VARIABLES.hover};
                     }
                   }

@@ -6,7 +6,8 @@ const COLOR_VARIABLES = {
   grid: '#1e293b', // tw-slate-800
   emptyHit: '#10b981', // tw-emerald-500
   shipHit: '#f59e0b', // tw-amber-500
-  shipSunk: '#f43f5e' // tw-rose-500
+  shipSunk: '#f43f5e', // tw-rose-500
+  outOfBounds: '#fda4af' // tw-rose-300
 } as const;
 
 const MEDIA_QUERIES = {

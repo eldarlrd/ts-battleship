@@ -16,11 +16,6 @@ import { Player } from '@/logic/player.ts';
 // eslint-disable-next-line prefer-const
 let overlay = document.getElementById('overlay') as HTMLDivElement;
 
-/*
-  TODO: Game Revamp
-   • Ship Highlight
-   • PvP Mode
-*/
 export const App = (): JSXElement => {
   const [game, setGame] = createSignal(new Player());
   const [isControlUp, setIsControlUp] = createSignal(true);
@@ -36,12 +31,12 @@ export const App = (): JSXElement => {
         align-items: center;
         user-select: none;
         min-height: 100dvh;
-        background-color: ${COLOR_VARIABLES.primary};
+        background: ${COLOR_VARIABLES.primary};
         accent-color: ${COLOR_VARIABLES.secondary};
         color: ${COLOR_VARIABLES.secondary};
 
         *::selection {
-          background-color: ${COLOR_VARIABLES.secondary};
+          background: ${COLOR_VARIABLES.secondary};
           color: ${COLOR_VARIABLES.primary};
         }
       `}>

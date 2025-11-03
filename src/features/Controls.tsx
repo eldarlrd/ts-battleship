@@ -57,7 +57,7 @@ export const Controls = (props: {
           margin: 1rem;
           gap: 0.75rem;
           line-height: 1rem;
-          background-color: ${COLOR_VARIABLES.primary};
+          background: ${COLOR_VARIABLES.primary};
           border: 2px solid ${COLOR_VARIABLES.secondary};
           border-radius: 0.125rem;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -180,24 +180,24 @@ export const Controls = (props: {
             font-weight: 500;
             min-width: 7.625rem;
             padding: 0.5rem;
-            background-color: ${COLOR_VARIABLES.secondary};
+            background: ${COLOR_VARIABLES.secondary};
             color: ${COLOR_VARIABLES.grid};
             outline: 2px solid ${COLOR_VARIABLES.grid};
             transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
             &:active {
-              background-color: ${COLOR_VARIABLES.hover};
+              background: ${COLOR_VARIABLES.hover};
             }
 
             ${MEDIA_QUERIES.mouse} {
               &:hover {
-                background-color: ${COLOR_VARIABLES.hover};
+                background: ${COLOR_VARIABLES.hover};
               }
             }
 
             &:disabled {
               cursor: not-allowed;
-              background-color: ${COLOR_VARIABLES.hover};
+              background: ${COLOR_VARIABLES.hover};
             }
 
             ${MEDIA_QUERIES.md} {
