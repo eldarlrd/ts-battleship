@@ -16,10 +16,6 @@ import { Player } from '@/logic/player.ts';
 // eslint-disable-next-line prefer-const
 let overlay = document.getElementById('overlay') as HTMLDivElement;
 
-/*
-  TODO: Game Logic
-    > Tests
- */
 export const App = (): JSXElement => {
   const [game, setGame] = createSignal(new Player());
   const [isControlUp, setIsControlUp] = createSignal(true);
