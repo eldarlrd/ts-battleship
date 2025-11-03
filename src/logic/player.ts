@@ -235,9 +235,24 @@ export class Player {
     }
 
     if (coordinates === null) {
-      this.resetTargetMode();
+      if (this.currentDirection !== null && this.hitHistory.length > 0) {
+        this.reverseDirection();
 
-      return this.hitWithHeatmap();
+        while (this.targetQueue.length > 0) {
+          const target = this.targetQueue.shift()!;
+
+          if (this.isValidTarget(target)) {
+            coordinates = target;
+            break;
+          }
+        }
+      }
+
+      if (coordinates === null) {
+        this.resetTargetMode();
+
+        return this.hitWithHeatmap();
+      }
     }
 
     const cell = this.playerBoard.grid[coordinates.row][coordinates.col];
@@ -320,21 +335,19 @@ export class Player {
     };
 
     const firstHit = this.hitHistory[0];
-    const current = { ...firstHit };
+    let current = { ...firstHit };
 
     this.targetQueue = [];
 
-    let next = {
-      row: current.row + this.currentDirection.row,
-      col: current.col + this.currentDirection.col
-    };
-
-    while (this.isValidTarget(next)) {
-      this.targetQueue.push({ ...next });
-      next = {
-        row: next.row + this.currentDirection.row,
-        col: next.col + this.currentDirection.col
+    while (true) {
+      current = {
+        row: current.row + this.currentDirection.row,
+        col: current.col + this.currentDirection.col
       };
+
+      if (!this.isValidTarget(current)) break;
+
+      this.targetQueue.push({ ...current });
     }
   }
 
