@@ -46,15 +46,24 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
         );
 
         if (element) {
+          // --- ❌ FIX: Clear the problematic inline style ---
+          element.style.backgroundColor = ''; // <--- Crucial: Remove the inline style
+          // ---------------------------------------------------
+
+          // --- FIX: Manage the placed ship state via attribute ---
           const cell = board.grid[row][col];
 
           if (cell) {
             element.style.backgroundColor = COLOR_VARIABLES.ship;
+            element.dataset.shipPlaced = 'true'; // Set attribute for placed ship
             element.style.cursor = 'default';
           } else {
-            element.style.backgroundColor = COLOR_VARIABLES.secondary;
+            delete element.dataset.shipPlaced; // Remove attribute for empty cell
             element.style.cursor = 'pointer';
           }
+
+          // Ensure any lingering hover state from previous attempts is cleared
+          delete element.dataset.shipHover;
         }
       }
     }
@@ -171,7 +180,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
         props.shipInfo.innerText =
           props.game.playerBoard.shipsPlaced >= 5 ?
             'All Ships Ready!'
-            : SHIPS[props.game.playerBoard.shipsPlaced];
+          : SHIPS[props.game.playerBoard.shipsPlaced];
       }
     }
   };
@@ -407,7 +416,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
                 class={css`
                   background: ${gridElem && props.isPlayerBoard ?
                     COLOR_VARIABLES.ship
-                    : COLOR_VARIABLES.secondary};
+                  : COLOR_VARIABLES.secondary};
                   border: 1px solid ${COLOR_VARIABLES.grid};
                   padding: ${props.isPlacing ? '14.5px' : '15.5px'};
                   text-align: center;

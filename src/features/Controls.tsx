@@ -200,7 +200,9 @@ export const Controls = (props: {
                 setIsDoneSetup(true);
                 shipInfo().innerText = 'All Ships Ready!';
                 // Trigger visual refresh
-                setPlacementRefreshTrigger(prev => prev + 1);
+                if (props.gameMode === 'pvp') {
+                  setPlacementRefreshTrigger(prev => prev + 1);
+                }
               }}
               icon={<IoDice />}
               title='Randomize'
@@ -220,7 +222,9 @@ export const Controls = (props: {
                 shipInfo().innerText = '5 Carrier';
                 startButton().disabled = true;
                 // Trigger visual refresh to clear board
-                setPlacementRefreshTrigger(prev => prev + 1);
+                if (props.gameMode === 'pvp') {
+                  setPlacementRefreshTrigger(prev => prev + 1);
+                }
               }}
               icon={<IoTrashBin />}
               title='Clear'

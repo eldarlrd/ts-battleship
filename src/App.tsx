@@ -21,7 +21,11 @@ let overlay = document.getElementById('overlay') as HTMLDivElement;
 
 /* TODO: Game Logic
      1. If Ship Sunk Adjacent Cells Hit
-     2. Fix broken PvE
+     2. UI Improvements
+     3. Back Button
+     4. Load States
+     5. Stop Game on Leave
+     6. Board Border Color Transition when Opponent Plays
  */
 export const App = (): JSXElement => {
   const [gameMode, setGameMode] = createSignal<GameMode | null>(null);
