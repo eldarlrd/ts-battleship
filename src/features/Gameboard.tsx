@@ -1,8 +1,16 @@
 import { css } from '@emotion/css';
-import { type JSXElement, For } from 'solid-js';
+import {
+  type JSXElement,
+  For,
+  createSignal,
+  type Setter,
+  createEffect,
+  on
+} from 'solid-js';
 
 import { SHIPS } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
+import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { type Player } from '@/logic/player.ts';
 import { Ship } from '@/logic/ship.ts';
 
@@ -10,12 +18,79 @@ interface GameboardSettings {
   isPlayerBoard: boolean;
   isPlacing: boolean;
   isVertical: boolean;
-  game: Player;
+  game: Player | OnlinePlayer;
   shipInfo?: HTMLSpanElement;
   startButton?: HTMLButtonElement;
+  setIsDoneSetup?: Setter<boolean>;
+  boardUpdateTrigger?: () => number;
+  placementRefreshTrigger?: () => number;
 }
 
 export const Gameboard = (props: GameboardSettings): JSXElement => {
+  const [isComputerTurn, setIsComputerTurn] = createSignal(false);
+
+  // Function to refresh visual board state based on current grid
+  const refreshBoardVisuals = (): void => {
+    if (!props.isPlayerBoard || !props.isPlacing) return;
+
+    const playerId = 'p1-';
+    const board = props.game.playerBoard;
+
+    // Clear all cell styles first
+    for (let row = 0; row < 10; row++) {
+      for (let col = 0; col < 10; col++) {
+        const element = document.getElementById(
+          playerId + (row * 10 + col).toString()
+        );
+
+        if (element) {
+          const cell = board.grid[row][col];
+
+          if (cell) {
+            element.style.backgroundColor = COLOR_VARIABLES.ship;
+            element.style.cursor = 'default';
+          } else {
+            element.style.backgroundColor = COLOR_VARIABLES.secondary;
+            element.style.cursor = 'pointer';
+          }
+        }
+      }
+    }
+  };
+
+  // Effect to refresh board visuals during placement (for randomize/clear)
+  createEffect(
+    on(
+      () => props.placementRefreshTrigger?.(),
+      () => {
+        refreshBoardVisuals();
+      },
+      { defer: true }
+    )
+  );
+
+  // Effect to update visual state when board changes (for online mode)
+  createEffect(
+    on(
+      () => props.boardUpdateTrigger?.(),
+      () => {
+        if (props.game instanceof OnlinePlayer) {
+          if (props.isPlayerBoard) {
+            // Apply visual updates for all impacts on player board (opponent's moves)
+            props.game.playerBoard.impacts.forEach(impact => {
+              checkImpact(impact.row, impact.col);
+            });
+          } else {
+            // Apply visual updates for all impacts on opponent board (our moves)
+            props.game.opponentBoard.impacts.forEach(impact => {
+              checkImpact(impact.row, impact.col);
+            });
+          }
+        }
+      },
+      { defer: true }
+    )
+  );
   const placeShip = (row: number, col: number): void => {
     if (props.game.playerBoard.shipsPlaced >= 5) return;
 
@@ -53,8 +128,10 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
 
       props.game.playerBoard.shipsPlaced++;
 
-      if (props.game.playerBoard.shipsPlaced >= 5)
+      if (props.game.playerBoard.shipsPlaced >= 5) {
         if (props.startButton) props.startButton.disabled = false;
+        if (props.setIsDoneSetup) props.setIsDoneSetup(true);
+      }
 
       if (props.shipInfo) {
         props.shipInfo.innerText =
@@ -65,88 +142,117 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     }
   };
 
-  const attackCell = (row: number, col: number): void => {
+  const attackCell = async (row: number, col: number): Promise<void> => {
     if (props.game.playerVictorious) return;
 
-    const isSuccessfulHit = props.game.takeTurn({ row, col });
-    const moveDelay = 150;
+    // For online games, check if it's the player's turn
+    if ('isCurrPlayerTurn' in props.game && !props.game.isCurrPlayerTurn) {
+      return;
+    }
+
+    // For PvE mode, check if computer is taking its turn
+    if (!('isCurrPlayerTurn' in props.game) && isComputerTurn()) {
+      return;
+    }
+
+    // Await the async takeTurn call for online games
+    const turnResult = props.game.takeTurn({ row, col });
+    const isSuccessfulHit =
+      turnResult instanceof Promise ? await turnResult : turnResult;
+    const moveDelay = 500;
 
     if (isSuccessfulHit) {
       checkImpact(row, col);
       document.dispatchEvent(new Event('attack'));
 
-      if (!props.game.playerVictorious)
+      // Only trigger computer turn for PvE mode (Player class)
+      if (!props.game.playerVictorious && !('isCurrPlayerTurn' in props.game)) {
+        setIsComputerTurn(true);
         setTimeout((): void => {
           const compCoord = props.game.computerTurn();
 
           checkImpact(compCoord.row, compCoord.col);
           document.dispatchEvent(new Event('attack'));
+          setIsComputerTurn(false);
         }, moveDelay);
+      }
     }
   };
 
   const checkImpact = (cellRow: number, cellCol: number): void => {
-    const playerId = props.game.isCurrPlayerOne ? 'p1-' : 'p2-';
+    // Use props.isPlayerBoard to determine which board's DOM elements to target
+    const playerId = props.isPlayerBoard ? 'p1-' : 'p2-';
+    // Get the correct board based on which component this is
     const currBoard =
-      props.game.isCurrPlayerOne ?
-        props.game.playerBoard
-      : props.game.computerBoard;
+      props.isPlayerBoard ? props.game.playerBoard : props.game.computerBoard;
+
+    // Get the cell at the specific impact location
+    const cell = currBoard.grid[cellRow][cellCol];
     const element = document.getElementById(
       playerId + (cellRow * 10 + cellCol).toString()
     );
 
-    currBoard.impacts.forEach(impact => {
-      const { row, col } = impact;
-      const cell = currBoard.grid[row][col];
+    if (!element) return;
 
-      if (!cell) {
-        if (
-          currBoard.impacts.some(
-            impact => impact.row === cellRow && impact.col === cellCol
-          ) &&
-          element
-        ) {
-          element.style.backgroundColor = COLOR_VARIABLES.emptyHit;
-          element.style.cursor = 'default';
-        }
-      } else if (
-        currBoard.impacts.some(
-          impact => impact.row === cellRow && impact.col === cellCol
-        ) &&
-        element
-      ) {
-        if (cell.sunk)
-          for (let i = 0; i < cell.length; i++) {
-            const currRow = cell.isVertical ? cell.coords.row + i : row;
-            const currCol = cell.isVertical ? col : cell.coords.col + i;
+    // Check if this cell was actually hit
+    const wasHit = currBoard.impacts.some(
+      impact => impact.row === cellRow && impact.col === cellCol
+    );
 
-            const element = document.getElementById(
-              playerId + (currRow * 10 + currCol).toString()
-            );
+    if (!wasHit) return;
 
-            if (element) {
-              element.style.backgroundColor = COLOR_VARIABLES.shipSunk;
-              const adjCells = currBoard.hitAdjacent({
-                row: currRow,
-                col: currCol
-              });
+    // Handle miss (empty cell)
+    if (!cell) {
+      element.style.backgroundColor = COLOR_VARIABLES.emptyHit;
+      element.style.cursor = 'default';
+    }
+    // Handle hit on ship (Ship object)
+    else if (typeof cell === 'object') {
+      // Check if ship is sunk
+      if (cell.sunk) {
+        // Color all cells of the sunk ship
+        for (let i = 0; i < cell.length; i++) {
+          const currRow = cell.isVertical ? cell.coords.row + i : cellRow;
+          const currCol = cell.isVertical ? cellCol : cell.coords.col + i;
 
-              adjCells.forEach(coord => {
-                const adjHit = document.getElementById(
-                  playerId + (coord.row * 10 + coord.col).toString()
-                );
+          const shipElement = document.getElementById(
+            playerId + (currRow * 10 + currCol).toString()
+          );
 
-                if (adjHit) {
-                  adjHit.style.backgroundColor = COLOR_VARIABLES.emptyHit;
-                  adjHit.style.cursor = 'default';
-                }
-              });
-            }
+          if (shipElement) {
+            shipElement.style.backgroundColor = COLOR_VARIABLES.shipSunk;
+            shipElement.style.cursor = 'default';
+
+            // Mark adjacent cells as hits
+            const adjCells = currBoard.hitAdjacent({
+              row: currRow,
+              col: currCol
+            });
+
+            adjCells.forEach(coord => {
+              const adjHit = document.getElementById(
+                playerId + (coord.row * 10 + coord.col).toString()
+              );
+
+              if (adjHit) {
+                adjHit.style.backgroundColor = COLOR_VARIABLES.emptyHit;
+                adjHit.style.cursor = 'default';
+              }
+            });
           }
-        else element.style.backgroundColor = COLOR_VARIABLES.shipHit;
+        }
+      } else {
+        // Ship hit but not sunk
+        element.style.backgroundColor = COLOR_VARIABLES.shipHit;
         element.style.cursor = 'default';
       }
-    });
+    }
+    // Handle hit marker (number) for opponent board in online mode
+    else if (typeof cell === 'number' && cell > 0) {
+      // This is a hit on the opponent board (we don't have ship objects, just markers)
+      element.style.backgroundColor = COLOR_VARIABLES.shipHit;
+      element.style.cursor = 'default';
+    }
   };
 
   const handleCellHover = (
@@ -167,7 +273,6 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
 
     let canPlace = true;
     const elementsToStyle: HTMLElement[] = [];
-
     const potentialCoords: { row: number; col: number }[] = [];
 
     for (let i = 0; i < shipLength; i++) {
@@ -249,7 +354,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
                 onClick={() => {
                   if (props.isPlacing && props.game.playerBoard.shipsPlaced < 5)
                     placeShip(i(), j());
-                  if (!props.isPlayerBoard) attackCell(i(), j());
+                  if (!props.isPlayerBoard) void attackCell(i(), j());
                 }}
                 onMouseEnter={() => {
                   handleCellHover(i(), j(), true);

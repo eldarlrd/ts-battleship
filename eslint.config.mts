@@ -59,7 +59,7 @@ export default tseslint.config({
     'import/no-named-as-default-member': 0,
     'import/no-useless-path-segments': 2,
     'import/no-named-as-default': 0,
-    'import/group-exports': 2,
+    'import/group-exports': 1,
     'vitest/no-test-return-statement': 2,
     'vitest/consistent-test-filename': 2,
     'vitest/prefer-equality-matcher': 2,

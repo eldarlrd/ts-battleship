@@ -10,16 +10,20 @@ import defeatSound from '#/sfx/defeat.opus';
 import victorySound from '#/sfx/victory.opus';
 import { NewGame } from '@/components/buttons/NewGame.tsx';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
+import { type GameMode } from '@/features/ModeSelection.tsx';
+import { type OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { type Player } from '@/logic/player.ts';
 
 // eslint-disable-next-line prefer-const
 let victor = document.getElementById('victor') as HTMLHeadingElement;
 
 export const Modal = (props: {
-  game: Player;
-  setGame: Setter<Player>;
+  game: Player | OnlinePlayer;
+  setGame: Setter<Player | OnlinePlayer>;
   setIsControlUp: Setter<boolean>;
   overlay: HTMLDivElement;
+  gameMode?: GameMode | null;
+  setGameMode?: Setter<GameMode | null>;
 }): JSXElement => {
   const victoryAudio = new Audio(victorySound);
   const defeatAudio = new Audio(defeatSound);
@@ -38,7 +42,10 @@ export const Modal = (props: {
           victor.innerText = 'Player Wins!';
           playAudio(victoryAudio);
         } else {
-          victor.innerText = 'Computer Wins...';
+          const opponentName =
+            props.gameMode === 'pvp' ? 'Opponent' : 'Computer';
+
+          victor.innerText = `${opponentName} Wins...`;
           playAudio(defeatAudio);
         }
       }
@@ -103,9 +110,12 @@ export const Modal = (props: {
         </h1>
 
         <NewGame
+          game={props.game}
           setGame={props.setGame}
           setIsControlUp={props.setIsControlUp}
           overlay={props.overlay}
+          gameMode={props.gameMode ?? undefined}
+          setGameMode={props.setGameMode}
         />
       </section>
     </div>

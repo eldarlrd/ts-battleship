@@ -1,7 +1,7 @@
 {
   "name": "ts-battleship",
   "private": true,
-  "version": "1.3.0",
+  "version": "1.4.0",
   "type": "module",
   "keywords": [
     "battleship",
@@ -35,6 +35,7 @@
   "dependencies": {
     "@emotion/css": "^11.13.5",
     "@fontsource-variable/stick-no-bills": "^5.2.8",
+    "firebase": "^12.5.0",
     "modern-normalize": "^3.0.1",
     "solid-icons": "^1.1.0",
     "solid-js": "^1.9.10"

@@ -10,19 +10,24 @@ import {
   type Setter,
   type JSXElement,
   createSignal,
-  createEffect
+  onMount,
+  untrack
 } from 'solid-js';
 
 import newGameSound from '#/sfx/new-game.opus';
 import { BoardControl } from '@/components/buttons/BoardControl.tsx';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { Gameboard } from '@/features/Gameboard.tsx';
+import { type GameMode } from '@/features/ModeSelection.tsx';
+import { Board } from '@/logic/board.ts';
+import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
 
 export const Controls = (props: {
-  game: Player;
-  setGame: Setter<Player>;
+  game: Player | OnlinePlayer;
+  setGame: Setter<Player | OnlinePlayer>;
   setIsControlUp: Setter<boolean>;
+  gameMode: GameMode;
 }): JSXElement => {
   const [isDoneSetup, setIsDoneSetup] = createSignal(false);
   const [isVertical, setIsVertical] = createSignal(false);
@@ -30,14 +35,55 @@ export const Controls = (props: {
   const [startButton, setStartButton] = createSignal(
     (<></>) as HTMLButtonElement
   );
+  const [waitingForOpponent, setWaitingForOpponent] = createSignal(false);
+  const [placementRefreshTrigger, setPlacementRefreshTrigger] = createSignal(0);
   const newGameAudio = new Audio(newGameSound);
 
-  createEffect(() => {
+  onMount(() => {
     setShipInfo(document.getElementById('ship-info') as HTMLSpanElement);
     setStartButton(
       document.getElementById('start-button') as HTMLButtonElement
     );
+
+    // Set up callback for online games to transition when both ready
+    if (props.gameMode === 'pvp' && props.game instanceof OnlinePlayer) {
+      const onlineGame = props.game;
+
+      // eslint-disable-next-line solid/reactivity
+      onlineGame.setRoomUpdateCallback(room => {
+        if (room.status === 'playing' && untrack(waitingForOpponent)) {
+          // Both players are ready, start the game
+          setWaitingForOpponent(false); // Reset the flag to prevent sound playing on every update
+          props.setIsControlUp(false);
+          newGameAudio.play().catch((error: unknown) => {
+            if (error instanceof Error) console.error(error);
+          });
+        }
+      });
+    }
   });
+
+  const handleStartGame = async (): Promise<void> => {
+    if (props.gameMode === 'pvp') {
+      const onlineGame = props.game as OnlinePlayer;
+
+      try {
+        setWaitingForOpponent(true);
+        await onlineGame.submitBoard();
+      } catch (error: unknown) {
+        console.error(error);
+        setWaitingForOpponent(false);
+
+        return;
+      }
+    } else {
+      // PvE mode - start immediately
+      props.setIsControlUp(false);
+      newGameAudio.play().catch((error: unknown) => {
+        if (error instanceof Error) console.error(error);
+      });
+    }
+  };
 
   return (
     <div
@@ -85,6 +131,8 @@ export const Controls = (props: {
           game={props.game}
           shipInfo={shipInfo()}
           startButton={startButton()}
+          setIsDoneSetup={setIsDoneSetup}
+          placementRefreshTrigger={placementRefreshTrigger}
         />
 
         <div
@@ -140,10 +188,19 @@ export const Controls = (props: {
 
             <BoardControl
               handleAction={() => {
-                props.setGame(new Player(true));
-                props.game.playerBoard.shipsPlaced = 5;
+                if (props.gameMode === 'pve') {
+                  props.setGame(new Player(true));
+                  props.game.playerBoard.shipsPlaced = 5;
+                } else {
+                  const onlineGame = props.game as OnlinePlayer;
+
+                  onlineGame.randomPlace();
+                  onlineGame.playerBoard.shipsPlaced = 5;
+                }
                 setIsDoneSetup(true);
                 shipInfo().innerText = 'All Ships Ready!';
+                // Trigger visual refresh
+                setPlacementRefreshTrigger(prev => prev + 1);
               }}
               icon={<IoDice />}
               title='Randomize'
@@ -151,10 +208,19 @@ export const Controls = (props: {
 
             <BoardControl
               handleAction={() => {
-                props.setGame(new Player());
+                if (props.gameMode === 'pve') {
+                  props.setGame(new Player());
+                } else {
+                  const onlineGame = props.game as OnlinePlayer;
+
+                  onlineGame.playerBoard = new Board();
+                  onlineGame.playerBoard.shipsPlaced = 0;
+                }
                 setIsDoneSetup(false);
                 shipInfo().innerText = '5 Carrier';
                 startButton().disabled = true;
+                // Trigger visual refresh to clear board
+                setPlacementRefreshTrigger(prev => prev + 1);
               }}
               icon={<IoTrashBin />}
               title='Clear'
@@ -162,50 +228,60 @@ export const Controls = (props: {
           </span>
         </div>
 
-        <button
-          type='button'
-          id='start-button'
-          disabled={!isDoneSetup()}
-          onClick={() => {
-            props.setIsControlUp(false);
-            newGameAudio.play().catch((error: unknown) => {
-              if (error instanceof Error) console.error(error);
-            });
-          }}
-          class={css`
-            border: 0;
-            border-radius: 0.125rem;
-            cursor: pointer;
-            font-size: 1.5rem;
-            font-weight: 500;
-            min-width: 7.625rem;
-            padding: 0.5rem;
-            background: ${COLOR_VARIABLES.secondary};
-            color: ${COLOR_VARIABLES.grid};
-            outline: 2px solid ${COLOR_VARIABLES.grid};
-            transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+        {waitingForOpponent() ?
+          <div
+            class={css`
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              padding: 1rem;
+              font-size: 1.25rem;
+              text-align: center;
+            `}>
+            Waiting for opponent to finish setup...
+          </div>
+        : <button
+            type='button'
+            id='start-button'
+            disabled={!isDoneSetup()}
+            onClick={() => {
+              void handleStartGame();
+            }}
+            class={css`
+              border: 0;
+              border-radius: 0.125rem;
+              cursor: pointer;
+              font-size: 1.5rem;
+              font-weight: 500;
+              min-width: 7.625rem;
+              padding: 0.5rem;
+              background: ${COLOR_VARIABLES.secondary};
+              color: ${COLOR_VARIABLES.grid};
+              outline: 2px solid ${COLOR_VARIABLES.grid};
+              transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
-            &:active {
-              background: ${COLOR_VARIABLES.hover};
-            }
-
-            ${MEDIA_QUERIES.mouse} {
-              &:hover {
+              &:active {
                 background: ${COLOR_VARIABLES.hover};
               }
-            }
 
-            &:disabled {
-              cursor: not-allowed;
-              background: ${COLOR_VARIABLES.hover};
-            }
+              ${MEDIA_QUERIES.mouse} {
+                &:hover {
+                  background: ${COLOR_VARIABLES.hover};
+                }
+              }
 
-            ${MEDIA_QUERIES.md} {
-              padding: 0.75rem;
-            }
-          `}>
-          Start
-        </button>
+              &:disabled {
+                cursor: not-allowed;
+                background: ${COLOR_VARIABLES.hover};
+              }
+
+              ${MEDIA_QUERIES.md} {
+                padding: 0.75rem;
+              }
+            `}>
+            Start
+          </button>
+        }
       </section>
     </div>
   );
