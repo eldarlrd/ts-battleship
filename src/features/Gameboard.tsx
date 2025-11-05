@@ -1,13 +1,13 @@
 import { css } from '@emotion/css';
 import {
-  type JSXElement,
-  For,
-  createSignal,
-  type Setter,
   createEffect,
+  createSignal,
+  For,
+  type JSXElement,
   on,
+  onCleanup,
   onMount,
-  onCleanup
+  type Setter
 } from 'solid-js';
 
 import { SHIPS } from '@/config/rules.ts';
@@ -185,7 +185,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     }
   };
 
-  const attackCell = async (row: number, col: number): Promise<void> => {
+  const attackCell = (row: number, col: number): void => {
     if (props.game.playerVictorious) return;
 
     // For online games, check if it's the player's turn
@@ -199,10 +199,8 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     }
 
     // Await the async takeTurn call for online games
-    const turnResult = props.game.takeTurn({ row, col });
-    const isSuccessfulHit =
-      turnResult instanceof Promise ? await turnResult : turnResult;
-    const moveDelay = 500;
+    const isSuccessfulHit = props.game.takeTurn({ row, col });
+    const moveDelay = 1000; // 1 second
 
     if (isSuccessfulHit) {
       checkImpact(row, col); // Player's move visual update (targets opponent's board: p2-)
@@ -299,9 +297,13 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
       }
     }
     // Handle hit marker (number) for opponent board in online mode
-    else if (typeof cell === 'number' && cell > 0) {
+    else if (cell === 1) {
       // This is a hit on the opponent board (we don't have ship objects, just markers)
       element.style.backgroundColor = COLOR_VARIABLES.shipHit;
+      element.style.cursor = 'default';
+    } else if (cell === 2) {
+      // This is a hit on the opponent board (we don't have ship objects, just markers)
+      element.style.backgroundColor = COLOR_VARIABLES.shipSunk;
       element.style.cursor = 'default';
     }
   };
@@ -405,7 +407,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
                 onClick={() => {
                   if (props.isPlacing && props.game.playerBoard.shipsPlaced < 5)
                     placeShip(i(), j());
-                  if (!props.isPlayerBoard) void attackCell(i(), j());
+                  if (!props.isPlayerBoard) attackCell(i(), j());
                 }}
                 onMouseEnter={() => {
                   handleCellHover(i(), j(), true);

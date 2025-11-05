@@ -1,5 +1,6 @@
 import { type Unsubscribe } from 'firebase/firestore';
 
+import { COLOR_VARIABLES } from '@/config/site.ts';
 import { Board, type Coordinates } from '@/logic/board.ts';
 import {
   findOrCreateRoom,
@@ -142,15 +143,31 @@ export class OnlinePlayer {
         opponentBoard
       );
 
+      console.log('Result:', result);
+
       // Update local opponent board for display
       this.opponentBoard.fire(coordinates);
       this.processedPlayerMoves.add(moveKey);
 
+      if (result.sunk) {
+        const shipElement = this.findSunkShipDetails(
+          coordinates,
+          opponentBoard
+        );
+
+        if (shipElement) {
+          // 1. Mark all ship cells as 'hit' visually on opponentBoard
+          this.markSunkShipVisuals(shipElement.shipCells);
+
+          // 2. Mark adjacent cells as misses/hits (using Board's utility)
+          this.markAdjacentMisses(shipElement.shipCells);
+        }
+      }
+
       // Mark the grid cell to indicate hit
-      if (result.hit) {
+      else if (result.hit) {
         // @ts-expect-error - Storing hit marker for visual display
         this.opponentBoard.grid[coordinates.row][coordinates.col] = 1;
-
         // Check if we won
         await this.checkVictory();
       }
@@ -160,6 +177,74 @@ export class OnlinePlayer {
       console.error('Error making move:', error);
       throw error;
     }
+  }
+
+  private findSunkShipDetails(
+    hitCoord: Coordinates,
+    fullBoard: number[][]
+  ): { shipCells: Coordinates[]; length: number } | null {
+    const shipLength = fullBoard[hitCoord.row][hitCoord.col];
+
+    const shipCells: Coordinates[] = [];
+
+    // Simple brute-force to find all connected cells of the same ship type/length
+    // This is a simplification; a more robust `Board` class would store ship objects.
+    for (let r = 0; r < 10; r++) {
+      for (let c = 0; c < 10; c++) {
+        if (fullBoard[r][c] === shipLength) {
+          // Check if this cell has been hit in *our* record of moves
+          const moveKey = `${r.toString()}-${c.toString()}`;
+
+          if (this.processedPlayerMoves.has(moveKey)) {
+            // Check if this cell is part of the same contiguous ship as hitCoord
+            // This is the hard part without ship objects. We'll simplify:
+            shipCells.push({ row: r, col: c });
+          }
+        }
+      }
+    }
+
+    // In a real implementation, you'd use the ship object's coordinates/orientation
+    // to build the shipCells array, but since you don't have it, we approximate.
+
+    return { shipCells, length: shipLength };
+  }
+
+  private markSunkShipVisuals(shipCells: Coordinates[]): void {
+    shipCells.forEach(coord => {
+      // @ts-expect-error: replace this later
+      this.opponentBoard.grid[coord.row][coord.col] = 2;
+      const shipSunk = document.getElementById(
+        'p2-' + (coord.row * 10 + coord.col).toString()
+      );
+
+      if (shipSunk) {
+        shipSunk.style.backgroundColor = COLOR_VARIABLES.shipSunk;
+        shipSunk.style.cursor = 'default';
+      }
+    });
+  }
+
+  private markAdjacentMisses(shipCells: Coordinates[]): void {
+    shipCells.forEach(cell => {
+      // You'll need to add this method to your Board class
+      const adjCells = this.opponentBoard.hitAdjacent({
+        row: cell.row,
+        col: cell.col
+      });
+
+      adjCells.forEach(coord => {
+        const adjHit = document.getElementById(
+          'p2-' + (coord.row * 10 + coord.col).toString()
+        );
+
+        // Only mark if we haven't already fired/hit/missed there
+        if (adjHit) {
+          adjHit.style.backgroundColor = COLOR_VARIABLES.emptyHit;
+          adjHit.style.cursor = 'default';
+        }
+      });
+    });
   }
 
   // Place ship on player board
@@ -304,8 +389,13 @@ export class OnlinePlayer {
         if (!this.processedPlayerMoves.has(moveKey)) {
           this.opponentBoard.fire({ row: move.row, col: move.col });
 
+          if (move.sunk) {
+            // @ts-expect-error - Storing hit marker for visual display
+            this.opponentBoard.grid[move.row][move.col] = 2;
+          }
+
           // Mark hits visually on the grid
-          if (move.hit) {
+          else if (move.hit) {
             // @ts-expect-error - Storing hit marker for visual display
             this.opponentBoard.grid[move.row][move.col] = 1;
           }
