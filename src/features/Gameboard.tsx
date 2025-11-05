@@ -5,13 +5,15 @@ import {
   createSignal,
   type Setter,
   createEffect,
-  on
+  on,
+  onMount,
+  onCleanup
 } from 'solid-js';
 
 import { SHIPS } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
-import { type Player } from '@/logic/player.ts';
+import { Player } from '@/logic/player.ts';
 import { Ship } from '@/logic/ship.ts';
 
 interface GameboardSettings {
@@ -91,6 +93,38 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
       { defer: true }
     )
   );
+
+  // --- NEW LOGIC FOR PVE COMPUTER ATTACK VISUALS ---
+  onMount(() => {
+    // Only the Player Board component instance (isPlayerBoard: true) in PvE mode
+    // needs to listen for the computer's visual move command.
+    if (props.isPlayerBoard && !(props.game instanceof OnlinePlayer)) {
+      const handleComputerAttack = (event: Event): void => {
+        const customEvent = event as CustomEvent<{
+          row: number;
+          col: number;
+        }>;
+        const { row, col } = customEvent.detail;
+
+        // This correctly runs checkImpact in the context of the Player's Board (p1- elements)
+        checkImpact(row, col);
+      };
+
+      document.addEventListener(
+        'computerAttack',
+        handleComputerAttack as EventListener
+      );
+
+      onCleanup(() => {
+        document.removeEventListener(
+          'computerAttack',
+          handleComputerAttack as EventListener
+        );
+      });
+    }
+  });
+  // --- END NEW LOGIC ---
+
   const placeShip = (row: number, col: number): void => {
     if (props.game.playerBoard.shipsPlaced >= 5) return;
 
@@ -137,7 +171,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
         props.shipInfo.innerText =
           props.game.playerBoard.shipsPlaced >= 5 ?
             'All Ships Ready!'
-          : SHIPS[props.game.playerBoard.shipsPlaced];
+            : SHIPS[props.game.playerBoard.shipsPlaced];
       }
     }
   };
@@ -162,16 +196,20 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     const moveDelay = 500;
 
     if (isSuccessfulHit) {
-      checkImpact(row, col);
+      checkImpact(row, col); // Player's move visual update (targets opponent's board: p2-)
       document.dispatchEvent(new Event('attack'));
 
       // Only trigger computer turn for PvE mode (Player class)
       if (!props.game.playerVictorious && !('isCurrPlayerTurn' in props.game)) {
         setIsComputerTurn(true);
         setTimeout((): void => {
-          const compCoord = props.game.computerTurn();
+          const compCoord = props.game.computerTurn(); // Impact stored on props.game.playerBoard
 
-          checkImpact(compCoord.row, compCoord.col);
+          // NEW: Dispatch event for the Player's Gameboard instance (isPlayerBoard: true) to handle the visual update.
+          document.dispatchEvent(
+            new CustomEvent('computerAttack', { detail: compCoord })
+          );
+
           document.dispatchEvent(new Event('attack'));
           setIsComputerTurn(false);
         }, moveDelay);
@@ -186,8 +224,6 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     const currBoard =
       props.isPlayerBoard ? props.game.playerBoard : props.game.computerBoard;
 
-    // Get the cell at the specific impact location
-    const cell = currBoard.grid[cellRow][cellCol];
     const element = document.getElementById(
       playerId + (cellRow * 10 + cellCol).toString()
     );
@@ -199,7 +235,12 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
       impact => impact.row === cellRow && impact.col === cellCol
     );
 
-    if (!wasHit) return;
+    // Get the cell state (Ship object, number, or undefined)
+    const cell = currBoard.grid[cellRow][cellCol];
+
+    if (!wasHit && !(props.game instanceof Player && !props.isPlayerBoard)) {
+      return;
+    }
 
     // Handle miss (empty cell)
     if (!cell) {
@@ -212,6 +253,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
       if (cell.sunk) {
         // Color all cells of the sunk ship
         for (let i = 0; i < cell.length; i++) {
+          // Determine coordinates for the full ship
           const currRow = cell.isVertical ? cell.coords.row + i : cellRow;
           const currCol = cell.isVertical ? cellCol : cell.coords.col + i;
 
@@ -365,7 +407,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
                 class={css`
                   background: ${gridElem && props.isPlayerBoard ?
                     COLOR_VARIABLES.ship
-                  : COLOR_VARIABLES.secondary};
+                    : COLOR_VARIABLES.secondary};
                   border: 1px solid ${COLOR_VARIABLES.grid};
                   padding: ${props.isPlacing ? '14.5px' : '15.5px'};
                   text-align: center;
