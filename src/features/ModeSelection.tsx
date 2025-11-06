@@ -20,9 +20,11 @@ const ModeSelection = (props: {
       class={css`
         display: inherit;
         flex-direction: column;
+        align-items: center;
         padding: 1.5rem;
         margin: 1rem;
         gap: 1.5rem;
+        min-width: 18rem;
         background: ${COLOR_VARIABLES.primary};
         border: 2px solid ${COLOR_VARIABLES.secondary};
         border-radius: 0.125rem;
