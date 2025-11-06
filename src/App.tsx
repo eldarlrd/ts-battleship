@@ -1,16 +1,15 @@
-import Toast from '@/components/banners/Toast.tsx';
-import { ERROR_NO_CONNECTION } from '@/config/errors.ts';
-
 import { css } from '@emotion/css';
 import { CgSpinnerTwoAlt } from 'solid-icons/cg';
 import { FaSolidRobot, FaSolidUser } from 'solid-icons/fa';
 import { createSignal, onCleanup, type JSXElement } from 'solid-js';
-import 'modern-normalize/modern-normalize.css';
 
+import 'modern-normalize/modern-normalize.css';
 import Footer from '@/components/banners/Footer.tsx';
 import Header from '@/components/banners/Header.tsx';
+import Toast from '@/components/banners/Toast.tsx';
 import '@fontsource-variable/stick-no-bills';
 import { NewGame } from '@/components/buttons/NewGame.tsx';
+import { ERROR_NO_CONNECTION } from '@/config/errors.ts';
 import { signInAnonymous } from '@/config/firebase.ts';
 import { type GameMode } from '@/config/rules.ts';
 import {
