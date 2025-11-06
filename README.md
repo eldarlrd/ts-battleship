@@ -5,6 +5,7 @@
 > TS Battleship is a web game built using
 > - **[TypeScript](https://typescriptlang.org)**
 > - **[Solid](https://solidjs.com)**
+> - **[Solid Toast]**(https://solid-toast.com)
 > - **[Solid Icons](https://solid-icons.vercel.app)**
 > - **[Emotion](https://emotion.sh)**
 > - **[modern-normalize](https://github.com/sindresorhus/modern-normalize)**

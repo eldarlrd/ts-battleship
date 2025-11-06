@@ -17,4 +17,11 @@ const MEDIA_QUERIES = {
   mouse: '@media (hover: hover)'
 } as const;
 
-export { COLOR_VARIABLES, MEDIA_QUERIES };
+const MATCHMAKING_STATUS = {
+  connecting: 'Connecting to matchmaking...',
+  waitingToJoin: 'Waiting for opponent to join...',
+  waitingForSetup: 'Opponent connected! Waiting for setup...',
+  ready: 'Both players ready! Starting game...'
+};
+
+export { COLOR_VARIABLES, MEDIA_QUERIES, MATCHMAKING_STATUS };

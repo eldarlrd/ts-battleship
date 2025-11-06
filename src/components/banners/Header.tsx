@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { type JSXElement } from 'solid-js';
 
-export const Header = (): JSXElement => (
+const Header = (): JSXElement => (
   <header
     class={css`
       font-size: 2.5rem;
@@ -11,3 +11,5 @@ export const Header = (): JSXElement => (
     TS Battleship
   </header>
 );
+
+export default Header;

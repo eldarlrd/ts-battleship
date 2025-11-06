@@ -4,7 +4,7 @@ import { type JSXElement } from 'solid-js';
 
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 
-export const Footer = (): JSXElement => (
+const Footer = (): JSXElement => (
   <footer
     class={css`
       display: flex;
@@ -46,3 +46,5 @@ export const Footer = (): JSXElement => (
     </a>
   </footer>
 );
+
+export default Footer;

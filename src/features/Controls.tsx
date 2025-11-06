@@ -5,7 +5,7 @@ import {
   FaSolidDownLong,
   FaSolidShip
 } from 'solid-icons/fa';
-import { IoDice, IoTrashBin } from 'solid-icons/io';
+import { IoChevronBackSharp, IoDice, IoTrashBin } from 'solid-icons/io';
 import {
   type Setter,
   type JSXElement,
@@ -109,12 +109,58 @@ export const Controls = (props: {
           border-radius: 0.125rem;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         `}>
-        <h1
+        <div
           class={css`
-            text-align: center;
+            display: inherit;
+            gap: 3rem;
+
+            ${MEDIA_QUERIES.sm} {
+              gap: 4rem;
+            }
+
+            ${MEDIA_QUERIES.md} {
+              gap: 5rem;
+            }
+
+            ${MEDIA_QUERIES.lg} {
+              gap: 6rem;
+            }
           `}>
-          New Game
-        </h1>
+          <button
+            type='button'
+            onClick={() => void props.setGameMode(null)}
+            class={css`
+              border: none;
+              cursor: pointer;
+              background: transparent;
+              display: inherit;
+              align-items: center;
+              color: ${COLOR_VARIABLES.secondary};
+              width: 3rem;
+              height: 3.5rem;
+              padding: 0;
+              padding-top: 0.125rem;
+              font-size: 1.625rem;
+
+              &:active {
+                color: ${COLOR_VARIABLES.hover};
+              }
+
+              ${MEDIA_QUERIES.mouse} {
+                &:hover {
+                  color: ${COLOR_VARIABLES.hover};
+                }
+              }
+            `}>
+            <IoChevronBackSharp size='2rem' />
+          </button>
+          <h1
+            class={css`
+              flex-grow: 1;
+            `}>
+            New Game
+          </h1>
+        </div>
         <span
           class={css`
             font-size: 1.75rem;
