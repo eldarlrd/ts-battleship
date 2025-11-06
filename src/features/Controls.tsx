@@ -18,9 +18,9 @@ import shipClearSound from '#/sfx/clear.opus';
 import shipDeploySound from '#/sfx/deploy.opus';
 import startSound from '#/sfx/start.opus';
 import { BoardControl } from '@/components/buttons/BoardControl.tsx';
+import { type GameMode } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { Gameboard } from '@/features/Gameboard.tsx';
-import { type GameMode } from '@/features/ModeSelection.tsx';
 import { Board } from '@/logic/board.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
@@ -30,6 +30,7 @@ export const Controls = (props: {
   setGame: Setter<Player | OnlinePlayer>;
   setIsControlUp: Setter<boolean>;
   gameMode: GameMode;
+  setGameMode: Setter<GameMode | null>;
 }): JSXElement => {
   const [isDoneSetup, setIsDoneSetup] = createSignal(false);
   const [isVertical, setIsVertical] = createSignal(false);

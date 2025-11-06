@@ -9,8 +9,8 @@ import {
 import defeatSound from '#/sfx/defeat.opus';
 import victorySound from '#/sfx/victory.opus';
 import { NewGame } from '@/components/buttons/NewGame.tsx';
+import { type GameMode } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
-import { type GameMode } from '@/features/ModeSelection.tsx';
 import { type OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { type Player } from '@/logic/player.ts';
 
@@ -23,7 +23,7 @@ export const Modal = (props: {
   setIsControlUp: Setter<boolean>;
   overlay: HTMLDivElement;
   gameMode?: GameMode | null;
-  setGameMode?: Setter<GameMode | null>;
+  setGameMode: Setter<GameMode | null>;
 }): JSXElement => {
   const victoryAudio = new Audio(victorySound);
   const defeatAudio = new Audio(defeatSound);

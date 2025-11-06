@@ -8,33 +8,37 @@ import { Header } from '@/components/banners/Header.tsx';
 import '@fontsource-variable/stick-no-bills';
 import { NewGame } from '@/components/buttons/NewGame.tsx';
 import { signInAnonymous } from '@/config/firebase.ts';
+import { type GameMode } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { Controls } from '@/features/Controls.tsx';
 import { Gameboard } from '@/features/Gameboard.tsx';
 import { Modal } from '@/features/Modal.tsx';
-import { ModeSelection, type GameMode } from '@/features/ModeSelection.tsx';
+import ModeSelection from '@/features/ModeSelection.tsx';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
 
 // eslint-disable-next-line prefer-const
 let overlay = document.getElementById('overlay') as HTMLDivElement;
 
-/* TODO: Game Logic
-     1. Player Victory Conditions
-     2. UI Improvements
-     . Back Button
-     . Load States
-     . Stop Game on Leave
-     . Board Border Color Transition when Opponent Plays
-     . Near Opponent Name Thinking
-     . Mute Sound Button
- */
+/* TODO
+     1. Game Logic
+      . Player victory conditions
+      . Stop game on leave
+     2. UI/UX
+      . Back button
+      . Load states
+      . Board border color transition when opponent plays
+      . Near opponent name thinking
+      . Mute sound button
+      . Make sound independent
+     3. Refactor
+*/
 export const App = (): JSXElement => {
   const [gameMode, setGameMode] = createSignal<GameMode | null>(null);
   const [game, setGame] = createSignal<Player | OnlinePlayer>(new Player());
   const [isControlUp, setIsControlUp] = createSignal(true);
   const [isAuthenticating, setIsAuthenticating] = createSignal(false);
-  const [matchmakingStatus, setMatchmakingStatus] = createSignal<string>('');
+  const [matchmakingStatus, setMatchmakingStatus] = createSignal('');
   const [boardUpdateTrigger, setBoardUpdateTrigger] = createSignal(0);
 
   // Authenticate user when PvP mode is selected
@@ -69,7 +73,7 @@ export const App = (): JSXElement => {
       } catch (error) {
         console.error('Error setting up online game:', error);
         // Fallback to PvE if authentication fails
-        setGameMode('pve');
+        setGameMode(null);
         setGame(new Player());
         setMatchmakingStatus('');
       } finally {
@@ -138,7 +142,6 @@ export const App = (): JSXElement => {
         </div>
       )}
 
-      {/* Controls - ship placement */}
       {gameMode() &&
         !isAuthenticating() &&
         matchmakingStatus() !== 'Connecting to matchmaking...' &&
@@ -149,6 +152,7 @@ export const App = (): JSXElement => {
             setGame={setGame}
             setIsControlUp={setIsControlUp}
             gameMode={gameMode()!}
+            setGameMode={setGameMode}
           />
         )}
 

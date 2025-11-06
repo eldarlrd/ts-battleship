@@ -143,8 +143,6 @@ export class OnlinePlayer {
         opponentBoard
       );
 
-      console.log('Result:', result);
-
       // Update local opponent board for display
       this.opponentBoard.fire(coordinates);
       this.processedPlayerMoves.add(moveKey);

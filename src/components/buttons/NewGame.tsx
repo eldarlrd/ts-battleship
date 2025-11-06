@@ -2,8 +2,8 @@ import { css } from '@emotion/css';
 import { type JSXElement, type Setter } from 'solid-js';
 
 import radar from '#/sfx/radar.opus';
+import { type GameMode } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
-import { type GameMode } from '@/features/ModeSelection.tsx';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
 
@@ -13,7 +13,7 @@ export const NewGame = (props: {
   setIsControlUp: Setter<boolean>;
   overlay?: HTMLDivElement;
   gameMode?: GameMode;
-  setGameMode?: Setter<GameMode | null>;
+  setGameMode: Setter<GameMode | null>;
 }): JSXElement => {
   const newGameAudio = new Audio(radar);
 
@@ -22,8 +22,7 @@ export const NewGame = (props: {
       await props.game.cleanup();
     void newGameAudio.play();
 
-    // Reset to mode selection
-    if (props.setGameMode) props.setGameMode(null);
+    props.setGameMode(null);
     props.setGame(new Player());
     props.setIsControlUp(true);
     if (props.overlay) props.overlay.style.display = 'none';
