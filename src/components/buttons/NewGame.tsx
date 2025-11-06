@@ -1,6 +1,7 @@
 import { css } from '@emotion/css';
 import { type JSXElement, type Setter } from 'solid-js';
 
+import radar from '#/sfx/radar.opus';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { type GameMode } from '@/features/ModeSelection.tsx';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
@@ -14,9 +15,12 @@ export const NewGame = (props: {
   gameMode?: GameMode;
   setGameMode?: Setter<GameMode | null>;
 }): JSXElement => {
+  const newGameAudio = new Audio(radar);
+
   const handleNewGame = async (): Promise<void> => {
     if (props.game && props.game instanceof OnlinePlayer)
       await props.game.cleanup();
+    void newGameAudio.play();
 
     // Reset to mode selection
     if (props.setGameMode) props.setGameMode(null);

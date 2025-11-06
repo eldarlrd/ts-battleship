@@ -14,7 +14,9 @@ import {
   untrack
 } from 'solid-js';
 
-import newGameSound from '#/sfx/new-game.opus';
+import shipClearSound from '#/sfx/clear.opus';
+import shipDeploySound from '#/sfx/deploy.opus';
+import startSound from '#/sfx/start.opus';
 import { BoardControl } from '@/components/buttons/BoardControl.tsx';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { Gameboard } from '@/features/Gameboard.tsx';
@@ -37,7 +39,9 @@ export const Controls = (props: {
   );
   const [waitingForOpponent, setWaitingForOpponent] = createSignal(false);
   const [placementRefreshTrigger, setPlacementRefreshTrigger] = createSignal(0);
-  const newGameAudio = new Audio(newGameSound);
+  const startAudio = new Audio(startSound);
+  const shipDeployAudio = new Audio(shipDeploySound);
+  const shipClearAudio = new Audio(shipClearSound);
 
   onMount(() => {
     setShipInfo(document.getElementById('ship-info') as HTMLSpanElement);
@@ -55,9 +59,7 @@ export const Controls = (props: {
           // Both players are ready, start the game
           setWaitingForOpponent(false); // Reset the flag to prevent sound playing on every update
           props.setIsControlUp(false);
-          newGameAudio.play().catch((error: unknown) => {
-            if (error instanceof Error) console.error(error);
-          });
+          void startAudio.play();
         }
       });
     }
@@ -79,9 +81,7 @@ export const Controls = (props: {
     } else {
       // PvE mode - start immediately
       props.setIsControlUp(false);
-      newGameAudio.play().catch((error: unknown) => {
-        if (error instanceof Error) console.error(error);
-      });
+      void startAudio.play();
     }
   };
 
@@ -197,12 +197,12 @@ export const Controls = (props: {
                   onlineGame.randomPlace();
                   onlineGame.playerBoard.shipsPlaced = 5;
                 }
+                void shipDeployAudio.play();
                 setIsDoneSetup(true);
                 shipInfo().innerText = 'All Ships Ready!';
-                // Trigger visual refresh
-                if (props.gameMode === 'pvp') {
+
+                if (props.gameMode === 'pvp')
                   setPlacementRefreshTrigger(prev => prev + 1);
-                }
               }}
               icon={<IoDice />}
               title='Randomize'
@@ -218,6 +218,7 @@ export const Controls = (props: {
                   onlineGame.playerBoard = new Board();
                   onlineGame.playerBoard.shipsPlaced = 0;
                 }
+                void shipClearAudio.play();
                 setIsDoneSetup(false);
                 shipInfo().innerText = '5 Carrier';
                 startButton().disabled = true;

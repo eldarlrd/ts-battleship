@@ -28,25 +28,19 @@ export const Modal = (props: {
   const victoryAudio = new Audio(victorySound);
   const defeatAudio = new Audio(defeatSound);
 
-  const playAudio = (audio: HTMLAudioElement): void => {
-    audio.play().catch((error: unknown) => {
-      if (error instanceof Error) console.error(error);
-    });
-  };
-
   createEffect(() => {
     const handleModal = (): void => {
       if (props.game.playerVictorious) {
         props.overlay.style.display = 'flex';
         if (props.game.playerVictorious === 1) {
           victor.innerText = 'Player Wins!';
-          playAudio(victoryAudio);
+          void victoryAudio.play();
         } else {
           const opponentName =
             props.gameMode === 'pvp' ? 'Opponent' : 'Computer';
 
           victor.innerText = `${opponentName} Wins...`;
-          playAudio(defeatAudio);
+          void defeatAudio.play();
         }
       }
     };

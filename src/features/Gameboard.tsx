@@ -10,6 +10,8 @@ import {
   type Setter
 } from 'solid-js';
 
+import shipDeploySound from '#/sfx/deploy.opus';
+import shipErrorSound from '#/sfx/error.opus';
 import { SHIPS } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
@@ -30,6 +32,8 @@ interface GameboardSettings {
 
 export const Gameboard = (props: GameboardSettings): JSXElement => {
   const [isComputerTurn, setIsComputerTurn] = createSignal(false);
+  const shipDeployAudio = new Audio(shipDeploySound);
+  const shipErrorAudio = new Audio(shipErrorSound);
 
   // Function to refresh visual board state based on current grid
   const refreshBoardVisuals = (): void => {
@@ -132,7 +136,6 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
       });
     }
   });
-  // --- END NEW LOGIC ---
 
   const placeShip = (row: number, col: number): void => {
     if (props.game.playerBoard.shipsPlaced >= 5) return;
@@ -153,6 +156,8 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     ) {
       const playerId = props.isPlayerBoard ? 'p1-' : 'p2-';
       const cell = props.game.playerBoard.grid[row][col];
+
+      void shipDeployAudio.play();
 
       if (cell)
         for (let i = 0; i < cell.length; i++) {
@@ -182,37 +187,32 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
             'All Ships Ready!'
           : SHIPS[props.game.playerBoard.shipsPlaced];
       }
-    }
+    } else void shipErrorAudio.play();
   };
 
   const attackCell = (row: number, col: number): void => {
     if (props.game.playerVictorious) return;
 
     // For online games, check if it's the player's turn
-    if ('isCurrPlayerTurn' in props.game && !props.game.isCurrPlayerTurn) {
+    if ('isCurrPlayerTurn' in props.game && !props.game.isCurrPlayerTurn)
       return;
-    }
 
     // For PvE mode, check if computer is taking its turn
-    if (!('isCurrPlayerTurn' in props.game) && isComputerTurn()) {
-      return;
-    }
+    if (!('isCurrPlayerTurn' in props.game) && isComputerTurn()) return;
 
     // Await the async takeTurn call for online games
     const isSuccessfulHit = props.game.takeTurn({ row, col });
     const moveDelay = 1000; // 1 second
 
     if (isSuccessfulHit) {
-      checkImpact(row, col); // Player's move visual update (targets opponent's board: p2-)
+      checkImpact(row, col);
       document.dispatchEvent(new Event('attack'));
 
-      // Only trigger computer turn for PvE mode (Player class)
       if (!props.game.playerVictorious && !('isCurrPlayerTurn' in props.game)) {
         setIsComputerTurn(true);
         setTimeout((): void => {
-          const compCoord = props.game.computerTurn(); // Impact stored on props.game.playerBoard
+          const compCoord = props.game.computerTurn();
 
-          // NEW: Dispatch event for the Player's Gameboard instance (isPlayerBoard: true) to handle the visual update.
           document.dispatchEvent(
             new CustomEvent('computerAttack', { detail: compCoord })
           );

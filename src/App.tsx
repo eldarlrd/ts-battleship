@@ -28,11 +28,6 @@ let overlay = document.getElementById('overlay') as HTMLDivElement;
      . Board Border Color Transition when Opponent Plays
      . Near Opponent Name Thinking
      . Mute Sound Button
-     3. Play Sound
-     . Sound when New Game
-     . Sound when Ship Placed
-     . Sound when Miss
-     . Sound when Can't Place
  */
 export const App = (): JSXElement => {
   const [gameMode, setGameMode] = createSignal<GameMode | null>(null);

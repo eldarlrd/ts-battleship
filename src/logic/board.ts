@@ -1,3 +1,4 @@
+import missSound from '#/sfx/splash.opus';
 import { type Ship } from '@/logic/ship.ts';
 
 interface Coordinates {
@@ -32,6 +33,7 @@ class Board {
   public fire(coordinates: Coordinates): boolean {
     const { row, col } = coordinates;
     const target = this.grid[row][col];
+    const missAudio = new Audio(missSound);
 
     const isHitBefore = this.impacts.some(
       miss => miss.row === row && miss.col === col
@@ -41,7 +43,10 @@ class Board {
       if (target) {
         target.hit();
         this.impacts.push(coordinates);
-      } else this.impacts.push(coordinates);
+      } else {
+        void missAudio.play();
+        this.impacts.push(coordinates);
+      }
 
       return true;
     }
