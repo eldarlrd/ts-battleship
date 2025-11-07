@@ -33,7 +33,6 @@ class Board {
   public fire(coordinates: Coordinates): boolean {
     const { row, col } = coordinates;
     const target = this.grid[row][col];
-    const missAudio = new Audio(missSound);
 
     const isHitBefore = this.impacts.some(
       miss => miss.row === row && miss.col === col
@@ -44,7 +43,7 @@ class Board {
         target.hit();
         this.impacts.push(coordinates);
       } else {
-        void missAudio.play();
+        void new Audio(missSound).play();
         this.impacts.push(coordinates);
       }
 

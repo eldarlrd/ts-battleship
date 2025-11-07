@@ -34,6 +34,7 @@ let overlay = document.getElementById('overlay') as HTMLDivElement;
      . Player victory conditions
      . Stop game on leave
      . Error toasts
+     . Add lobbies
     2. UI/UX
      . Load states *
      . Board border color transition when opponent plays
@@ -66,7 +67,7 @@ export const App = (): JSXElement => {
             case 'waiting':
               if (!room.player2)
                 setMatchmakingStatus(MATCHMAKING_STATUS.waitingToJoin);
-              else setMatchmakingStatus(MATCHMAKING_STATUS.waitingForSetup);
+              else setMatchmakingStatus('');
               break;
 
             case 'ready':
@@ -151,6 +152,7 @@ export const App = (): JSXElement => {
             align-items: center;
             flex: 1;
             gap: 0.5rem;
+            padding: 0 1rem;
             font-size: 1.5rem;
 
             & svg {
@@ -167,15 +169,15 @@ export const App = (): JSXElement => {
                 }
               }
             `}
-          />{' '}
+          />
           {matchmakingStatus() || MATCHMAKING_STATUS.connecting}
         </div>
       )}
 
       {gameMode() &&
         !isAuthenticating() &&
-        matchmakingStatus() !== MATCHMAKING_STATUS.connecting &&
-        matchmakingStatus() !== MATCHMAKING_STATUS.waitingToJoin &&
+        (matchmakingStatus() === '' ||
+          matchmakingStatus() === MATCHMAKING_STATUS.ready) &&
         isControlUp() && (
           <Controls
             game={game()}

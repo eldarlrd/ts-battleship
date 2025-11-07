@@ -32,8 +32,6 @@ interface GameboardSettings {
 
 export const Gameboard = (props: GameboardSettings): JSXElement => {
   const [isComputerTurn, setIsComputerTurn] = createSignal(false);
-  const shipDeployAudio = new Audio(shipDeploySound);
-  const shipErrorAudio = new Audio(shipErrorSound);
 
   // Function to refresh visual board state based on current grid
   const refreshBoardVisuals = (): void => {
@@ -157,7 +155,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
       const playerId = props.isPlayerBoard ? 'p1-' : 'p2-';
       const cell = props.game.playerBoard.grid[row][col];
 
-      void shipDeployAudio.play();
+      void new Audio(shipDeploySound).play();
 
       if (cell)
         for (let i = 0; i < cell.length; i++) {
@@ -187,7 +185,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
             'All Ships Ready!'
           : SHIPS[props.game.playerBoard.shipsPlaced];
       }
-    } else void shipErrorAudio.play();
+    } else void new Audio(shipErrorSound).play();
   };
 
   const attackCell = (row: number, col: number): void => {

@@ -1,5 +1,5 @@
-import shipHit from '#/sfx/ship-hit.opus';
-import shipSunk from '#/sfx/ship-sunk.opus';
+import shipHitSound from '#/sfx/ship-hit.opus';
+import shipSunkSound from '#/sfx/ship-sunk.opus';
 import { type Coordinates } from '@/logic/board.ts';
 
 interface ShipStats {
@@ -31,13 +31,10 @@ export class Ship implements ShipStats {
   }
 
   private isSunk(): void {
-    const shipHitAudio = new Audio(shipHit);
-
     if (this.hits === this.length) {
       this.sunk = true;
-      const shipSunkAudio = new Audio(shipSunk);
 
-      void shipSunkAudio.play();
-    } else void shipHitAudio.play();
+      void new Audio(shipSunkSound).play();
+    } else void new Audio(shipHitSound).play();
   }
 }

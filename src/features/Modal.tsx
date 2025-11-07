@@ -25,22 +25,19 @@ export const Modal = (props: {
   gameMode?: GameMode | null;
   setGameMode: Setter<GameMode | null>;
 }): JSXElement => {
-  const victoryAudio = new Audio(victorySound);
-  const defeatAudio = new Audio(defeatSound);
-
   createEffect(() => {
     const handleModal = (): void => {
       if (props.game.playerVictorious) {
         props.overlay.style.display = 'flex';
         if (props.game.playerVictorious === 1) {
           victor.innerText = 'Player Wins!';
-          void victoryAudio.play();
+          void new Audio(victorySound).play();
         } else {
           const opponentName =
             props.gameMode === 'pvp' ? 'Opponent' : 'Computer';
 
           victor.innerText = `${opponentName} Wins...`;
-          void defeatAudio.play();
+          void new Audio(defeatSound).play();
         }
       }
     };

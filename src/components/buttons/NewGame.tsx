@@ -1,7 +1,7 @@
 import { css } from '@emotion/css';
 import { type JSXElement, type Setter } from 'solid-js';
 
-import radar from '#/sfx/radar.opus';
+import newGameSound from '#/sfx/new-game.opus';
 import { type GameMode } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
@@ -15,12 +15,10 @@ export const NewGame = (props: {
   gameMode?: GameMode;
   setGameMode: Setter<GameMode | null>;
 }): JSXElement => {
-  const newGameAudio = new Audio(radar);
-
   const handleNewGame = async (): Promise<void> => {
     if (props.game && props.game instanceof OnlinePlayer)
       await props.game.cleanup();
-    void newGameAudio.play();
+    void new Audio(newGameSound).play();
 
     props.setGameMode(null);
     props.setGame(new Player());

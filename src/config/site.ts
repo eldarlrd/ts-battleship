@@ -20,7 +20,7 @@ const MEDIA_QUERIES = {
 const MATCHMAKING_STATUS = {
   connecting: 'Connecting to matchmaking...',
   waitingToJoin: 'Waiting for opponent to join...',
-  waitingForSetup: 'Opponent connected! Waiting for setup...',
+  waitingForSetup: 'Waiting for opponent to setup...',
   ready: 'Both players ready! Starting game...'
 };
 

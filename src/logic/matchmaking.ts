@@ -9,10 +9,12 @@ import {
   onSnapshot,
   query,
   where,
+  Timestamp,
   type Unsubscribe
 } from 'firebase/firestore';
 
 import { firestore } from '@/config/firebase.ts';
+import { DURATION_MS } from '@/config/rules.ts';
 
 interface Move {
   row: number;
@@ -39,6 +41,7 @@ interface GameRoom {
   winner?: string;
   moves?: Record<string, Move[]>;
   sunkShipsCount?: Record<string, number>;
+  expireAt: Timestamp;
 }
 
 interface MoveResult {
@@ -54,6 +57,10 @@ const createGameRoom = async (playerId: string): Promise<string> => {
   const newRoomRef = doc(roomsRef);
   const roomId = newRoomRef.id;
 
+  // TTL Timestamp
+  const futureDate = new Date(Date.now() + DURATION_MS);
+  const expireAt = Timestamp.fromDate(futureDate);
+
   await setDoc(newRoomRef, {
     player1: {
       uid: playerId,
@@ -65,7 +72,8 @@ const createGameRoom = async (playerId: string): Promise<string> => {
     },
     sunkShipsCount: {
       [playerId]: 0
-    }
+    },
+    expireAt
   });
 
   return roomId;
@@ -306,25 +314,19 @@ const leaveRoom = async (roomId: string, playerId: string): Promise<void> => {
   const roomRef = doc(firestore, 'rooms', roomId);
   const snapshot = await getDoc(roomRef);
 
-  if (!snapshot.exists()) {
-    return;
-  }
+  if (!snapshot.exists()) return;
 
   const room = snapshot.data() as GameRoom;
   const isPlayer1 = room.player1.uid === playerId;
 
   if (room.status === 'waiting' || room.status === 'ready') {
-    // Game hasn't started, remove player
-    if (isPlayer1) {
-      await deleteDoc(roomRef);
-    } else {
+    if (isPlayer1) await deleteDoc(roomRef);
+    else
       await updateDoc(roomRef, {
         player2: null,
         status: 'waiting'
       });
-    }
   } else {
-    // Game in progress, declare other player as winner
     const winnerId = isPlayer1 ? room.player2!.uid : room.player1.uid;
 
     await declareWinner(roomId, winnerId);

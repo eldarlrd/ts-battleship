@@ -1,4 +1,5 @@
 import { css } from '@emotion/css';
+import { CgSpinnerTwoAlt } from 'solid-icons/cg';
 import {
   FaSolidUser,
   FaSolidRightLong,
@@ -19,7 +20,11 @@ import shipDeploySound from '#/sfx/deploy.opus';
 import startSound from '#/sfx/start.opus';
 import { BoardControl } from '@/components/buttons/BoardControl.tsx';
 import { type GameMode } from '@/config/rules.ts';
-import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
+import {
+  COLOR_VARIABLES,
+  MATCHMAKING_STATUS,
+  MEDIA_QUERIES
+} from '@/config/site.ts';
 import { Gameboard } from '@/features/Gameboard.tsx';
 import { Board } from '@/logic/board.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
@@ -40,9 +45,6 @@ export const Controls = (props: {
   );
   const [waitingForOpponent, setWaitingForOpponent] = createSignal(false);
   const [placementRefreshTrigger, setPlacementRefreshTrigger] = createSignal(0);
-  const startAudio = new Audio(startSound);
-  const shipDeployAudio = new Audio(shipDeploySound);
-  const shipClearAudio = new Audio(shipClearSound);
 
   onMount(() => {
     setShipInfo(document.getElementById('ship-info') as HTMLSpanElement);
@@ -50,17 +52,15 @@ export const Controls = (props: {
       document.getElementById('start-button') as HTMLButtonElement
     );
 
-    // Set up callback for online games to transition when both ready
     if (props.gameMode === 'pvp' && props.game instanceof OnlinePlayer) {
       const onlineGame = props.game;
 
       // eslint-disable-next-line solid/reactivity
       onlineGame.setRoomUpdateCallback(room => {
         if (room.status === 'playing' && untrack(waitingForOpponent)) {
-          // Both players are ready, start the game
-          setWaitingForOpponent(false); // Reset the flag to prevent sound playing on every update
+          setWaitingForOpponent(false);
           props.setIsControlUp(false);
-          void startAudio.play();
+          void new Audio(startSound).play();
         }
       });
     }
@@ -80,9 +80,8 @@ export const Controls = (props: {
         return;
       }
     } else {
-      // PvE mode - start immediately
       props.setIsControlUp(false);
-      void startAudio.play();
+      void new Audio(shipDeploySound).play();
     }
   };
 
@@ -103,6 +102,9 @@ export const Controls = (props: {
           padding: 1rem;
           margin: 1rem;
           gap: 0.75rem;
+          width: 23.75rem;
+          min-width: fit-content;
+          max-width: 98%;
           line-height: 1rem;
           background: ${COLOR_VARIABLES.primary};
           border: 2px solid ${COLOR_VARIABLES.secondary};
@@ -138,8 +140,7 @@ export const Controls = (props: {
               color: ${COLOR_VARIABLES.secondary};
               width: 3rem;
               height: 3.5rem;
-              padding: 0;
-              padding-top: 0.125rem;
+              padding: 0.125rem 0 0;
               font-size: 1.625rem;
 
               &:active {
@@ -229,6 +230,7 @@ export const Controls = (props: {
               handleAction={() => {
                 setIsVertical(prev => !prev);
               }}
+              isDisabled={waitingForOpponent()}
               icon={isVertical() ? <FaSolidDownLong /> : <FaSolidRightLong />}
               title='Rotate'
             />
@@ -244,36 +246,35 @@ export const Controls = (props: {
                   onlineGame.randomPlace();
                   onlineGame.playerBoard.shipsPlaced = 5;
                 }
-                void shipDeployAudio.play();
+                void new Audio(shipDeploySound).play();
                 setIsDoneSetup(true);
                 shipInfo().innerText = 'All Ships Ready!';
 
                 if (props.gameMode === 'pvp')
                   setPlacementRefreshTrigger(prev => prev + 1);
               }}
+              isDisabled={waitingForOpponent()}
               icon={<IoDice />}
               title='Randomize'
             />
 
             <BoardControl
               handleAction={() => {
-                if (props.gameMode === 'pve') {
-                  props.setGame(new Player());
-                } else {
+                if (props.gameMode === 'pve') props.setGame(new Player());
+                else {
                   const onlineGame = props.game as OnlinePlayer;
 
                   onlineGame.playerBoard = new Board();
                   onlineGame.playerBoard.shipsPlaced = 0;
                 }
-                void shipClearAudio.play();
+                void new Audio(shipClearSound).play();
                 setIsDoneSetup(false);
                 shipInfo().innerText = '5 Carrier';
                 startButton().disabled = true;
-                // Trigger visual refresh to clear board
-                if (props.gameMode === 'pvp') {
+                if (props.gameMode === 'pvp')
                   setPlacementRefreshTrigger(prev => prev + 1);
-                }
               }}
+              isDisabled={waitingForOpponent()}
               icon={<IoTrashBin />}
               title='Clear'
             />
@@ -287,10 +288,24 @@ export const Controls = (props: {
               justify-content: center;
               align-items: center;
               padding: 1rem;
-              font-size: 1.25rem;
+              font-size: 1.5rem;
+              height: 3.25rem;
+              line-height: 1;
+              gap: 0.5rem;
               text-align: center;
             `}>
-            Waiting for opponent to finish setup...
+            <CgSpinnerTwoAlt
+              class={css`
+                animation: spin 1s linear infinite;
+
+                @keyframes spin {
+                  to {
+                    transform: rotate(360deg);
+                  }
+                }
+              `}
+            />
+            {MATCHMAKING_STATUS.waitingForSetup}
           </div>
         : <button
             type='button'
@@ -306,6 +321,7 @@ export const Controls = (props: {
               font-size: 1.5rem;
               font-weight: 500;
               min-width: 7.625rem;
+              height: 3.25rem;
               padding: 0.5rem;
               background: ${COLOR_VARIABLES.secondary};
               color: ${COLOR_VARIABLES.grid};

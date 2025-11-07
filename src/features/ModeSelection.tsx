@@ -148,7 +148,7 @@ const ModeSelection = (props: {
             }
           `}>
           <FaSolidUserGroup />
-          <span>PvE</span>
+          <span>PvP</span>
         </button>
       </div>
     </section>

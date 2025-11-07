@@ -6,11 +6,13 @@ import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 export const BoardControl = (props: {
   handleAction: () => void;
   icon: JSXElement;
+  isDisabled: boolean;
   title: string;
 }): JSXElement => (
   <button
     type='button'
     title={props.title}
+    disabled={props.isDisabled}
     onClick={() => {
       props.handleAction();
     }}
@@ -35,6 +37,11 @@ export const BoardControl = (props: {
         &:hover {
           background: ${COLOR_VARIABLES.hover};
         }
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        background: ${COLOR_VARIABLES.hover};
       }
 
       ${MEDIA_QUERIES.md} {
