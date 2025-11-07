@@ -1,6 +1,9 @@
+import { isMuted, toggleMute } from '@/lib/audio.ts';
+
 import { css } from '@emotion/css';
 import { CgSpinnerTwoAlt } from 'solid-icons/cg';
 import { FaSolidRobot, FaSolidUser } from 'solid-icons/fa';
+import { IoVolumeHighSharp, IoVolumeMuteSharp } from 'solid-icons/io';
 import { createSignal, onCleanup, type JSXElement } from 'solid-js';
 
 import 'modern-normalize/modern-normalize.css';
@@ -31,16 +34,13 @@ let overlay = document.getElementById('overlay') as HTMLDivElement;
 /*
   TODO
     1. Game Logic
+     . Error toasts
      . Player victory conditions
      . Stop game on leave
-     . Error toasts
      . Add lobbies
     2. UI/UX
-     . Load states *
-     . Board border color transition when opponent plays
      . Near opponent name thinking
-     . Mute sound button
-     . Make sound independent
+     . Board border color transition when opponent plays
     3. Refactor
 */
 export const App = (): JSXElement => {
@@ -274,13 +274,50 @@ export const App = (): JSXElement => {
             </span>
           </div>
 
-          <NewGame
-            game={game()}
-            setGame={setGame}
-            setIsControlUp={setIsControlUp}
-            gameMode={gameMode()!}
-            setGameMode={setGameMode}
-          />
+          <div
+            class={css`
+              display: inherit;
+              margin-left: 3.5rem;
+              gap: 0.5rem;
+            `}>
+            <NewGame
+              game={game()}
+              setGame={setGame}
+              setIsControlUp={setIsControlUp}
+              gameMode={gameMode()!}
+              setGameMode={setGameMode}
+            />
+            <button
+              type='button'
+              onClick={toggleMute}
+              class={css`
+                border: none;
+                cursor: pointer;
+                background: transparent;
+                display: inherit;
+                justify-content: center;
+                align-items: center;
+                color: ${COLOR_VARIABLES.secondary};
+                width: 3rem;
+                height: 3.5rem;
+                padding: 0.125rem;
+                font-size: 1.5rem;
+
+                &:active {
+                  color: ${COLOR_VARIABLES.hover};
+                }
+
+                ${MEDIA_QUERIES.mouse} {
+                  &:hover {
+                    color: ${COLOR_VARIABLES.hover};
+                  }
+                }
+              `}>
+              {isMuted() ?
+                <IoVolumeMuteSharp size='1.75rem' />
+              : <IoVolumeHighSharp size='1.75rem' />}
+            </button>
+          </div>
         </main>
       )}
 

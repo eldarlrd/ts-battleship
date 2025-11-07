@@ -11,6 +11,7 @@ import victorySound from '#/sfx/victory.opus';
 import { NewGame } from '@/components/buttons/NewGame.tsx';
 import { type GameMode } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
+import { playSound } from '@/lib/audio.ts';
 import { type OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { type Player } from '@/logic/player.ts';
 
@@ -31,13 +32,13 @@ export const Modal = (props: {
         props.overlay.style.display = 'flex';
         if (props.game.playerVictorious === 1) {
           victor.innerText = 'Player Wins!';
-          void new Audio(victorySound).play();
+          playSound(victorySound);
         } else {
           const opponentName =
             props.gameMode === 'pvp' ? 'Opponent' : 'Computer';
 
           victor.innerText = `${opponentName} Wins...`;
-          void new Audio(defeatSound).play();
+          playSound(defeatSound);
         }
       }
     };

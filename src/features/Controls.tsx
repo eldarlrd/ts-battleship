@@ -26,6 +26,7 @@ import {
   MEDIA_QUERIES
 } from '@/config/site.ts';
 import { Gameboard } from '@/features/Gameboard.tsx';
+import { playSound } from '@/lib/audio.ts';
 import { Board } from '@/logic/board.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
@@ -60,7 +61,7 @@ export const Controls = (props: {
         if (room.status === 'playing' && untrack(waitingForOpponent)) {
           setWaitingForOpponent(false);
           props.setIsControlUp(false);
-          void new Audio(startSound).play();
+          playSound(startSound);
         }
       });
     }
@@ -81,7 +82,7 @@ export const Controls = (props: {
       }
     } else {
       props.setIsControlUp(false);
-      void new Audio(shipDeploySound).play();
+      playSound(shipDeploySound);
     }
   };
 
@@ -197,7 +198,8 @@ export const Controls = (props: {
               font-size: 1.5rem;
 
               svg {
-                font-size: 1rem;
+                vertical-align: middle;
+                font-size: 1.375rem;
                 padding-right: 0.375rem;
               }
 
@@ -205,7 +207,7 @@ export const Controls = (props: {
                 font-size: 1.625rem;
 
                 svg {
-                  font-size: 1.125rem;
+                  font-size: 1.5rem;
                 }
               }
 
@@ -213,7 +215,7 @@ export const Controls = (props: {
                 font-size: 1.75rem;
 
                 svg {
-                  font-size: 1.25rem;
+                  font-size: 1.75rem;
                 }
               }
             `}>
@@ -246,7 +248,7 @@ export const Controls = (props: {
                   onlineGame.randomPlace();
                   onlineGame.playerBoard.shipsPlaced = 5;
                 }
-                void new Audio(shipDeploySound).play();
+                playSound(shipDeploySound);
                 setIsDoneSetup(true);
                 shipInfo().innerText = 'All Ships Ready!';
 
@@ -267,7 +269,7 @@ export const Controls = (props: {
                   onlineGame.playerBoard = new Board();
                   onlineGame.playerBoard.shipsPlaced = 0;
                 }
-                void new Audio(shipClearSound).play();
+                playSound(shipClearSound);
                 setIsDoneSetup(false);
                 shipInfo().innerText = '5 Carrier';
                 startButton().disabled = true;

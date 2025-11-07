@@ -4,6 +4,7 @@ import { type JSXElement, type Setter } from 'solid-js';
 import newGameSound from '#/sfx/new-game.opus';
 import { type GameMode } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
+import { playSound } from '@/lib/audio.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
 
@@ -18,7 +19,7 @@ export const NewGame = (props: {
   const handleNewGame = async (): Promise<void> => {
     if (props.game && props.game instanceof OnlinePlayer)
       await props.game.cleanup();
-    void new Audio(newGameSound).play();
+    playSound(newGameSound);
 
     props.setGameMode(null);
     props.setGame(new Player());

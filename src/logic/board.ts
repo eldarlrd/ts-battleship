@@ -1,4 +1,5 @@
 import missSound from '#/sfx/splash.opus';
+import { playSound } from '@/lib/audio.ts';
 import { type Ship } from '@/logic/ship.ts';
 
 interface Coordinates {
@@ -43,7 +44,7 @@ class Board {
         target.hit();
         this.impacts.push(coordinates);
       } else {
-        void new Audio(missSound).play();
+        playSound(missSound);
         this.impacts.push(coordinates);
       }
 

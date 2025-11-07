@@ -14,6 +14,7 @@ import shipDeploySound from '#/sfx/deploy.opus';
 import shipErrorSound from '#/sfx/error.opus';
 import { SHIPS } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
+import { playSound } from '@/lib/audio.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
 import { Ship } from '@/logic/ship.ts';
@@ -155,7 +156,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
       const playerId = props.isPlayerBoard ? 'p1-' : 'p2-';
       const cell = props.game.playerBoard.grid[row][col];
 
-      void new Audio(shipDeploySound).play();
+      playSound(shipDeploySound);
 
       if (cell)
         for (let i = 0; i < cell.length; i++) {
@@ -185,7 +186,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
             'All Ships Ready!'
           : SHIPS[props.game.playerBoard.shipsPlaced];
       }
-    } else void new Audio(shipErrorSound).play();
+    } else playSound(shipErrorSound);
   };
 
   const attackCell = (row: number, col: number): void => {
