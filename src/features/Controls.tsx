@@ -298,7 +298,7 @@ export const Controls = (props: {
             `}>
             <CgSpinnerTwoAlt
               class={css`
-                animation: spin 1s linear infinite;
+                animation: spin 1.5s linear infinite;
 
                 @keyframes spin {
                   to {

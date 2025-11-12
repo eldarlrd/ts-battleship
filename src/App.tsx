@@ -2,6 +2,7 @@ import { css } from '@emotion/css';
 import { CgSpinnerTwoAlt } from 'solid-icons/cg';
 import { FaSolidRobot, FaSolidUser } from 'solid-icons/fa';
 import { IoVolumeHighSharp, IoVolumeMuteSharp } from 'solid-icons/io';
+import { TbTargetArrow } from 'solid-icons/tb';
 import { createSignal, onCleanup, type JSXElement } from 'solid-js';
 
 import 'modern-normalize/modern-normalize.css';
@@ -36,15 +37,14 @@ let overlay = document.getElementById('overlay') as HTMLDivElement;
      . Player victory conditions
      . Stop game on leave
      . Add lobbies
-    2. Near opponent name thinking
-     . Board border color transition when opponent plays
-    3. Refactor
+    2. Refactor
 */
 export const App = (): JSXElement => {
   const [gameMode, setGameMode] = createSignal<GameMode | null>(null);
   const [game, setGame] = createSignal<Player | OnlinePlayer>(new Player());
   const [isControlUp, setIsControlUp] = createSignal(true);
   const [isAuthenticating, setIsAuthenticating] = createSignal(false);
+  const [isOpponentTurn, setIsOpponentTurn] = createSignal(false);
   const [matchmakingStatus, setMatchmakingStatus] = createSignal('');
   const [boardUpdateTrigger, setBoardUpdateTrigger] = createSignal(0);
 
@@ -158,7 +158,7 @@ export const App = (): JSXElement => {
           `}>
           <CgSpinnerTwoAlt
             class={css`
-              animation: spin 1s linear infinite;
+              animation: spin 1.5s linear infinite;
 
               @keyframes spin {
                 to {
@@ -230,12 +230,30 @@ export const App = (): JSXElement => {
               `}>
               <span>
                 <FaSolidUser /> Player
+                {isOpponentTurn() && (
+                  <TbTargetArrow
+                    size='1.25rem'
+                    class={css`
+                      vertical-align: middle;
+                      margin-left: 0.25rem;
+                      animation: spin 1.5s linear infinite;
+
+                      @keyframes spin {
+                        to {
+                          transform: rotate(360deg);
+                        }
+                      }
+                    `}
+                  />
+                )}
               </span>
               <Gameboard
                 isPlayerBoard={true}
                 isPlacing={false}
                 isVertical={false}
                 game={game()}
+                isOpponentTurn={isOpponentTurn()}
+                setIsOpponentTurn={setIsOpponentTurn}
                 boardUpdateTrigger={boardUpdateTrigger}
               />
             </span>
@@ -255,9 +273,41 @@ export const App = (): JSXElement => {
                 {gameMode() === 'pve' ?
                   <>
                     <FaSolidRobot /> Computer
+                    {!isOpponentTurn() && (
+                      <TbTargetArrow
+                        size='1.25rem'
+                        class={css`
+                          vertical-align: middle;
+                          margin-left: 0.25rem;
+                          animation: spin 1.5s linear infinite;
+
+                          @keyframes spin {
+                            to {
+                              transform: rotate(360deg);
+                            }
+                          }
+                        `}
+                      />
+                    )}
                   </>
                 : <>
                     <FaSolidUser /> Opponent
+                    {!isOpponentTurn() && (
+                      <TbTargetArrow
+                        size='1.25rem'
+                        class={css`
+                          vertical-align: middle;
+                          margin-left: 0.25rem;
+                          animation: spin 1.5s linear infinite;
+
+                          @keyframes spin {
+                            to {
+                              transform: rotate(360deg);
+                            }
+                          }
+                        `}
+                      />
+                    )}
                   </>
                 }
               </span>
@@ -266,6 +316,8 @@ export const App = (): JSXElement => {
                 isPlacing={false}
                 isVertical={false}
                 game={game()}
+                isOpponentTurn={!isOpponentTurn()}
+                setIsOpponentTurn={setIsOpponentTurn}
                 boardUpdateTrigger={boardUpdateTrigger}
               />
             </span>

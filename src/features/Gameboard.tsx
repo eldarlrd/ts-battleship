@@ -23,10 +23,12 @@ interface GameboardSettings {
   isPlayerBoard: boolean;
   isPlacing: boolean;
   isVertical: boolean;
+  isOpponentTurn?: boolean;
   game: Player | OnlinePlayer;
   shipInfo?: HTMLSpanElement;
   startButton?: HTMLButtonElement;
   setIsDoneSetup?: Setter<boolean>;
+  setIsOpponentTurn?: Setter<boolean>;
   boardUpdateTrigger?: () => number;
   placementRefreshTrigger?: () => number;
 }
@@ -94,11 +96,15 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
             props.game.playerBoard.impacts.forEach(impact => {
               checkImpact(impact.row, impact.col);
             });
+
+            props.setIsOpponentTurn?.(prev => !prev);
           } else {
             // Apply visual updates for all impacts on opponent board (our moves)
             props.game.opponentBoard.impacts.forEach(impact => {
               checkImpact(impact.row, impact.col);
             });
+
+            props.setIsOpponentTurn?.(prev => prev);
           }
         }
       },
@@ -110,6 +116,9 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
   onMount(() => {
     // Only the Player Board component instance (isPlayerBoard: true) in PvE mode
     // needs to listen for the computer's visual move command.
+    if (props.game instanceof OnlinePlayer)
+      props.setIsOpponentTurn?.(!props.game.isPlayer1);
+
     if (props.isPlayerBoard && !(props.game instanceof OnlinePlayer)) {
       const handleComputerAttack = (event: Event): void => {
         const customEvent = event as CustomEvent<{
@@ -119,6 +128,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
         const { row, col } = customEvent.detail;
 
         // This correctly runs checkImpact in the context of the Player's Board (p1- elements)
+        props.setIsOpponentTurn?.(false);
         checkImpact(row, col);
       };
 
@@ -201,11 +211,12 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
 
     // Await the async takeTurn call for online games
     const isSuccessfulHit = props.game.takeTurn({ row, col });
-    const moveDelay = 1000; // 1 second
+    const moveDelay = 1500; // 1.5 seconds
 
     if (isSuccessfulHit) {
       checkImpact(row, col);
       document.dispatchEvent(new Event('attack'));
+      if (!('isCurrPlayerTurn' in props.game)) props.setIsOpponentTurn?.(true);
 
       if (!props.game.playerVictorious && !('isCurrPlayerTurn' in props.game)) {
         setIsComputerTurn(true);
@@ -385,78 +396,117 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     });
   };
 
+  const spinnerContainer = css`
+    position: relative;
+    padding: 3px;
+    margin: -3px;
+    border-radius: 0.125rem;
+    overflow: hidden;
+    isolation: isolate;
+
+    &:before {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      width: 300%;
+      height: 300%;
+      z-index: -1;
+
+      background: conic-gradient(
+        ${COLOR_VARIABLES.secondary} 0% 16%,
+        transparent 16% 44%,
+        transparent 44% 72%,
+        transparent 72% 100%
+      );
+
+      animation: spin 1.5s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(1turn);
+      }
+    }
+  `;
+
   return (
-    <section
-      class={css`
-        font-size: 2.5rem;
-        font-weight: 600;
-        display: grid;
-        border: 1px solid ${COLOR_VARIABLES.grid};
-        grid-template-columns: repeat(10, 1fr);
-        grid-template-rows: repeat(10, 1fr);
-        position: relative;
-      `}>
-      <For each={props.game.playerBoard.grid}>
-        {(gridRow, i) => (
-          <For each={gridRow}>
-            {(gridElem, j) => (
-              <button
-                type='button'
-                id={`${props.isPlayerBoard ? 'p1-' : 'p2-'}${(i() * 10 + j()).toString()}`}
-                onClick={() => {
-                  if (props.isPlacing && props.game.playerBoard.shipsPlaced < 5)
-                    placeShip(i(), j());
-                  if (!props.isPlayerBoard) attackCell(i(), j());
-                }}
-                onMouseEnter={() => {
-                  handleCellHover(i(), j(), true);
-                }}
-                onMouseLeave={() => {
-                  handleCellHover(i(), j(), false);
-                }}
-                class={css`
-                  background: ${gridElem && props.isPlayerBoard ?
-                    COLOR_VARIABLES.ship
-                  : COLOR_VARIABLES.secondary};
-                  border: 1px solid ${COLOR_VARIABLES.grid};
-                  padding: ${props.isPlacing ? '14.5px' : '15.5px'};
-                  text-align: center;
-                  cursor: ${(!props.isPlayerBoard ||
-                    (props.isPlacing && !gridElem)) &&
-                  'pointer'};
+    <div class={props.isOpponentTurn ? spinnerContainer : ''}>
+      <section
+        class={css`
+          font-size: 2.5rem;
+          font-weight: 600;
+          display: grid;
+          border: 1px solid ${COLOR_VARIABLES.grid};
+          grid-template-columns: repeat(10, 1fr);
+          grid-template-rows: repeat(10, 1fr);
+          position: relative;
+        `}>
+        <For each={props.game.playerBoard.grid}>
+          {(gridRow, i) => (
+            <For each={gridRow}>
+              {(gridElem, j) => (
+                <button
+                  type='button'
+                  id={`${props.isPlayerBoard ? 'p1-' : 'p2-'}${(i() * 10 + j()).toString()}`}
+                  onClick={() => {
+                    if (
+                      props.isPlacing &&
+                      props.game.playerBoard.shipsPlaced < 5
+                    )
+                      placeShip(i(), j());
+                    if (!props.isPlayerBoard) attackCell(i(), j());
+                  }}
+                  onMouseEnter={() => {
+                    handleCellHover(i(), j(), true);
+                  }}
+                  onMouseLeave={() => {
+                    handleCellHover(i(), j(), false);
+                  }}
+                  class={css`
+                    background: ${gridElem && props.isPlayerBoard ?
+                      COLOR_VARIABLES.ship
+                    : COLOR_VARIABLES.secondary};
+                    border: 1px solid ${COLOR_VARIABLES.grid};
+                    padding: ${props.isPlacing ? '14.5px' : '15.5px'};
+                    text-align: center;
+                    cursor: ${(!props.isPlayerBoard ||
+                      (props.isPlacing && !gridElem)) &&
+                    'pointer'};
 
-                  &[data-ship-hover='valid'] {
-                    background: ${COLOR_VARIABLES.hover};
-                  }
-
-                  &[data-ship-hover='invalid'] {
-                    background: ${COLOR_VARIABLES.outOfBounds};
-                  }
-
-                  ${MEDIA_QUERIES.mouse} {
-                    &:hover {
-                      background: ${!props.isPlayerBoard &&
-                      COLOR_VARIABLES.hover};
+                    &[data-ship-hover='valid'] {
+                      background: ${COLOR_VARIABLES.hover};
                     }
-                  }
 
-                  ${MEDIA_QUERIES.sm} {
-                    padding: ${props.isPlacing ? '16.5px' : '13.5px'};
-                  }
+                    &[data-ship-hover='invalid'] {
+                      background: ${COLOR_VARIABLES.outOfBounds};
+                    }
 
-                  ${MEDIA_QUERIES.md} {
-                    padding: ${props.isPlacing ? '18.5px' : '16.5px'};
-                  }
+                    ${MEDIA_QUERIES.mouse} {
+                      &:hover {
+                        background: ${!props.isPlayerBoard &&
+                        COLOR_VARIABLES.hover};
+                      }
+                    }
 
-                  ${MEDIA_QUERIES.lg} {
-                    padding: 1.25rem;
-                  }
-                `}
-              />
-            )}
-          </For>
-        )}
-      </For>
-    </section>
+                    ${MEDIA_QUERIES.sm} {
+                      padding: ${props.isPlacing ? '16.5px' : '13.5px'};
+                    }
+
+                    ${MEDIA_QUERIES.md} {
+                      padding: ${props.isPlacing ? '18.5px' : '16.5px'};
+                    }
+
+                    ${MEDIA_QUERIES.lg} {
+                      padding: 1.25rem;
+                    }
+                  `}
+                />
+              )}
+            </For>
+          )}
+        </For>
+      </section>
+    </div>
   );
 };

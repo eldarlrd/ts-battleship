@@ -28,6 +28,7 @@ export class OnlinePlayer {
   private pendingRoomUpdate: GameRoom | null;
   private processedOpponentMoves: Set<string>;
   private processedPlayerMoves: Set<string>;
+  private _currentRoom: GameRoom | null;
 
   public constructor(playerId: string) {
     this.playerVictorious = 0;
@@ -44,6 +45,7 @@ export class OnlinePlayer {
     this.pendingRoomUpdate = null;
     this.processedOpponentMoves = new Set<string>();
     this.processedPlayerMoves = new Set<string>();
+    this._currentRoom = null;
   }
 
   // Compatibility properties for Gameboard component
@@ -75,6 +77,8 @@ export class OnlinePlayer {
       if (snapshot.exists()) {
         const room = { ...snapshot.data(), id: this.roomId } as GameRoom;
 
+        this._currentRoom = room;
+
         if (this.onRoomUpdateCallbacks.length > 0) {
           this.onRoomUpdateCallbacks.forEach(callback => {
             callback(room);
@@ -87,6 +91,10 @@ export class OnlinePlayer {
       console.error('Error joining matchmaking:', error);
       throw error;
     }
+  }
+
+  public getRoom(): GameRoom | null {
+    return this._currentRoom;
   }
 
   // Set callback for room updates
@@ -347,6 +355,8 @@ export class OnlinePlayer {
 
     this.unsubscribe = subscribeToRoom(this.roomId, (room: GameRoom | null) => {
       if (!room) return;
+
+      this._currentRoom = room;
 
       // Update room status
       this.roomStatus = room.status;
