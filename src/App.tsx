@@ -1,5 +1,3 @@
-import { isMuted, toggleMute } from '@/lib/audio.ts';
-
 import { css } from '@emotion/css';
 import { CgSpinnerTwoAlt } from 'solid-icons/cg';
 import { FaSolidRobot, FaSolidUser } from 'solid-icons/fa';
@@ -25,6 +23,7 @@ import { Controls } from '@/features/Controls.tsx';
 import { Gameboard } from '@/features/Gameboard.tsx';
 import { Modal } from '@/features/Modal.tsx';
 import ModeSelection from '@/features/ModeSelection.tsx';
+import { isMuted, toggleMute } from '@/lib/audio.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
 
@@ -33,13 +32,11 @@ let overlay = document.getElementById('overlay') as HTMLDivElement;
 
 /*
   TODO
-    1. Game Logic
-     . Error toasts
+    1. Error toasts
      . Player victory conditions
      . Stop game on leave
      . Add lobbies
-    2. UI/UX
-     . Near opponent name thinking
+    2. Near opponent name thinking
      . Board border color transition when opponent plays
     3. Refactor
 */

@@ -82,7 +82,7 @@ export const Controls = (props: {
       }
     } else {
       props.setIsControlUp(false);
-      playSound(shipDeploySound);
+      playSound(startSound);
     }
   };
 
