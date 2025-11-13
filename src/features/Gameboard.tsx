@@ -36,45 +36,37 @@ interface GameboardSettings {
 export const Gameboard = (props: GameboardSettings): JSXElement => {
   const [isComputerTurn, setIsComputerTurn] = createSignal(false);
 
-  // Function to refresh visual board state based on current grid
   const refreshBoardVisuals = (): void => {
     if (!props.isPlayerBoard || !props.isPlacing) return;
 
     const playerId = 'p1-';
     const board = props.game.playerBoard;
 
-    // Clear all cell styles first
-    for (let row = 0; row < 10; row++) {
+    // Clear all styles
+    for (let row = 0; row < 10; row++)
       for (let col = 0; col < 10; col++) {
         const element = document.getElementById(
           playerId + (row * 10 + col).toString()
         );
 
         if (element) {
-          // --- ❌ FIX: Clear the problematic inline style ---
-          element.style.backgroundColor = ''; // <--- Crucial: Remove the inline style
-          // ---------------------------------------------------
-
-          // --- FIX: Manage the placed ship state via attribute ---
+          element.style.backgroundColor = '';
           const cell = board.grid[row][col];
 
           if (cell) {
             element.style.backgroundColor = COLOR_VARIABLES.ship;
-            element.dataset.shipPlaced = 'true'; // Set attribute for placed ship
+            element.dataset.shipPlaced = 'true';
             element.style.cursor = 'default';
           } else {
-            delete element.dataset.shipPlaced; // Remove attribute for empty cell
+            delete element.dataset.shipPlaced;
             element.style.cursor = 'pointer';
           }
 
-          // Ensure any lingering hover state from previous attempts is cleared
           delete element.dataset.shipHover;
         }
       }
-    }
   };
 
-  // Effect to refresh board visuals during placement (for randomize/clear)
   createEffect(
     on(
       () => props.placementRefreshTrigger?.(),
@@ -85,21 +77,18 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     )
   );
 
-  // Effect to update visual state when board changes (for online mode)
   createEffect(
     on(
       () => props.boardUpdateTrigger?.(),
       () => {
         if (props.game instanceof OnlinePlayer) {
           if (props.isPlayerBoard) {
-            // Apply visual updates for all impacts on player board (opponent's moves)
             props.game.playerBoard.impacts.forEach(impact => {
               checkImpact(impact.row, impact.col);
             });
 
             props.setIsOpponentTurn?.(prev => !prev);
           } else {
-            // Apply visual updates for all impacts on opponent board (our moves)
             props.game.opponentBoard.impacts.forEach(impact => {
               checkImpact(impact.row, impact.col);
             });
@@ -112,10 +101,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     )
   );
 
-  // --- NEW LOGIC FOR PVE COMPUTER ATTACK VISUALS ---
   onMount(() => {
-    // Only the Player Board component instance (isPlayerBoard: true) in PvE mode
-    // needs to listen for the computer's visual move command.
     if (props.game instanceof OnlinePlayer)
       props.setIsOpponentTurn?.(!props.game.isPlayer1);
 
@@ -127,7 +113,6 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
         }>;
         const { row, col } = customEvent.detail;
 
-        // This correctly runs checkImpact in the context of the Player's Board (p1- elements)
         props.setIsOpponentTurn?.(false);
         checkImpact(row, col);
       };
@@ -190,26 +175,22 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
         if (props.setIsDoneSetup) props.setIsDoneSetup(true);
       }
 
-      if (props.shipInfo) {
+      if (props.shipInfo)
         props.shipInfo.innerText =
           props.game.playerBoard.shipsPlaced >= 5 ?
             'All Ships Ready!'
           : SHIPS[props.game.playerBoard.shipsPlaced];
-      }
     } else playSound(shipErrorSound);
   };
 
   const attackCell = (row: number, col: number): void => {
     if (props.game.playerVictorious) return;
 
-    // For online games, check if it's the player's turn
     if ('isCurrPlayerTurn' in props.game && !props.game.isCurrPlayerTurn)
       return;
 
-    // For PvE mode, check if computer is taking its turn
     if (!('isCurrPlayerTurn' in props.game) && isComputerTurn()) return;
 
-    // Await the async takeTurn call for online games
     const isSuccessfulHit = props.game.takeTurn({ row, col });
     const moveDelay = 1500; // 1.5 seconds
 
@@ -235,9 +216,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
   };
 
   const checkImpact = (cellRow: number, cellCol: number): void => {
-    // Use props.isPlayerBoard to determine which board's DOM elements to target
     const playerId = props.isPlayerBoard ? 'p1-' : 'p2-';
-    // Get the correct board based on which component this is
     const currBoard =
       props.isPlayerBoard ? props.game.playerBoard : props.game.computerBoard;
 
@@ -247,30 +226,21 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
 
     if (!element) return;
 
-    // Check if this cell was actually hit
     const wasHit = currBoard.impacts.some(
       impact => impact.row === cellRow && impact.col === cellCol
     );
-
-    // Get the cell state (Ship object, number, or undefined)
     const cell = currBoard.grid[cellRow][cellCol];
 
     if (!wasHit && !(props.game instanceof Player && !props.isPlayerBoard)) {
       return;
     }
 
-    // Handle miss (empty cell)
     if (!cell) {
       element.style.backgroundColor = COLOR_VARIABLES.emptyHit;
       element.style.cursor = 'default';
-    }
-    // Handle hit on ship (Ship object)
-    else if (typeof cell === 'object') {
-      // Check if ship is sunk
+    } else if (typeof cell === 'object') {
       if (cell.sunk) {
-        // Color all cells of the sunk ship
         for (let i = 0; i < cell.length; i++) {
-          // Determine coordinates for the full ship
           const currRow = cell.isVertical ? cell.coords.row + i : cellRow;
           const currCol = cell.isVertical ? cellCol : cell.coords.col + i;
 
@@ -282,7 +252,6 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
             shipElement.style.backgroundColor = COLOR_VARIABLES.shipSunk;
             shipElement.style.cursor = 'default';
 
-            // Mark adjacent cells as hits
             const adjCells = currBoard.hitAdjacent({
               row: currRow,
               col: currCol
@@ -301,18 +270,13 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
           }
         }
       } else {
-        // Ship hit but not sunk
         element.style.backgroundColor = COLOR_VARIABLES.shipHit;
         element.style.cursor = 'default';
       }
-    }
-    // Handle hit marker (number) for opponent board in online mode
-    else if (cell === 1) {
-      // This is a hit on the opponent board (we don't have ship objects, just markers)
+    } else if (cell === 1) {
       element.style.backgroundColor = COLOR_VARIABLES.shipHit;
       element.style.cursor = 'default';
     } else if (cell === 2) {
-      // This is a hit on the opponent board (we don't have ship objects, just markers)
       element.style.backgroundColor = COLOR_VARIABLES.shipSunk;
       element.style.cursor = 'default';
     }

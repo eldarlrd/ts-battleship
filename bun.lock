@@ -1176,7 +1176,7 @@
 
     "keyv": ["keyv@4.5.4", "", { "dependencies": { "json-buffer": "3.0.1" } }, "sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw=="],
 
-    "knip": ["knip@5.69.0", "", { "dependencies": { "@nodelib/fs.walk": "^1.2.3", "fast-glob": "^3.3.3", "formatly": "^0.3.0", "jiti": "^2.6.0", "js-yaml": "^4.1.0", "minimist": "^1.2.8", "oxc-resolver": "^11.12.0", "picocolors": "^1.1.1", "picomatch": "^4.0.1", "smol-toml": "^1.4.1", "strip-json-comments": "5.0.2", "zod": "^4.1.11" }, "peerDependencies": { "@types/node": ">=18", "typescript": ">=5.0.4 <7" }, "bin": { "knip": "bin/knip.js", "knip-bun": "bin/knip-bun.js" } }, "sha512-aJHQIR+QC3XUnwohqGvyT0VidvKOD8WYk4kfLr5oKnQH/P06jY6rH/HMriwPmvrAWquGV2vKyLv6XgC/GolYtw=="],
+    "knip": ["knip@5.69.1", "", { "dependencies": { "@nodelib/fs.walk": "^1.2.3", "fast-glob": "^3.3.3", "formatly": "^0.3.0", "jiti": "^2.6.0", "js-yaml": "^4.1.0", "minimist": "^1.2.8", "oxc-resolver": "^11.12.0", "picocolors": "^1.1.1", "picomatch": "^4.0.1", "smol-toml": "^1.4.1", "strip-json-comments": "5.0.2", "zod": "^4.1.11" }, "peerDependencies": { "@types/node": ">=18", "typescript": ">=5.0.4 <7" }, "bin": { "knip": "bin/knip.js", "knip-bun": "bin/knip-bun.js" } }, "sha512-duK61dmrk9O3RiPQtDrsWGzxGyNoyf9gQyjXPcvmcecZypdv9x0ixzPdBU4YTPRbwvUaRtNGulHYUyixz2fbKg=="],
 
     "known-css-properties": ["known-css-properties@0.30.0", "", {}, "sha512-VSWXYUnsPu9+WYKkfmJyLKtIvaRJi1kXUqVmBACORXZQxT5oZDsoZ2vQP+bQFDnWtpI/4eq3MLoRMjI2fnLzTQ=="],
 

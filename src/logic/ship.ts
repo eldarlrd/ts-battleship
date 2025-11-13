@@ -14,25 +14,25 @@ export class Ship implements ShipStats {
   public sunk: boolean;
   public coords: Coordinates;
   public isVertical: boolean;
-  private hits: number;
+  private _hits: number;
 
   public constructor(length = 2) {
     this.length = length;
     this.sunk = false;
     this.coords = { row: 0, col: 0 };
     this.isVertical = false;
-    this.hits = 0;
+    this._hits = 0;
   }
 
   public hit(): void {
     if (!this.sunk) {
-      this.hits++;
-      this.isSunk();
+      this._hits++;
+      this._isSunk();
     }
   }
 
-  private isSunk(): void {
-    if (this.hits === this.length) {
+  private _isSunk(): void {
+    if (this._hits === this.length) {
       this.sunk = true;
 
       playSound(shipSunkSound);

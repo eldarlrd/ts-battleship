@@ -23,11 +23,11 @@ export class OnlinePlayer {
   public opponentId: string | null;
   public roomStatus: 'waiting' | 'ready' | 'playing' | 'finished';
   public isPlayer1: boolean;
-  private unsubscribe: Unsubscribe | null;
-  private onRoomUpdateCallbacks: ((room: GameRoom) => void)[];
-  private pendingRoomUpdate: GameRoom | null;
-  private processedOpponentMoves: Set<string>;
-  private processedPlayerMoves: Set<string>;
+  private _unsubscribe: Unsubscribe | null;
+  private _onRoomUpdateCallbacks: ((room: GameRoom) => void)[];
+  private _pendingRoomUpdate: GameRoom | null;
+  private _processedOpponentMoves: Set<string>;
+  private _processedPlayerMoves: Set<string>;
   private _currentRoom: GameRoom | null;
 
   public constructor(playerId: string) {
@@ -40,15 +40,14 @@ export class OnlinePlayer {
     this.opponentId = null;
     this.roomStatus = 'waiting';
     this.isPlayer1 = false;
-    this.unsubscribe = null;
-    this.onRoomUpdateCallbacks = [];
-    this.pendingRoomUpdate = null;
-    this.processedOpponentMoves = new Set<string>();
-    this.processedPlayerMoves = new Set<string>();
+    this._unsubscribe = null;
+    this._onRoomUpdateCallbacks = [];
+    this._pendingRoomUpdate = null;
+    this._processedOpponentMoves = new Set<string>();
+    this._processedPlayerMoves = new Set<string>();
     this._currentRoom = null;
   }
 
-  // Compatibility properties for Gameboard component
   public get isCurrPlayerOne(): boolean {
     return this.isCurrPlayerTurn;
   }
@@ -57,18 +56,15 @@ export class OnlinePlayer {
     return this.opponentBoard;
   }
 
-  // Compatibility method - not used in PvP mode
   public computerTurn(): Coordinates {
     return { row: 0, col: 0 };
   }
 
-  // Find or create a game room
   public async joinMatchmaking(): Promise<void> {
     try {
       this.roomId = await findOrCreateRoom(this.playerId);
-      this.setupRoomSubscription();
+      this._setupRoomSubscription();
 
-      // Trigger initial room state update
       const { getDoc, doc } = await import('firebase/firestore');
       const { firestore } = await import('@/config/firebase.ts');
       const roomRef = doc(firestore, 'rooms', this.roomId);
@@ -79,16 +75,17 @@ export class OnlinePlayer {
 
         this._currentRoom = room;
 
-        if (this.onRoomUpdateCallbacks.length > 0) {
-          this.onRoomUpdateCallbacks.forEach(callback => {
+        if (this._onRoomUpdateCallbacks.length > 0) {
+          this._onRoomUpdateCallbacks.forEach(callback => {
             callback(room);
           });
         } else {
-          this.pendingRoomUpdate = room;
+          this._pendingRoomUpdate = room;
         }
       }
     } catch (error) {
-      console.error('Error joining matchmaking:', error);
+      if (error instanceof Error)
+        console.error('Error joining matchmaking:', error);
       throw error;
     }
   }
@@ -97,31 +94,27 @@ export class OnlinePlayer {
     return this._currentRoom;
   }
 
-  // Set callback for room updates
   public setRoomUpdateCallback(callback: (room: GameRoom) => void): void {
-    this.onRoomUpdateCallbacks.push(callback);
+    this._onRoomUpdateCallbacks.push(callback);
 
-    // Process any pending update with all callbacks
-    if (this.pendingRoomUpdate) {
-      this.onRoomUpdateCallbacks.forEach(cb => {
-        cb(this.pendingRoomUpdate!);
+    if (this._pendingRoomUpdate) {
+      this._onRoomUpdateCallbacks.forEach(cb => {
+        cb(this._pendingRoomUpdate!);
       });
-      this.pendingRoomUpdate = null;
+      this._pendingRoomUpdate = null;
     }
   }
 
-  // Submit board and mark ready
   public async submitBoard(): Promise<void> {
     if (!this.roomId) {
       throw new Error('Not in a room');
     }
 
-    const serializedBoard = this.serializeBoard(this.playerBoard);
+    const serializedBoard = this._serializeBoard(this.playerBoard);
 
     await setPlayerReady(this.roomId, this.playerId, serializedBoard);
   }
 
-  // Make a move (fire at opponent's board)
   public async takeTurn(coordinates: Coordinates): Promise<boolean> {
     if (!this.roomId) {
       throw new Error('Not in a room');
@@ -131,18 +124,16 @@ export class OnlinePlayer {
       throw new Error('Not your turn');
     }
 
-    // Check if already fired at this position
     const moveKey = `${coordinates.row.toString()}-${coordinates.col.toString()}`;
 
-    if (this.processedPlayerMoves.has(moveKey)) {
+    if (this._processedPlayerMoves.has(moveKey)) {
       throw new Error('Already fired at this position');
     }
 
     try {
-      // Get opponent's actual board from room
-      const opponentBoard = await this.getOpponentBoardFromRoom();
+      const opponentBoard = await this._getOpponentBoardFromRoom();
 
-      // Make move on Firebase
+      // Firebase move
       const result = await makeMove(
         this.roomId,
         this.playerId,
@@ -151,109 +142,34 @@ export class OnlinePlayer {
         opponentBoard
       );
 
-      // Update local opponent board for display
+      // Update local opponent board display
       this.opponentBoard.fire(coordinates);
-      this.processedPlayerMoves.add(moveKey);
+      this._processedPlayerMoves.add(moveKey);
 
       if (result.sunk) {
-        const shipElement = this.findSunkShipDetails(
+        const shipElement = this._findSunkShipDetails(
           coordinates,
           opponentBoard
         );
 
         if (shipElement) {
-          // 1. Mark all ship cells as 'hit' visually on opponentBoard
-          this.markSunkShipVisuals(shipElement.shipCells);
+          this._markSunkShipVisuals(shipElement.shipCells);
 
-          // 2. Mark adjacent cells as misses/hits (using Board's utility)
-          this.markAdjacentMisses(shipElement.shipCells);
+          this._markAdjacentMisses(shipElement.shipCells);
         }
-      }
-
-      // Mark the grid cell to indicate hit
-      else if (result.hit) {
-        // @ts-expect-error - Storing hit marker for visual display
+      } else if (result.hit) {
+        // @ts-expect-error: Store hit marker for visual display
         this.opponentBoard.grid[coordinates.row][coordinates.col] = 1;
-        // Check if we won
-        await this.checkVictory();
+        await this._checkVictory();
       }
 
       return result.hit;
     } catch (error) {
-      console.error('Error making move:', error);
+      if (error instanceof Error) console.error('Error making move:', error);
       throw error;
     }
   }
 
-  private findSunkShipDetails(
-    hitCoord: Coordinates,
-    fullBoard: number[][]
-  ): { shipCells: Coordinates[]; length: number } | null {
-    const shipLength = fullBoard[hitCoord.row][hitCoord.col];
-
-    const shipCells: Coordinates[] = [];
-
-    // Simple brute-force to find all connected cells of the same ship type/length
-    // This is a simplification; a more robust `Board` class would store ship objects.
-    for (let r = 0; r < 10; r++) {
-      for (let c = 0; c < 10; c++) {
-        if (fullBoard[r][c] === shipLength) {
-          // Check if this cell has been hit in *our* record of moves
-          const moveKey = `${r.toString()}-${c.toString()}`;
-
-          if (this.processedPlayerMoves.has(moveKey)) {
-            // Check if this cell is part of the same contiguous ship as hitCoord
-            // This is the hard part without ship objects. We'll simplify:
-            shipCells.push({ row: r, col: c });
-          }
-        }
-      }
-    }
-
-    // In a real implementation, you'd use the ship object's coordinates/orientation
-    // to build the shipCells array, but since you don't have it, we approximate.
-
-    return { shipCells, length: shipLength };
-  }
-
-  private markSunkShipVisuals(shipCells: Coordinates[]): void {
-    shipCells.forEach(coord => {
-      // @ts-expect-error: replace this later
-      this.opponentBoard.grid[coord.row][coord.col] = 2;
-      const shipSunk = document.getElementById(
-        'p2-' + (coord.row * 10 + coord.col).toString()
-      );
-
-      if (shipSunk) {
-        shipSunk.style.backgroundColor = COLOR_VARIABLES.shipSunk;
-        shipSunk.style.cursor = 'default';
-      }
-    });
-  }
-
-  private markAdjacentMisses(shipCells: Coordinates[]): void {
-    shipCells.forEach(cell => {
-      // You'll need to add this method to your Board class
-      const adjCells = this.opponentBoard.hitAdjacent({
-        row: cell.row,
-        col: cell.col
-      });
-
-      adjCells.forEach(coord => {
-        const adjHit = document.getElementById(
-          'p2-' + (coord.row * 10 + coord.col).toString()
-        );
-
-        // Only mark if we haven't already fired/hit/missed there
-        if (adjHit) {
-          adjHit.style.backgroundColor = COLOR_VARIABLES.emptyHit;
-          adjHit.style.cursor = 'default';
-        }
-      });
-    });
-  }
-
-  // Place ship on player board
   public successfullyPlace(
     board: Board,
     ship: Ship,
@@ -287,9 +203,7 @@ export class OnlinePlayer {
     } else {
       coords = { row: manualRow, col: manualCol };
 
-      if (!board.place(ship, coords, isVertical)) {
-        return false;
-      }
+      if (!board.place(ship, coords, isVertical)) return false;
 
       ship.isVertical = isVertical;
       ship.coords = coords;
@@ -298,7 +212,57 @@ export class OnlinePlayer {
     }
   }
 
-  // Place all ships randomly
+  public async cleanup(): Promise<void> {
+    if (this._unsubscribe) {
+      this._unsubscribe();
+      this._unsubscribe = null;
+    }
+
+    if (this.roomId) {
+      await leaveRoom(this.roomId, this.playerId);
+      this.roomId = null;
+    }
+
+    this._processedOpponentMoves.clear();
+    this._processedPlayerMoves.clear();
+  }
+
+  private _findSunkShipDetails(
+    hitCoord: Coordinates,
+    fullBoard: number[][]
+  ): { shipCells: Coordinates[]; length: number } | null {
+    const shipLength = fullBoard[hitCoord.row][hitCoord.col];
+
+    const shipCells: Coordinates[] = [];
+
+    // Find all adjacent cells of a ship
+    for (let r = 0; r < 10; r++)
+      for (let c = 0; c < 10; c++)
+        if (fullBoard[r][c] === shipLength) {
+          const moveKey = `${r.toString()}-${c.toString()}`;
+
+          if (this._processedPlayerMoves.has(moveKey))
+            shipCells.push({ row: r, col: c });
+        }
+
+    return { shipCells, length: shipLength };
+  }
+
+  private _markSunkShipVisuals(shipCells: Coordinates[]): void {
+    shipCells.forEach(coord => {
+      // @ts-expect-error: Store hit marker for visual display
+      this.opponentBoard.grid[coord.row][coord.col] = 2;
+      const shipSunk = document.getElementById(
+        'p2-' + (coord.row * 10 + coord.col).toString()
+      );
+
+      if (shipSunk) {
+        shipSunk.style.backgroundColor = COLOR_VARIABLES.shipSunk;
+        shipSunk.style.cursor = 'default';
+      }
+    });
+  }
+
   public randomPlace(): void {
     this.playerBoard = new Board();
     const shipLengths = [5, 4, 3, 3, 2];
@@ -310,133 +274,114 @@ export class OnlinePlayer {
     }
   }
 
-  // Clean up and leave room
-  public async cleanup(): Promise<void> {
-    if (this.unsubscribe) {
-      this.unsubscribe();
-      this.unsubscribe = null;
-    }
+  private _markAdjacentMisses(shipCells: Coordinates[]): void {
+    shipCells.forEach(cell => {
+      const adjCells = this.opponentBoard.hitAdjacent({
+        row: cell.row,
+        col: cell.col
+      });
 
-    if (this.roomId) {
-      await leaveRoom(this.roomId, this.playerId);
-      this.roomId = null;
-    }
+      adjCells.forEach(coord => {
+        const adjHit = document.getElementById(
+          'p2-' + (coord.row * 10 + coord.col).toString()
+        );
 
-    this.processedOpponentMoves.clear();
-    this.processedPlayerMoves.clear();
+        if (adjHit) {
+          adjHit.style.backgroundColor = COLOR_VARIABLES.emptyHit;
+          adjHit.style.cursor = 'default';
+        }
+      });
+    });
   }
 
-  // Helper: Convert board grid to number[][] for Firebase
-  private serializeBoard(board: Board): number[][] {
+  // Deconstruct into flat array
+  private _serializeBoard(board: Board): number[][] {
     return board.grid.map(row =>
       row.map(cell => {
         if (cell === null) return 0;
 
-        // Ship object - return its length as identifier (1-5)
         return cell.length;
       })
     );
   }
 
-  // Helper: Reconstruct 2D array from flattened array
-  private deserializeBoard(flatBoard: number[]): number[][] {
+  // Reconstruct 2D array
+  private _deserializeBoard(flatBoard: number[]): number[][] {
     const board2D: number[][] = [];
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 10; i++)
       board2D.push(flatBoard.slice(i * 10, (i + 1) * 10));
-    }
 
     return board2D;
   }
 
-  // Set up real-time subscription to room changes
-  private setupRoomSubscription(): void {
+  private _setupRoomSubscription(): void {
     if (!this.roomId) return;
 
-    this.unsubscribe = subscribeToRoom(this.roomId, (room: GameRoom | null) => {
-      if (!room) return;
+    this._unsubscribe = subscribeToRoom(
+      this.roomId,
+      (room: GameRoom | null) => {
+        if (!room) return;
+        this._currentRoom = room;
+        this.roomStatus = room.status;
+        this.isPlayer1 = room.player1.uid === this.playerId;
 
-      this._currentRoom = room;
+        if (room.player2)
+          this.opponentId =
+            this.isPlayer1 ? room.player2.uid : room.player1.uid;
 
-      // Update room status
-      this.roomStatus = room.status;
+        if (room.currentTurn)
+          this.isCurrPlayerTurn = room.currentTurn === this.playerId;
 
-      // Determine if this player is player1
-      this.isPlayer1 = room.player1.uid === this.playerId;
+        // Sync opponent moves to local board
+        if (this.opponentId) {
+          const opponentMoves = room.moves?.[this.opponentId] ?? [];
 
-      // Set opponent ID
-      if (room.player2) {
-        this.opponentId = this.isPlayer1 ? room.player2.uid : room.player1.uid;
-      }
+          opponentMoves.forEach(move => {
+            const moveKey = `${move.row.toString()}-${move.col.toString()}`;
 
-      // Update turn state
-      if (room.currentTurn) {
-        this.isCurrPlayerTurn = room.currentTurn === this.playerId;
-      }
+            if (!this._processedOpponentMoves.has(moveKey)) {
+              this.playerBoard.fire({ row: move.row, col: move.col });
+              this._processedOpponentMoves.add(moveKey);
+            }
+          });
+        }
 
-      // Sync opponent's moves to our player board
-      if (this.opponentId) {
-        const opponentMoves = room.moves?.[this.opponentId] ?? [];
+        // Sync local moves to opponent board
+        const ourMoves = room.moves?.[this.playerId] ?? [];
 
-        opponentMoves.forEach(move => {
+        ourMoves.forEach(move => {
           const moveKey = `${move.row.toString()}-${move.col.toString()}`;
 
-          if (!this.processedOpponentMoves.has(moveKey)) {
-            this.playerBoard.fire({ row: move.row, col: move.col });
-            this.processedOpponentMoves.add(moveKey);
+          if (!this._processedPlayerMoves.has(moveKey)) {
+            this.opponentBoard.fire({ row: move.row, col: move.col });
+
+            if (move.sunk)
+              // @ts-expect-error: Store hit marker for visual display
+              this.opponentBoard.grid[move.row][move.col] = 2;
+            else if (move.hit)
+              // @ts-expect-error: Store hit marker for visual display
+              this.opponentBoard.grid[move.row][move.col] = 1;
+
+            this._processedPlayerMoves.add(moveKey);
           }
         });
+
+        if (room.winner)
+          this.playerVictorious = room.winner === this.playerId ? 1 : 2;
+
+        // Call all external callbacks
+        if (this._onRoomUpdateCallbacks.length > 0)
+          this._onRoomUpdateCallbacks.forEach(callback => {
+            callback(room);
+          });
+        else this._pendingRoomUpdate = room;
       }
-
-      // Sync our moves to opponent board (for visual display)
-      const ourMoves = room.moves?.[this.playerId] ?? [];
-
-      ourMoves.forEach(move => {
-        const moveKey = `${move.row.toString()}-${move.col.toString()}`;
-
-        if (!this.processedPlayerMoves.has(moveKey)) {
-          this.opponentBoard.fire({ row: move.row, col: move.col });
-
-          if (move.sunk) {
-            // @ts-expect-error - Storing hit marker for visual display
-            this.opponentBoard.grid[move.row][move.col] = 2;
-          }
-
-          // Mark hits visually on the grid
-          else if (move.hit) {
-            // @ts-expect-error - Storing hit marker for visual display
-            this.opponentBoard.grid[move.row][move.col] = 1;
-          }
-
-          this.processedPlayerMoves.add(moveKey);
-        }
-      });
-
-      // Check for winner
-      if (room.winner) {
-        if (room.winner === this.playerId) {
-          this.playerVictorious = 1;
-        } else {
-          this.playerVictorious = 2;
-        }
-      }
-
-      // Call all external callbacks
-      if (this.onRoomUpdateCallbacks.length > 0) {
-        this.onRoomUpdateCallbacks.forEach(callback => {
-          callback(room);
-        });
-      } else {
-        this.pendingRoomUpdate = room;
-      }
-    });
+    );
   }
 
-  // Get opponent's board from Firebase
-  private async getOpponentBoardFromRoom(): Promise<number[][]> {
-    if (!this.roomId) {
-      throw new Error('Not in a room');
-    }
+  private async _getOpponentBoardFromRoom(): Promise<number[][]> {
+    if (!this.roomId) throw new Error('Not in a room');
 
     const { getDoc, doc } = await import('firebase/firestore');
     const { firestore } = await import('@/config/firebase.ts');
@@ -444,39 +389,30 @@ export class OnlinePlayer {
     const roomRef = doc(firestore, 'rooms', this.roomId);
     const snapshot = await getDoc(roomRef);
 
-    if (!snapshot.exists()) {
-      throw new Error('Room does not exist');
-    }
+    if (!snapshot.exists()) throw new Error('Room does not exist');
 
     const room = snapshot.data() as GameRoom;
     const opponentData = this.isPlayer1 ? room.player2 : room.player1;
 
-    if (!opponentData?.board) {
-      throw new Error('Opponent board not available');
-    }
+    if (!opponentData?.board) throw new Error('Opponent board not available');
 
-    return this.deserializeBoard(opponentData.board as unknown as number[]);
+    return this._deserializeBoard(opponentData.board as unknown as number[]);
   }
 
-  // Check if all opponent ships are sunk
-  private async checkVictory(): Promise<void> {
+  private async _checkVictory(): Promise<void> {
     if (!this.roomId) return;
-
-    const opponentBoard = await this.getOpponentBoardFromRoom();
-
-    // Check if all ship cells are hit
+    const opponentBoard = await this._getOpponentBoardFromRoom();
     let allShipsSunk = true;
 
+    // Find all adjacent cells of a ship
     for (let i = 0; i < 10; i++) {
       for (let j = 0; j < 10; j++) {
         const cell = opponentBoard[i][j];
 
-        // If there's a ship cell (1-5)
         if (cell > 0 && cell <= 5) {
-          // Check if this cell has been hit by checking our moves
           const moveKey = `${i.toString()}-${j.toString()}`;
 
-          if (!this.processedPlayerMoves.has(moveKey)) {
+          if (!this._processedPlayerMoves.has(moveKey)) {
             allShipsSunk = false;
             break;
           }

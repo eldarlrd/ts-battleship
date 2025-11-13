@@ -75,7 +75,7 @@ export const Controls = (props: {
         setWaitingForOpponent(true);
         await onlineGame.submitBoard();
       } catch (error: unknown) {
-        console.error(error);
+        if (error instanceof Error) console.error(error);
         setWaitingForOpponent(false);
 
         return;

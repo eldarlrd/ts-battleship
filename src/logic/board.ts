@@ -21,7 +21,7 @@ class Board {
   }
 
   public place(ship: Ship, start: Coordinates, isVertical: boolean): boolean {
-    if (!this.isPlaceable(ship, start, isVertical)) return false;
+    if (!this._isPlaceable(ship, start, isVertical)) return false;
     const { row, col } = start;
     const direction = isVertical ? 1 : 0;
 
@@ -55,7 +55,7 @@ class Board {
   }
 
   public hitAdjacent(coordinates: Coordinates): Coordinates[] {
-    return this.getAdjacent(coordinates).filter(coord => {
+    return this._getAdjacent(coordinates).filter(coord => {
       const { row, col } = coord;
 
       if (this.grid[row][col] === null) {
@@ -75,7 +75,7 @@ class Board {
       .every(ship => ship.sunk);
   }
 
-  private isPlaceable(
+  private _isPlaceable(
     ship: Ship,
     start: Coordinates,
     isVertical: boolean
@@ -90,13 +90,13 @@ class Board {
       if (nextRow < 0 || nextRow >= 10 || nextCol < 0 || nextCol >= 10)
         return false;
       if (this.grid[nextRow][nextCol] !== null) return false;
-      if (this.isAdjacent(nextRow, nextCol)) return false;
+      if (this._isAdjacent(nextRow, nextCol)) return false;
     }
 
     return true;
   }
 
-  private getAdjacent(coordinates: Coordinates): Coordinates[] {
+  private _getAdjacent(coordinates: Coordinates): Coordinates[] {
     const { row, col } = coordinates;
     const adjOffsets = [
       { row: -1, col: 0 },
@@ -123,8 +123,8 @@ class Board {
       );
   }
 
-  private isAdjacent(row: number, col: number): boolean {
-    return this.getAdjacent({ row, col }).some(
+  private _isAdjacent(row: number, col: number): boolean {
+    return this._getAdjacent({ row, col }).some(
       coord => this.grid[coord.row][coord.col] !== null
     );
   }

@@ -33,11 +33,10 @@ let overlay = document.getElementById('overlay') as HTMLDivElement;
 
 /*
   TODO
-    1. Error toasts
-     . Player victory conditions
-     . Stop game on leave
-     . Add lobbies
-    2. Refactor
+    • Error toasts
+    • Player victory conditions
+    • Stop game on leave
+    • Add lobbies
 */
 export const App = (): JSXElement => {
   const [gameMode, setGameMode] = createSignal<GameMode | null>(null);

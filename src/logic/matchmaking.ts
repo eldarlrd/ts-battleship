@@ -51,7 +51,6 @@ interface MoveResult {
   sunk?: boolean;
 }
 
-// Create a new game room
 const createGameRoom = async (playerId: string): Promise<string> => {
   const roomsRef = collection(firestore, 'rooms');
   const newRoomRef = doc(roomsRef);
@@ -79,7 +78,6 @@ const createGameRoom = async (playerId: string): Promise<string> => {
   return roomId;
 };
 
-// Join an existing game room
 const joinGameRoom = async (
   roomId: string,
   playerId: string
@@ -87,19 +85,14 @@ const joinGameRoom = async (
   const roomRef = doc(firestore, 'rooms', roomId);
   const snapshot = await getDoc(roomRef);
 
-  if (!snapshot.exists()) {
-    throw new Error('Room does not exist');
-  }
+  if (!snapshot.exists()) throw new Error('Room does not exist');
 
   const room = snapshot.data() as GameRoom;
 
-  if (room.player2) {
-    throw new Error('Room is full');
-  }
+  if (room.player2) throw new Error('Room is full');
 
-  if (room.status !== 'waiting') {
+  if (room.status !== 'waiting')
     throw new Error('Room is not accepting players');
-  }
 
   await updateDoc(roomRef, {
     player2: {
@@ -113,13 +106,11 @@ const joinGameRoom = async (
   return true;
 };
 
-// Find an available room or create a new one
 const findOrCreateRoom = async (playerId: string): Promise<string> => {
   const roomsRef = collection(firestore, 'rooms');
   const q = query(roomsRef, where('status', '==', 'waiting'));
   const snapshot = await getDocs(q);
 
-  // Find a waiting room
   for (const docSnap of snapshot.docs) {
     const room = docSnap.data() as GameRoom;
     const roomId = docSnap.id;
@@ -130,7 +121,7 @@ const findOrCreateRoom = async (playerId: string): Promise<string> => {
 
         return roomId;
       } catch (error: unknown) {
-        console.error(error);
+        if (error instanceof Error) console.error(error);
       }
     }
   }
@@ -138,7 +129,6 @@ const findOrCreateRoom = async (playerId: string): Promise<string> => {
   return await createGameRoom(playerId);
 };
 
-// Set player as ready with their board
 const setPlayerReady = async (
   roomId: string,
   playerId: string,
@@ -147,9 +137,7 @@ const setPlayerReady = async (
   const roomRef = doc(firestore, 'rooms', roomId);
   const snapshot = await getDoc(roomRef);
 
-  if (!snapshot.exists()) {
-    throw new Error('Room does not exist');
-  }
+  if (!snapshot.exists()) throw new Error('Room does not exist');
 
   const room = snapshot.data() as GameRoom;
   const isPlayer1 = room.player1.uid === playerId;
@@ -160,19 +148,17 @@ const setPlayerReady = async (
     [`${playerKey}.board`]: board.flat()
   });
 
-  // Check if both players are ready
+  // Check if players ready
   const updatedSnapshot = await getDoc(roomRef);
   const updatedRoom = updatedSnapshot.data() as GameRoom;
 
-  if (updatedRoom.player1.ready && updatedRoom.player2?.ready) {
+  if (updatedRoom.player1.ready && updatedRoom.player2?.ready)
     await updateDoc(roomRef, {
       status: 'playing',
-      currentTurn: updatedRoom.player1.uid // Player 1 goes first
+      currentTurn: updatedRoom.player1.uid // Player 1 first
     });
-  }
 };
 
-// Make a move (attack opponent's board)
 const makeMove = async (
   roomId: string,
   playerId: string,
@@ -183,55 +169,37 @@ const makeMove = async (
   const roomRef = doc(firestore, 'rooms', roomId);
   const snapshot = await getDoc(roomRef);
 
-  if (!snapshot.exists()) {
-    throw new Error('Room does not exist');
-  }
+  if (!snapshot.exists()) throw new Error('Room does not exist');
 
   const room = snapshot.data() as GameRoom;
 
-  if (room.currentTurn !== playerId) {
-    throw new Error('Not your turn');
-  }
+  if (room.currentTurn !== playerId) throw new Error('Not your turn');
 
-  // Check if move is valid
   const cell = opponentBoard[row][col];
-  const hit = cell > 0 && cell <= 5; // Ship cells are 1-5
+  const hit = cell > 0 && cell <= 5;
 
   let sunk = false;
   let sunkShipLength: number | undefined;
 
-  // If hit, check if ship is sunk
   if (hit) {
     const shipLength = cell;
     const moves = room.moves?.[playerId] ?? [];
 
-    // Find all cells of this ship
     const shipCells: { row: number; col: number }[] = [];
 
-    // Try horizontal ship
-    for (let c = col; c < 10 && opponentBoard[row][c] === shipLength; c++) {
+    for (let c = col; c < 10 && opponentBoard[row][c] === shipLength; c++)
       shipCells.push({ row, col: c });
-    }
-    for (let c = col - 1; c >= 0 && opponentBoard[row][c] === shipLength; c--) {
+    for (let c = col - 1; c >= 0 && opponentBoard[row][c] === shipLength; c--)
       shipCells.push({ row, col: c });
-    }
 
-    // If not matching ship length, try vertical
     if (shipCells.length !== shipLength) {
       shipCells.length = 0;
-      for (let r = row; r < 10 && opponentBoard[r][col] === shipLength; r++) {
+      for (let r = row; r < 10 && opponentBoard[r][col] === shipLength; r++)
         shipCells.push({ row: r, col });
-      }
-      for (
-        let r = row - 1;
-        r >= 0 && opponentBoard[r][col] === shipLength;
-        r--
-      ) {
+      for (let r = row - 1; r >= 0 && opponentBoard[r][col] === shipLength; r--)
         shipCells.push({ row: r, col });
-      }
     }
 
-    // Check if all cells of the ship have been hit (including this move)
     const allHit = shipCells.every(
       shipCell =>
         moves.some(
@@ -247,7 +215,6 @@ const makeMove = async (
     }
   }
 
-  // Record the move
   const moves = room.moves?.[playerId] ?? [];
   const moveData: Move = { row, col, hit };
 
@@ -257,15 +224,10 @@ const makeMove = async (
   }
   moves.push(moveData);
 
-  // Update sunk ships count
   const sunkShipsCount = room.sunkShipsCount ?? {};
 
-  if (!sunkShipsCount[playerId]) {
-    sunkShipsCount[playerId] = 0;
-  }
-  if (sunk) {
-    sunkShipsCount[playerId]++;
-  }
+  if (!sunkShipsCount[playerId]) sunkShipsCount[playerId] = 0;
+  if (sunk) sunkShipsCount[playerId]++;
 
   // Switch turn
   const isPlayer1 = room.player1.uid === playerId;
@@ -280,7 +242,6 @@ const makeMove = async (
   return { row, col, hit, sunk };
 };
 
-// Declare winner
 const declareWinner = async (
   roomId: string,
   winnerId: string
@@ -293,7 +254,6 @@ const declareWinner = async (
   });
 };
 
-// Listen to room changes
 const subscribeToRoom = (
   roomId: string,
   callback: (room: GameRoom | null) => void
@@ -301,15 +261,12 @@ const subscribeToRoom = (
   const roomRef = doc(firestore, 'rooms', roomId);
 
   return onSnapshot(roomRef, snapshot => {
-    if (snapshot.exists()) {
+    if (snapshot.exists())
       callback({ ...snapshot.data(), id: roomId } as GameRoom);
-    } else {
-      callback(null);
-    }
+    else callback(null);
   });
 };
 
-// Leave room
 const leaveRoom = async (roomId: string, playerId: string): Promise<void> => {
   const roomRef = doc(firestore, 'rooms', roomId);
   const snapshot = await getDoc(roomRef);
