@@ -11,7 +11,6 @@ import Header from '@/components/banners/Header.tsx';
 import Toast from '@/components/banners/Toast.tsx';
 import '@fontsource-variable/stick-no-bills';
 import { NewGame } from '@/components/buttons/NewGame.tsx';
-import { ERROR_NO_CONNECTION } from '@/config/errors.ts';
 import { signInAnonymous } from '@/config/firebase.ts';
 import { type GameMode } from '@/config/rules.ts';
 import {
@@ -38,6 +37,8 @@ let overlay = document.getElementById('overlay') as HTMLDivElement;
     • Stop game on leave
     • Add lobbies
 */
+
+// * Whole app’s some serious Solid + OOP spaghetti code
 export const App = (): JSXElement => {
   const [gameMode, setGameMode] = createSignal<GameMode | null>(null);
   const [game, setGame] = createSignal<Player | OnlinePlayer>(new Player());
@@ -79,8 +80,8 @@ export const App = (): JSXElement => {
         setGame(onlineGame);
       } catch (error: unknown) {
         if (error instanceof Error) {
-          errorToast(ERROR_NO_CONNECTION);
           console.error(error);
+          errorToast(error.message);
         }
 
         setGameMode(null);

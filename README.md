@@ -14,7 +14,7 @@
 > - **[Vitest](https://vitest.dev)**
 > - **[Vite](https://vite.dev)**
 >
-> based on the classic board game with a PvE component.
+> based on the classic board game with PvE & PvP modes.
 
 ## Install
 ```sh

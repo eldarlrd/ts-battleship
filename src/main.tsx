@@ -21,6 +21,7 @@
 import { render } from 'solid-js/web';
 
 import { App } from '@/App.tsx';
+import { ERROR_SERVICE_WORKER } from '@/config/errors.ts';
 
 const root = document.getElementById('root');
 
@@ -34,7 +35,8 @@ const registerSW = (): void => {
           scope: '/ts-battleship/'
         })
         .catch((error: unknown) => {
-          if (error instanceof Error) console.error(error);
+          if (error instanceof Error)
+            console.error(ERROR_SERVICE_WORKER, error);
         });
     });
 };

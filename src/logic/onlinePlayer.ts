@@ -1,5 +1,6 @@
 import { type Unsubscribe } from 'firebase/firestore';
 
+import { ERROR_NO_CONNECTION } from '@/config/errors.ts';
 import { COLOR_VARIABLES } from '@/config/site.ts';
 import { Board, type Coordinates } from '@/logic/board.ts';
 import {
@@ -84,9 +85,8 @@ export class OnlinePlayer {
         }
       }
     } catch (error) {
-      if (error instanceof Error)
-        console.error('Error joining matchmaking:', error);
-      throw error;
+      if (error instanceof Error) console.error(error);
+      throw new Error(ERROR_NO_CONNECTION);
     }
   }
 
@@ -106,9 +106,7 @@ export class OnlinePlayer {
   }
 
   public async submitBoard(): Promise<void> {
-    if (!this.roomId) {
-      throw new Error('Not in a room');
-    }
+    if (!this.roomId) throw new Error('Not in a room');
 
     const serializedBoard = this._serializeBoard(this.playerBoard);
 
@@ -116,13 +114,9 @@ export class OnlinePlayer {
   }
 
   public async takeTurn(coordinates: Coordinates): Promise<boolean> {
-    if (!this.roomId) {
-      throw new Error('Not in a room');
-    }
+    if (!this.roomId) throw new Error('Not in a room');
 
-    if (!this.isCurrPlayerTurn) {
-      throw new Error('Not your turn');
-    }
+    if (!this.isCurrPlayerTurn) throw new Error('Not your turn');
 
     const moveKey = `${coordinates.row.toString()}-${coordinates.col.toString()}`;
 

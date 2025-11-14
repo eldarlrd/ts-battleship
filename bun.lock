@@ -348,7 +348,7 @@
 
     "@eslint/plugin-kit": ["@eslint/plugin-kit@0.4.1", "", { "dependencies": { "@eslint/core": "^0.17.0", "levn": "^0.4.1" } }, "sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA=="],
 
-    "@firebase/ai": ["@firebase/ai@2.5.0", "", { "dependencies": { "@firebase/app-check-interop-types": "0.3.3", "@firebase/component": "0.7.0", "@firebase/logger": "0.5.0", "@firebase/util": "1.13.0", "tslib": "^2.1.0" }, "peerDependencies": { "@firebase/app": "0.x", "@firebase/app-types": "0.x" } }, "sha512-OXv/jZLRjV9jTejWA4KOvW8gM1hNsLvQSCPwKhi2CEfe0Nap3rM6z+Ial0PGqXga0WgzhpypEvJOFvaAUFX3kg=="],
+    "@firebase/ai": ["@firebase/ai@2.6.0", "", { "dependencies": { "@firebase/app-check-interop-types": "0.3.3", "@firebase/component": "0.7.0", "@firebase/logger": "0.5.0", "@firebase/util": "1.13.0", "tslib": "^2.1.0" }, "peerDependencies": { "@firebase/app": "0.x", "@firebase/app-types": "0.x" } }, "sha512-NGyE7NQDFznOv683Xk4+WoUv39iipa9lEfrwvvPz33ChzVbCCiB69FJQTK2BI/11pRtzYGbHo1/xMz7gxWWhJw=="],
 
     "@firebase/analytics": ["@firebase/analytics@0.10.19", "", { "dependencies": { "@firebase/component": "0.7.0", "@firebase/installations": "0.6.19", "@firebase/logger": "0.5.0", "@firebase/util": "1.13.0", "tslib": "^2.1.0" }, "peerDependencies": { "@firebase/app": "0.x" } }, "sha512-3wU676fh60gaiVYQEEXsbGS4HbF2XsiBphyvvqDbtC1U4/dO4coshbYktcCHq+HFaGIK07iHOh4pME0hEq1fcg=="],
 
@@ -356,7 +356,7 @@
 
     "@firebase/analytics-types": ["@firebase/analytics-types@0.8.3", "", {}, "sha512-VrIp/d8iq2g501qO46uGz3hjbDb8xzYMrbu8Tp0ovzIzrvJZ2fvmj649gTjge/b7cCCcjT0H37g1gVtlNhnkbg=="],
 
-    "@firebase/app": ["@firebase/app@0.14.5", "", { "dependencies": { "@firebase/component": "0.7.0", "@firebase/logger": "0.5.0", "@firebase/util": "1.13.0", "idb": "7.1.1", "tslib": "^2.1.0" } }, "sha512-zyNY77xJOGwcuB+xCxF8z8lSiHvD4ox7BCsqLEHEvgqQoRjxFZ0fkROR6NV5QyXmCqRLodMM8J5d2EStOocWIw=="],
+    "@firebase/app": ["@firebase/app@0.14.6", "", { "dependencies": { "@firebase/component": "0.7.0", "@firebase/logger": "0.5.0", "@firebase/util": "1.13.0", "idb": "7.1.1", "tslib": "^2.1.0" } }, "sha512-4uyt8BOrBsSq6i4yiOV/gG6BnnrvTeyymlNcaN/dKvyU1GoolxAafvIvaNP1RCGPlNab3OuE4MKUQuv2lH+PLQ=="],
 
     "@firebase/app-check": ["@firebase/app-check@0.11.0", "", { "dependencies": { "@firebase/component": "0.7.0", "@firebase/logger": "0.5.0", "@firebase/util": "1.13.0", "tslib": "^2.1.0" }, "peerDependencies": { "@firebase/app": "0.x" } }, "sha512-XAvALQayUMBJo58U/rxW02IhsesaxxfWVmVkauZvGEz3vOAjMEQnzFlyblqkc2iAaO82uJ2ZVyZv9XzPfxjJ6w=="],
 
@@ -366,7 +366,7 @@
 
     "@firebase/app-check-types": ["@firebase/app-check-types@0.5.3", "", {}, "sha512-hyl5rKSj0QmwPdsAxrI5x1otDlByQ7bvNvVt8G/XPO2CSwE++rmSVf3VEhaeOR4J8ZFaF0Z0NDSmLejPweZ3ng=="],
 
-    "@firebase/app-compat": ["@firebase/app-compat@0.5.5", "", { "dependencies": { "@firebase/app": "0.14.5", "@firebase/component": "0.7.0", "@firebase/logger": "0.5.0", "@firebase/util": "1.13.0", "tslib": "^2.1.0" } }, "sha512-lVG/nRnXaot0rQSZazmTNqy83ti9O3+kdwoaE0d5wahRIWNoDirbIMcGVjDDgdmf4IE6FYreWOMh0L3DV1475w=="],
+    "@firebase/app-compat": ["@firebase/app-compat@0.5.6", "", { "dependencies": { "@firebase/app": "0.14.6", "@firebase/component": "0.7.0", "@firebase/logger": "0.5.0", "@firebase/util": "1.13.0", "tslib": "^2.1.0" } }, "sha512-YYGARbutghQY4zZUWMYia0ib0Y/rb52y72/N0z3vglRHL7ii/AaK9SA7S/dzScVOlCdnbHXz+sc5Dq+r8fwFAg=="],
 
     "@firebase/app-types": ["@firebase/app-types@0.9.3", "", {}, "sha512-kRVpIl4vVGJ4baogMDINbyrIOtOxqhkZQg4jTq3l8Lw6WSk0xfpEYzezFu+Kl4ve4fbPl79dvwRtaFqAC/ucCw=="],
 
@@ -380,7 +380,7 @@
 
     "@firebase/component": ["@firebase/component@0.7.0", "", { "dependencies": { "@firebase/util": "1.13.0", "tslib": "^2.1.0" } }, "sha512-wR9En2A+WESUHexjmRHkqtaVH94WLNKt6rmeqZhSLBybg4Wyf0Umk04SZsS6sBq4102ZsDBFwoqMqJYj2IoDSg=="],
 
-    "@firebase/data-connect": ["@firebase/data-connect@0.3.11", "", { "dependencies": { "@firebase/auth-interop-types": "0.2.4", "@firebase/component": "0.7.0", "@firebase/logger": "0.5.0", "@firebase/util": "1.13.0", "tslib": "^2.1.0" }, "peerDependencies": { "@firebase/app": "0.x" } }, "sha512-G258eLzAD6im9Bsw+Qm1Z+P4x0PGNQ45yeUuuqe5M9B1rn0RJvvsQCRHXgE52Z+n9+WX1OJd/crcuunvOGc7Vw=="],
+    "@firebase/data-connect": ["@firebase/data-connect@0.3.12", "", { "dependencies": { "@firebase/auth-interop-types": "0.2.4", "@firebase/component": "0.7.0", "@firebase/logger": "0.5.0", "@firebase/util": "1.13.0", "tslib": "^2.1.0" }, "peerDependencies": { "@firebase/app": "0.x" } }, "sha512-baPddcoNLj/+vYo+HSJidJUdr5W4OkhT109c5qhR8T1dJoZcyJpkv/dFpYlw/VJ3dV66vI8GHQFrmAZw/xUS4g=="],
 
     "@firebase/database": ["@firebase/database@1.1.0", "", { "dependencies": { "@firebase/app-check-interop-types": "0.3.3", "@firebase/auth-interop-types": "0.2.4", "@firebase/component": "0.7.0", "@firebase/logger": "0.5.0", "@firebase/util": "1.13.0", "faye-websocket": "0.11.4", "tslib": "^2.1.0" } }, "sha512-gM6MJFae3pTyNLoc9VcJNuaUDej0ctdjn3cVtILo3D5lpp0dmUHHLFN/pUKe7ImyeB1KAvRlEYxvIHNF04Filg=="],
 
@@ -676,23 +676,23 @@
 
     "@unrs/resolver-binding-win32-x64-msvc": ["@unrs/resolver-binding-win32-x64-msvc@1.11.1", "", { "os": "win32", "cpu": "x64" }, "sha512-lrW200hZdbfRtztbygyaq/6jP6AKE8qQN2KvPcJ+x7wiD038YtnYtZ82IMNJ69GJibV7bwL3y9FgK+5w/pYt6g=="],
 
-    "@vitest/coverage-v8": ["@vitest/coverage-v8@4.0.8", "", { "dependencies": { "@bcoe/v8-coverage": "^1.0.2", "@vitest/utils": "4.0.8", "ast-v8-to-istanbul": "^0.3.8", "debug": "^4.4.3", "istanbul-lib-coverage": "^3.2.2", "istanbul-lib-report": "^3.0.1", "istanbul-lib-source-maps": "^5.0.6", "istanbul-reports": "^3.2.0", "magicast": "^0.5.1", "std-env": "^3.10.0", "tinyrainbow": "^3.0.3" }, "peerDependencies": { "@vitest/browser": "4.0.8", "vitest": "4.0.8" }, "optionalPeers": ["@vitest/browser"] }, "sha512-wQgmtW6FtPNn4lWUXi8ZSYLpOIb92j3QCujxX3sQ81NTfQ/ORnE0HtK7Kqf2+7J9jeveMGyGyc4NWc5qy3rC4A=="],
+    "@vitest/coverage-v8": ["@vitest/coverage-v8@4.0.9", "", { "dependencies": { "@bcoe/v8-coverage": "^1.0.2", "@vitest/utils": "4.0.9", "ast-v8-to-istanbul": "^0.3.8", "debug": "^4.4.3", "istanbul-lib-coverage": "^3.2.2", "istanbul-lib-report": "^3.0.1", "istanbul-lib-source-maps": "^5.0.6", "istanbul-reports": "^3.2.0", "magicast": "^0.5.1", "std-env": "^3.10.0", "tinyrainbow": "^3.0.3" }, "peerDependencies": { "@vitest/browser": "4.0.9", "vitest": "4.0.9" }, "optionalPeers": ["@vitest/browser"] }, "sha512-70oyhP+Q0HlWBIeGSP74YBw5KSjYhNgSCQjvmuQFciMqnyF36WL2cIkcT7XD85G4JPmBQitEMUsx+XMFv2AzQA=="],
 
     "@vitest/eslint-plugin": ["@vitest/eslint-plugin@1.4.2", "", { "dependencies": { "@typescript-eslint/scope-manager": "^8.46.1", "@typescript-eslint/utils": "^8.46.1" }, "peerDependencies": { "eslint": ">=8.57.0", "typescript": ">=5.0.0", "vitest": "*" }, "optionalPeers": ["typescript", "vitest"] }, "sha512-7rENIOOk6eqgtf2FsQWilgfQheeuGRiU3lB2H+pmtbcA4jOdtBfQHVqS7f/KCOJ2JKjrIJgow8yUeANi34rj9w=="],
 
-    "@vitest/expect": ["@vitest/expect@4.0.8", "", { "dependencies": { "@standard-schema/spec": "^1.0.0", "@types/chai": "^5.2.2", "@vitest/spy": "4.0.8", "@vitest/utils": "4.0.8", "chai": "^6.2.0", "tinyrainbow": "^3.0.3" } }, "sha512-Rv0eabdP/xjAHQGr8cjBm+NnLHNoL268lMDK85w2aAGLFoVKLd8QGnVon5lLtkXQCoYaNL0wg04EGnyKkkKhPA=="],
+    "@vitest/expect": ["@vitest/expect@4.0.9", "", { "dependencies": { "@standard-schema/spec": "^1.0.0", "@types/chai": "^5.2.2", "@vitest/spy": "4.0.9", "@vitest/utils": "4.0.9", "chai": "^6.2.0", "tinyrainbow": "^3.0.3" } }, "sha512-C2vyXf5/Jfj1vl4DQYxjib3jzyuswMi/KHHVN2z+H4v16hdJ7jMZ0OGe3uOVIt6LyJsAofDdaJNIFEpQcrSTFw=="],
 
-    "@vitest/mocker": ["@vitest/mocker@4.0.8", "", { "dependencies": { "@vitest/spy": "4.0.8", "estree-walker": "^3.0.3", "magic-string": "^0.30.21" }, "peerDependencies": { "msw": "^2.4.9", "vite": "^6.0.0 || ^7.0.0-0" }, "optionalPeers": ["msw", "vite"] }, "sha512-9FRM3MZCedXH3+pIh+ME5Up2NBBHDq0wqwhOKkN4VnvCiKbVxddqH9mSGPZeawjd12pCOGnl+lo/ZGHt0/dQSg=="],
+    "@vitest/mocker": ["@vitest/mocker@4.0.9", "", { "dependencies": { "@vitest/spy": "4.0.9", "estree-walker": "^3.0.3", "magic-string": "^0.30.21" }, "peerDependencies": { "msw": "^2.4.9", "vite": "^6.0.0 || ^7.0.0-0" }, "optionalPeers": ["msw", "vite"] }, "sha512-PUyaowQFHW+9FKb4dsvvBM4o025rWMlEDXdWRxIOilGaHREYTi5Q2Rt9VCgXgPy/hHZu1LeuXtrA/GdzOatP2g=="],
 
-    "@vitest/pretty-format": ["@vitest/pretty-format@4.0.8", "", { "dependencies": { "tinyrainbow": "^3.0.3" } }, "sha512-qRrjdRkINi9DaZHAimV+8ia9Gq6LeGz2CgIEmMLz3sBDYV53EsnLZbJMR1q84z1HZCMsf7s0orDgZn7ScXsZKg=="],
+    "@vitest/pretty-format": ["@vitest/pretty-format@4.0.9", "", { "dependencies": { "tinyrainbow": "^3.0.3" } }, "sha512-Hor0IBTwEi/uZqB7pvGepyElaM8J75pYjrrqbC8ZYMB9/4n5QA63KC15xhT+sqHpdGWfdnPo96E8lQUxs2YzSQ=="],
 
-    "@vitest/runner": ["@vitest/runner@4.0.8", "", { "dependencies": { "@vitest/utils": "4.0.8", "pathe": "^2.0.3" } }, "sha512-mdY8Sf1gsM8hKJUQfiPT3pn1n8RF4QBcJYFslgWh41JTfrK1cbqY8whpGCFzBl45LN028g0njLCYm0d7XxSaQQ=="],
+    "@vitest/runner": ["@vitest/runner@4.0.9", "", { "dependencies": { "@vitest/utils": "4.0.9", "pathe": "^2.0.3" } }, "sha512-aF77tsXdEvIJRkj9uJZnHtovsVIx22Ambft9HudC+XuG/on1NY/bf5dlDti1N35eJT+QZLb4RF/5dTIG18s98w=="],
 
-    "@vitest/snapshot": ["@vitest/snapshot@4.0.8", "", { "dependencies": { "@vitest/pretty-format": "4.0.8", "magic-string": "^0.30.21", "pathe": "^2.0.3" } }, "sha512-Nar9OTU03KGiubrIOFhcfHg8FYaRaNT+bh5VUlNz8stFhCZPNrJvmZkhsr1jtaYvuefYFwK2Hwrq026u4uPWCw=="],
+    "@vitest/snapshot": ["@vitest/snapshot@4.0.9", "", { "dependencies": { "@vitest/pretty-format": "4.0.9", "magic-string": "^0.30.21", "pathe": "^2.0.3" } }, "sha512-r1qR4oYstPbnOjg0Vgd3E8ADJbi4ditCzqr+Z9foUrRhIy778BleNyZMeAJ2EjV+r4ASAaDsdciC9ryMy8xMMg=="],
 
-    "@vitest/spy": ["@vitest/spy@4.0.8", "", {}, "sha512-nvGVqUunyCgZH7kmo+Ord4WgZ7lN0sOULYXUOYuHr55dvg9YvMz3izfB189Pgp28w0vWFbEEfNc/c3VTrqrXeA=="],
+    "@vitest/spy": ["@vitest/spy@4.0.9", "", {}, "sha512-J9Ttsq0hDXmxmT8CUOWUr1cqqAj2FJRGTdyEjSR+NjoOGKEqkEWj+09yC0HhI8t1W6t4Ctqawl1onHgipJve1A=="],
 
-    "@vitest/utils": ["@vitest/utils@4.0.8", "", { "dependencies": { "@vitest/pretty-format": "4.0.8", "tinyrainbow": "^3.0.3" } }, "sha512-pdk2phO5NDvEFfUTxcTP8RFYjVj/kfLSPIN5ebP2Mu9kcIMeAQTbknqcFEyBcC4z2pJlJI9aS5UQjcYfhmKAow=="],
+    "@vitest/utils": ["@vitest/utils@4.0.9", "", { "dependencies": { "@vitest/pretty-format": "4.0.9", "tinyrainbow": "^3.0.3" } }, "sha512-cEol6ygTzY4rUPvNZM19sDf7zGa35IYTm9wfzkHoT/f5jX10IOY7QleWSOh5T0e3I3WVozwK5Asom79qW8DiuQ=="],
 
     "acorn": ["acorn@8.15.0", "", { "bin": { "acorn": "bin/acorn" } }, "sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg=="],
 
@@ -956,7 +956,7 @@
 
     "find-up": ["find-up@5.0.0", "", { "dependencies": { "locate-path": "^6.0.0", "path-exists": "^4.0.0" } }, "sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng=="],
 
-    "firebase": ["firebase@12.5.0", "", { "dependencies": { "@firebase/ai": "2.5.0", "@firebase/analytics": "0.10.19", "@firebase/analytics-compat": "0.2.25", "@firebase/app": "0.14.5", "@firebase/app-check": "0.11.0", "@firebase/app-check-compat": "0.4.0", "@firebase/app-compat": "0.5.5", "@firebase/app-types": "0.9.3", "@firebase/auth": "1.11.1", "@firebase/auth-compat": "0.6.1", "@firebase/data-connect": "0.3.11", "@firebase/database": "1.1.0", "@firebase/database-compat": "2.1.0", "@firebase/firestore": "4.9.2", "@firebase/firestore-compat": "0.4.2", "@firebase/functions": "0.13.1", "@firebase/functions-compat": "0.4.1", "@firebase/installations": "0.6.19", "@firebase/installations-compat": "0.2.19", "@firebase/messaging": "0.12.23", "@firebase/messaging-compat": "0.2.23", "@firebase/performance": "0.7.9", "@firebase/performance-compat": "0.2.22", "@firebase/remote-config": "0.7.0", "@firebase/remote-config-compat": "0.2.20", "@firebase/storage": "0.14.0", "@firebase/storage-compat": "0.4.0", "@firebase/util": "1.13.0" } }, "sha512-Ak8JcpH7FL6kiv0STwkv5+3CYEROO9iFWSx7OCZVvc4kIIABAIyAGs1mPGaHRxGUIApFZdMCXA7baq17uS6Mow=="],
+    "firebase": ["firebase@12.6.0", "", { "dependencies": { "@firebase/ai": "2.6.0", "@firebase/analytics": "0.10.19", "@firebase/analytics-compat": "0.2.25", "@firebase/app": "0.14.6", "@firebase/app-check": "0.11.0", "@firebase/app-check-compat": "0.4.0", "@firebase/app-compat": "0.5.6", "@firebase/app-types": "0.9.3", "@firebase/auth": "1.11.1", "@firebase/auth-compat": "0.6.1", "@firebase/data-connect": "0.3.12", "@firebase/database": "1.1.0", "@firebase/database-compat": "2.1.0", "@firebase/firestore": "4.9.2", "@firebase/firestore-compat": "0.4.2", "@firebase/functions": "0.13.1", "@firebase/functions-compat": "0.4.1", "@firebase/installations": "0.6.19", "@firebase/installations-compat": "0.2.19", "@firebase/messaging": "0.12.23", "@firebase/messaging-compat": "0.2.23", "@firebase/performance": "0.7.9", "@firebase/performance-compat": "0.2.22", "@firebase/remote-config": "0.7.0", "@firebase/remote-config-compat": "0.2.20", "@firebase/storage": "0.14.0", "@firebase/storage-compat": "0.4.0", "@firebase/util": "1.13.0" } }, "sha512-8ZD1Gcv916Qp8/nsFH2+QMIrfX/76ti6cJwxQUENLXXnKlOX/IJZaU2Y3bdYf5r1mbownrQKfnWtrt+MVgdwLA=="],
 
     "flat-cache": ["flat-cache@4.0.1", "", { "dependencies": { "flatted": "^3.2.9", "keyv": "^4.5.4" } }, "sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw=="],
 
@@ -1528,7 +1528,7 @@
 
     "vitefu": ["vitefu@1.1.1", "", { "peerDependencies": { "vite": "^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0-beta.0" }, "optionalPeers": ["vite"] }, "sha512-B/Fegf3i8zh0yFbpzZ21amWzHmuNlLlmJT6n7bu5e+pCHUKQIfXSYokrqOBGEMMe9UG2sostKQF9mml/vYaWJQ=="],
 
-    "vitest": ["vitest@4.0.8", "", { "dependencies": { "@vitest/expect": "4.0.8", "@vitest/mocker": "4.0.8", "@vitest/pretty-format": "4.0.8", "@vitest/runner": "4.0.8", "@vitest/snapshot": "4.0.8", "@vitest/spy": "4.0.8", "@vitest/utils": "4.0.8", "debug": "^4.4.3", "es-module-lexer": "^1.7.0", "expect-type": "^1.2.2", "magic-string": "^0.30.21", "pathe": "^2.0.3", "picomatch": "^4.0.3", "std-env": "^3.10.0", "tinybench": "^2.9.0", "tinyexec": "^0.3.2", "tinyglobby": "^0.2.15", "tinyrainbow": "^3.0.3", "vite": "^6.0.0 || ^7.0.0", "why-is-node-running": "^2.3.0" }, "peerDependencies": { "@edge-runtime/vm": "*", "@types/debug": "^4.1.12", "@types/node": "^20.0.0 || ^22.0.0 || >=24.0.0", "@vitest/browser-playwright": "4.0.8", "@vitest/browser-preview": "4.0.8", "@vitest/browser-webdriverio": "4.0.8", "@vitest/ui": "4.0.8", "happy-dom": "*", "jsdom": "*" }, "optionalPeers": ["@edge-runtime/vm", "@types/debug", "@types/node", "@vitest/browser-playwright", "@vitest/browser-preview", "@vitest/browser-webdriverio", "@vitest/ui", "happy-dom", "jsdom"], "bin": { "vitest": "vitest.mjs" } }, "sha512-urzu3NCEV0Qa0Y2PwvBtRgmNtxhj5t5ULw7cuKhIHh3OrkKTLlut0lnBOv9qe5OvbkMH2g38G7KPDCTpIytBVg=="],
+    "vitest": ["vitest@4.0.9", "", { "dependencies": { "@vitest/expect": "4.0.9", "@vitest/mocker": "4.0.9", "@vitest/pretty-format": "4.0.9", "@vitest/runner": "4.0.9", "@vitest/snapshot": "4.0.9", "@vitest/spy": "4.0.9", "@vitest/utils": "4.0.9", "debug": "^4.4.3", "es-module-lexer": "^1.7.0", "expect-type": "^1.2.2", "magic-string": "^0.30.21", "pathe": "^2.0.3", "picomatch": "^4.0.3", "std-env": "^3.10.0", "tinybench": "^2.9.0", "tinyexec": "^0.3.2", "tinyglobby": "^0.2.15", "tinyrainbow": "^3.0.3", "vite": "^6.0.0 || ^7.0.0", "why-is-node-running": "^2.3.0" }, "peerDependencies": { "@edge-runtime/vm": "*", "@types/debug": "^4.1.12", "@types/node": "^20.0.0 || ^22.0.0 || >=24.0.0", "@vitest/browser-playwright": "4.0.9", "@vitest/browser-preview": "4.0.9", "@vitest/browser-webdriverio": "4.0.9", "@vitest/ui": "4.0.9", "happy-dom": "*", "jsdom": "*" }, "optionalPeers": ["@edge-runtime/vm", "@types/debug", "@types/node", "@vitest/browser-playwright", "@vitest/browser-preview", "@vitest/browser-webdriverio", "@vitest/ui", "happy-dom", "jsdom"], "bin": { "vitest": "vitest.mjs" } }, "sha512-E0Ja2AX4th+CG33yAFRC+d1wFx2pzU5r6HtG6LiPSE04flaE0qB6YyjSw9ZcpJAtVPfsvZGtJlKWZpuW7EHRxg=="],
 
     "w3c-xmlserializer": ["w3c-xmlserializer@5.0.0", "", { "dependencies": { "xml-name-validator": "^5.0.0" } }, "sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA=="],
 

@@ -2,6 +2,8 @@ import { initializeApp, type FirebaseApp } from 'firebase/app';
 import { getAuth, signInAnonymously, type Auth } from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
 
+import { ERROR_ONLINE_FAILED } from '@/config/errors.ts';
+
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN as string,
@@ -22,9 +24,8 @@ const signInAnonymous = async (): Promise<string> => {
 
     return userCredential.user.uid;
   } catch (error) {
-    if (error instanceof Error)
-      console.error('Error signing in anonymously:', error);
-    throw error;
+    if (error instanceof Error) console.error(error);
+    throw new Error(ERROR_ONLINE_FAILED);
   }
 };
 
