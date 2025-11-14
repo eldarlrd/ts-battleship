@@ -9,6 +9,7 @@
 > - **[Solid Icons](https://solid-icons.vercel.app)**
 > - **[Emotion](https://emotion.sh)**
 > - **[modern-normalize](https://github.com/sindresorhus/modern-normalize)**
+> - **[Firebase](https://firebase.google.com)**
 > - **[Nano ID](https://zelark.github.io/nano-id-cc)**
 > - **[Vite PWA](https://vite-pwa-org.netlify.app)**
 > - **[Vitest](https://vitest.dev)**
