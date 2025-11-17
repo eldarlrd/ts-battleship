@@ -1,7 +1,14 @@
 import { type Unsubscribe } from 'firebase/firestore';
 
-import { ERROR_NO_CONNECTION } from '@/config/errors.ts';
+import {
+  ERROR_NO_CONNECTION,
+  ERROR_NO_OPPONENT_BOARD,
+  ERROR_NO_ROOM,
+  ERROR_NOT_IN_ROOM,
+  ERROR_NOT_YOUR_TURN
+} from '@/config/errors.ts';
 import { COLOR_VARIABLES } from '@/config/site.ts';
+import { errorToast } from '@/config/toast.ts';
 import { Board, type Coordinates } from '@/logic/board.ts';
 import {
   findOrCreateRoom,
@@ -22,8 +29,8 @@ export class OnlinePlayer {
   public roomId: string | null;
   public playerId: string;
   public opponentId: string | null;
-  public roomStatus: 'waiting' | 'ready' | 'playing' | 'finished';
   public isPlayer1: boolean;
+  public roomStatus: 'waiting' | 'ready' | 'playing' | 'finished';
   private _unsubscribe: Unsubscribe | null;
   private _onRoomUpdateCallbacks: ((room: GameRoom) => void)[];
   private _pendingRoomUpdate: GameRoom | null;
@@ -85,7 +92,7 @@ export class OnlinePlayer {
         }
       }
     } catch (error) {
-      if (error instanceof Error) console.error(error);
+      if (error instanceof Error) console.error(error.message, error);
       throw new Error(ERROR_NO_CONNECTION);
     }
   }
@@ -106,7 +113,7 @@ export class OnlinePlayer {
   }
 
   public async submitBoard(): Promise<void> {
-    if (!this.roomId) throw new Error('Not in a room');
+    if (!this.roomId) throw new Error(ERROR_NOT_IN_ROOM);
 
     const serializedBoard = this._serializeBoard(this.playerBoard);
 
@@ -114,15 +121,13 @@ export class OnlinePlayer {
   }
 
   public async takeTurn(coordinates: Coordinates): Promise<boolean> {
-    if (!this.roomId) throw new Error('Not in a room');
+    if (!this.roomId) throw new Error(ERROR_NOT_IN_ROOM);
 
-    if (!this.isCurrPlayerTurn) throw new Error('Not your turn');
+    if (!this.isCurrPlayerTurn) throw new Error(ERROR_NOT_YOUR_TURN);
 
     const moveKey = `${coordinates.row.toString()}-${coordinates.col.toString()}`;
 
-    if (this._processedPlayerMoves.has(moveKey)) {
-      throw new Error('Already fired at this position');
-    }
+    if (this._processedPlayerMoves.has(moveKey)) return false;
 
     try {
       const opponentBoard = await this._getOpponentBoardFromRoom();
@@ -159,8 +164,12 @@ export class OnlinePlayer {
 
       return result.hit;
     } catch (error) {
-      if (error instanceof Error) console.error('Error making move:', error);
-      throw error;
+      if (error instanceof Error) {
+        errorToast(error.message);
+        console.error(error.message, error);
+      }
+
+      return false;
     }
   }
 
@@ -315,7 +324,21 @@ export class OnlinePlayer {
     this._unsubscribe = subscribeToRoom(
       this.roomId,
       (room: GameRoom | null) => {
-        if (!room) return;
+        if (this._onRoomUpdateCallbacks.length > 0)
+          this._onRoomUpdateCallbacks.forEach(callback => {
+            callback(room!); // * Clears room on delete
+          });
+        else this._pendingRoomUpdate = room;
+
+        if (!room) {
+          if (this._unsubscribe) {
+            this._unsubscribe();
+            this._unsubscribe = null;
+          }
+
+          return;
+        }
+
         this._currentRoom = room;
         this.roomStatus = room.status;
         this.isPlayer1 = room.player1.uid === this.playerId;
@@ -375,7 +398,7 @@ export class OnlinePlayer {
   }
 
   private async _getOpponentBoardFromRoom(): Promise<number[][]> {
-    if (!this.roomId) throw new Error('Not in a room');
+    if (!this.roomId) throw new Error(ERROR_NOT_IN_ROOM);
 
     const { getDoc, doc } = await import('firebase/firestore');
     const { firestore } = await import('@/config/firebase.ts');
@@ -383,12 +406,12 @@ export class OnlinePlayer {
     const roomRef = doc(firestore, 'rooms', this.roomId);
     const snapshot = await getDoc(roomRef);
 
-    if (!snapshot.exists()) throw new Error('Room does not exist');
+    if (!snapshot.exists()) throw new Error(ERROR_NO_ROOM);
 
     const room = snapshot.data() as GameRoom;
     const opponentData = this.isPlayer1 ? room.player2 : room.player1;
 
-    if (!opponentData?.board) throw new Error('Opponent board not available');
+    if (!opponentData?.board) throw new Error(ERROR_NO_OPPONENT_BOARD);
 
     return this._deserializeBoard(opponentData.board as unknown as number[]);
   }

@@ -24,7 +24,7 @@ const signInAnonymous = async (): Promise<string> => {
 
     return userCredential.user.uid;
   } catch (error) {
-    if (error instanceof Error) console.error(error);
+    if (error instanceof Error) console.error(error.message, error);
     throw new Error(ERROR_ONLINE_FAILED);
   }
 };

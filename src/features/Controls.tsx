@@ -25,6 +25,7 @@ import {
   MATCHMAKING_STATUS,
   MEDIA_QUERIES
 } from '@/config/site.ts';
+import { errorToast } from '@/config/toast.ts';
 import { Gameboard } from '@/features/Gameboard.tsx';
 import { playSound } from '@/lib/audio.ts';
 import { Board } from '@/logic/board.ts';
@@ -75,7 +76,10 @@ export const Controls = (props: {
         setWaitingForOpponent(true);
         await onlineGame.submitBoard();
       } catch (error: unknown) {
-        if (error instanceof Error) console.error(error);
+        if (error instanceof Error) {
+          errorToast(error.message);
+          console.error(error.message, error);
+        }
         setWaitingForOpponent(false);
 
         return;
@@ -131,7 +135,10 @@ export const Controls = (props: {
           `}>
           <button
             type='button'
-            onClick={() => void props.setGameMode(null)}
+            onClick={() => {
+              if (props.game instanceof OnlinePlayer) void props.game.cleanup();
+              void props.setGameMode(null);
+            }}
             class={css`
               border: none;
               cursor: pointer;
@@ -273,6 +280,7 @@ export const Controls = (props: {
                 setIsDoneSetup(false);
                 shipInfo().innerText = '5 Carrier';
                 startButton().disabled = true;
+
                 if (props.gameMode === 'pvp')
                   setPlacementRefreshTrigger(prev => prev + 1);
               }}

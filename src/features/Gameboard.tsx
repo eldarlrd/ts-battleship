@@ -50,7 +50,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
         );
 
         if (element) {
-          element.style.backgroundColor = '';
+          element.style.backgroundColor = COLOR_VARIABLES.secondary;
           const cell = board.grid[row][col];
 
           if (cell) {
@@ -117,16 +117,9 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
         checkImpact(row, col);
       };
 
-      document.addEventListener(
-        'computerAttack',
-        handleComputerAttack as EventListener
-      );
-
+      document.addEventListener('computerAttack', handleComputerAttack);
       onCleanup(() => {
-        document.removeEventListener(
-          'computerAttack',
-          handleComputerAttack as EventListener
-        );
+        document.removeEventListener('computerAttack', handleComputerAttack);
       });
     }
   });

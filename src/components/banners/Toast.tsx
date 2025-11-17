@@ -13,17 +13,17 @@ const Toast = (): JSXElement => (
       className: css`
         width: 12.25rem;
         font-size: 1.25rem;
-        color: ${COLOR_VARIABLES.secondary} !important;
-        background: ${COLOR_VARIABLES.primary} !important;
-        border: 2px solid ${COLOR_VARIABLES.secondary};
+        color: ${COLOR_VARIABLES.primary} !important;
+        background: ${COLOR_VARIABLES.secondary} !important;
+        border: 2px solid ${COLOR_VARIABLES.primary};
 
         & [role='status'] {
           justify-content: center;
         }
       `,
       iconTheme: {
-        primary: COLOR_VARIABLES.secondary,
-        secondary: COLOR_VARIABLES.primary
+        primary: COLOR_VARIABLES.primary,
+        secondary: COLOR_VARIABLES.secondary
       }
     }}
   />

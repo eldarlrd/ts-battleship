@@ -13,8 +13,15 @@ import {
   type Unsubscribe
 } from 'firebase/firestore';
 
+import {
+  ERROR_FULL_ROOM,
+  ERROR_NO_ROOM,
+  ERROR_NOT_AVAILABLE,
+  ERROR_NOT_YOUR_TURN
+} from '@/config/errors.ts';
 import { firestore } from '@/config/firebase.ts';
 import { DURATION_MS } from '@/config/rules.ts';
+import { errorToast } from '@/config/toast.ts';
 
 interface Move {
   row: number;
@@ -85,14 +92,13 @@ const joinGameRoom = async (
   const roomRef = doc(firestore, 'rooms', roomId);
   const snapshot = await getDoc(roomRef);
 
-  if (!snapshot.exists()) throw new Error('Room does not exist');
+  if (!snapshot.exists()) throw new Error(ERROR_NO_ROOM);
 
   const room = snapshot.data() as GameRoom;
 
-  if (room.player2) throw new Error('Room is full');
+  if (room.player2) throw new Error(ERROR_FULL_ROOM);
 
-  if (room.status !== 'waiting')
-    throw new Error('Room is not accepting players');
+  if (room.status !== 'waiting') throw new Error(ERROR_NOT_AVAILABLE);
 
   await updateDoc(roomRef, {
     player2: {
@@ -121,7 +127,7 @@ const findOrCreateRoom = async (playerId: string): Promise<string> => {
 
         return roomId;
       } catch (error: unknown) {
-        if (error instanceof Error) console.error(error);
+        if (error instanceof Error) errorToast(error.message);
       }
     }
   }
@@ -137,7 +143,7 @@ const setPlayerReady = async (
   const roomRef = doc(firestore, 'rooms', roomId);
   const snapshot = await getDoc(roomRef);
 
-  if (!snapshot.exists()) throw new Error('Room does not exist');
+  if (!snapshot.exists()) throw new Error(ERROR_NO_ROOM);
 
   const room = snapshot.data() as GameRoom;
   const isPlayer1 = room.player1.uid === playerId;
@@ -169,11 +175,11 @@ const makeMove = async (
   const roomRef = doc(firestore, 'rooms', roomId);
   const snapshot = await getDoc(roomRef);
 
-  if (!snapshot.exists()) throw new Error('Room does not exist');
+  if (!snapshot.exists()) throw new Error(ERROR_NO_ROOM);
 
   const room = snapshot.data() as GameRoom;
 
-  if (room.currentTurn !== playerId) throw new Error('Not your turn');
+  if (room.currentTurn !== playerId) throw new Error(ERROR_NOT_YOUR_TURN);
 
   const cell = opponentBoard[row][col];
   const hit = cell > 0 && cell <= 5;

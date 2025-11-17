@@ -3,7 +3,7 @@ import { CgSpinnerTwoAlt } from 'solid-icons/cg';
 import { FaSolidRobot, FaSolidUser } from 'solid-icons/fa';
 import { IoVolumeHighSharp, IoVolumeMuteSharp } from 'solid-icons/io';
 import { TbTargetArrow } from 'solid-icons/tb';
-import { createSignal, onCleanup, type JSXElement } from 'solid-js';
+import { createSignal, type JSXElement, onCleanup } from 'solid-js';
 
 import 'modern-normalize/modern-normalize.css';
 import Footer from '@/components/banners/Footer.tsx';
@@ -11,6 +11,7 @@ import Header from '@/components/banners/Header.tsx';
 import Toast from '@/components/banners/Toast.tsx';
 import '@fontsource-variable/stick-no-bills';
 import { NewGame } from '@/components/buttons/NewGame.tsx';
+import { ERROR_OPPONENT_LEFT } from '@/config/errors.ts';
 import { signInAnonymous } from '@/config/firebase.ts';
 import { type GameMode } from '@/config/rules.ts';
 import {
@@ -24,6 +25,7 @@ import { Gameboard } from '@/features/Gameboard.tsx';
 import { Modal } from '@/features/Modal.tsx';
 import ModeSelection from '@/features/ModeSelection.tsx';
 import { isMuted, toggleMute } from '@/lib/audio.ts';
+import { type GameRoom } from '@/logic/matchmaking.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
 
@@ -32,9 +34,8 @@ let overlay = document.getElementById('overlay') as HTMLDivElement;
 
 /*
   TODO
-    • Error toasts
+    • Hover state & lobby left board
     • Player victory conditions
-    • Stop game on leave
     • Add lobbies
 */
 
@@ -59,7 +60,19 @@ export const App = (): JSXElement => {
         const onlineGame = new OnlinePlayer(uid);
 
         await onlineGame.joinMatchmaking();
-        onlineGame.setRoomUpdateCallback(room => {
+        onlineGame.setRoomUpdateCallback((room: GameRoom | null) => {
+          if (!room) {
+            errorToast(ERROR_OPPONENT_LEFT);
+            setGameMode(null);
+            setGame(new Player());
+            setMatchmakingStatus('');
+            setIsControlUp(true);
+
+            return;
+          }
+
+          setBoardUpdateTrigger(prev => prev + 1);
+
           switch (room.status) {
             case 'waiting':
               if (!room.player2)
@@ -80,13 +93,14 @@ export const App = (): JSXElement => {
         setGame(onlineGame);
       } catch (error: unknown) {
         if (error instanceof Error) {
-          console.error(error);
           errorToast(error.message);
+          console.error(error.message, error);
         }
 
         setGameMode(null);
         setGame(new Player());
         setMatchmakingStatus('');
+        setIsControlUp(true);
       } finally {
         setIsAuthenticating(false);
       }
@@ -96,6 +110,7 @@ export const App = (): JSXElement => {
     }
   };
 
+  // Page unload
   onCleanup(() => {
     const currentGame = game();
 
@@ -133,6 +148,7 @@ export const App = (): JSXElement => {
         overlay={overlay}
         gameMode={gameMode()}
         setGameMode={setGameMode}
+        boardUpdateTrigger={boardUpdateTrigger}
       />
 
       <Header />

@@ -3,7 +3,8 @@ import {
   createEffect,
   onCleanup,
   type JSXElement,
-  type Setter
+  type Setter,
+  type Accessor
 } from 'solid-js';
 
 import defeatSound from '#/sfx/defeat.opus';
@@ -25,28 +26,44 @@ export const Modal = (props: {
   overlay: HTMLDivElement;
   gameMode?: GameMode | null;
   setGameMode: Setter<GameMode | null>;
+  boardUpdateTrigger: Accessor<number>;
 }): JSXElement => {
+  const openModal = (winnerStatus: number): void => {
+    props.overlay.style.display = 'flex';
+
+    if (winnerStatus === 1) {
+      victor.innerText = 'Player Wins!';
+      playSound(victorySound);
+    } else {
+      const opponentName = props.gameMode === 'pvp' ? 'Opponent' : 'Computer';
+
+      victor.innerText = `${opponentName} Wins...`;
+      playSound(defeatSound);
+    }
+  };
+
   createEffect(() => {
     const handleModal = (): void => {
-      if (props.game.playerVictorious) {
-        props.overlay.style.display = 'flex';
-        if (props.game.playerVictorious === 1) {
-          victor.innerText = 'Player Wins!';
-          playSound(victorySound);
-        } else {
-          const opponentName =
-            props.gameMode === 'pvp' ? 'Opponent' : 'Computer';
+      const winnerStatus = props.game.playerVictorious;
 
-          victor.innerText = `${opponentName} Wins...`;
-          playSound(defeatSound);
-        }
-      }
+      if (winnerStatus) openModal(winnerStatus);
+      else props.overlay.style.display = 'none';
     };
 
     document.addEventListener('attack', handleModal);
     onCleanup(() => {
       document.removeEventListener('attack', handleModal);
     });
+  });
+
+  // Opponent Leaving
+  createEffect(() => {
+    props.boardUpdateTrigger();
+
+    const winnerStatus = props.game.playerVictorious;
+
+    if (winnerStatus) openModal(winnerStatus);
+    else props.overlay.style.display = 'none';
   });
 
   return (
