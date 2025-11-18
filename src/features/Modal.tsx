@@ -29,6 +29,12 @@ export const Modal = (props: {
   boardUpdateTrigger: Accessor<number>;
 }): JSXElement => {
   const openModal = (winnerStatus: number): void => {
+    if (props.gameMode === null) {
+      props.overlay.style.display = 'none';
+
+      return;
+    }
+
     props.overlay.style.display = 'flex';
 
     if (winnerStatus === 1) {
@@ -59,10 +65,9 @@ export const Modal = (props: {
   // Opponent Leaving
   createEffect(() => {
     props.boardUpdateTrigger();
-
     const winnerStatus = props.game.playerVictorious;
 
-    if (winnerStatus) openModal(winnerStatus);
+    if (winnerStatus && props.gameMode) openModal(winnerStatus);
     else props.overlay.style.display = 'none';
   });
 
