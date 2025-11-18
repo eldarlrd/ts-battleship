@@ -29,6 +29,7 @@ import { errorToast } from '@/config/toast.ts';
 import { Gameboard } from '@/features/Gameboard.tsx';
 import { playSound } from '@/lib/audio.ts';
 import { Board } from '@/logic/board.ts';
+import { type GameRoom } from '@/logic/matchmaking.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
 
@@ -58,8 +59,8 @@ export const Controls = (props: {
       const onlineGame = props.game;
 
       // eslint-disable-next-line solid/reactivity
-      onlineGame.setRoomUpdateCallback(room => {
-        if (room.status === 'playing' && untrack(waitingForOpponent)) {
+      onlineGame.setRoomUpdateCallback((room: GameRoom | null) => {
+        if (room?.status === 'playing' && untrack(waitingForOpponent)) {
           setWaitingForOpponent(false);
           props.setIsControlUp(false);
           playSound(startSound);

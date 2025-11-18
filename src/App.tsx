@@ -34,7 +34,6 @@ let overlay = document.getElementById('overlay') as HTMLDivElement;
 
 /*
   TODO
-    • Hover state & lobby left board
     • Player victory conditions
     • Add lobbies
 */

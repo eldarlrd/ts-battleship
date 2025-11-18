@@ -282,14 +282,9 @@ const leaveRoom = async (roomId: string, playerId: string): Promise<void> => {
   const room = snapshot.data() as GameRoom;
   const isPlayer1 = room.player1.uid === playerId;
 
-  if (room.status === 'waiting' || room.status === 'ready') {
-    if (isPlayer1) await deleteDoc(roomRef);
-    else
-      await updateDoc(roomRef, {
-        player2: null,
-        status: 'waiting'
-      });
-  } else {
+  if (room.status === 'waiting' || room.status === 'ready')
+    await deleteDoc(roomRef);
+  else {
     const winnerId = isPlayer1 ? room.player2!.uid : room.player1.uid;
 
     await declareWinner(roomId, winnerId);

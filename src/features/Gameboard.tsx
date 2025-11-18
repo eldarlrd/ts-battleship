@@ -50,7 +50,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
         );
 
         if (element) {
-          element.style.backgroundColor = COLOR_VARIABLES.secondary;
+          element.style.backgroundColor = '';
           const cell = board.grid[row][col];
 
           if (cell) {
@@ -224,9 +224,8 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     );
     const cell = currBoard.grid[cellRow][cellCol];
 
-    if (!wasHit && !(props.game instanceof Player && !props.isPlayerBoard)) {
+    if (!wasHit && !(props.game instanceof Player && !props.isPlayerBoard))
       return;
-    }
 
     if (!cell) {
       element.style.backgroundColor = COLOR_VARIABLES.emptyHit;
