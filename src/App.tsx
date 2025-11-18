@@ -32,11 +32,7 @@ import { Player } from '@/logic/player.ts';
 // eslint-disable-next-line prefer-const
 let overlay = document.getElementById('overlay') as HTMLDivElement;
 
-/*
-  TODO
-    • Player victory conditions
-    • Add lobbies
-*/
+// TODO: Victory Conditions & Lobbies
 
 // * Whole app’s some serious Solid + OOP spaghetti code
 export const App = (): JSXElement => {
