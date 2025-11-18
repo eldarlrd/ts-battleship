@@ -29,13 +29,14 @@ import { type GameRoom } from '@/logic/matchmaking.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
 
-// eslint-disable-next-line prefer-const
-let overlay = document.getElementById('overlay') as HTMLDivElement;
-
+// FIXME: Modal Pops on Computer Win
 // TODO: Victory Conditions & Lobbies
 
 // * Whole app’s some serious Solid + OOP spaghetti code
 export const App = (): JSXElement => {
+  // eslint-disable-next-line prefer-const
+  let overlay = document.getElementById('overlay') as HTMLDivElement;
+
   const [gameMode, setGameMode] = createSignal<GameMode | null>(null);
   const [game, setGame] = createSignal<Player | OnlinePlayer>(new Player());
   const [isControlUp, setIsControlUp] = createSignal(true);

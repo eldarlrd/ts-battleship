@@ -16,9 +16,6 @@ import { playSound } from '@/lib/audio.ts';
 import { type OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { type Player } from '@/logic/player.ts';
 
-// eslint-disable-next-line prefer-const
-let victor = document.getElementById('victor') as HTMLHeadingElement;
-
 export const Modal = (props: {
   game: Player | OnlinePlayer;
   setGame: Setter<Player | OnlinePlayer>;
@@ -28,6 +25,9 @@ export const Modal = (props: {
   setGameMode: Setter<GameMode | null>;
   boardUpdateTrigger: Accessor<number>;
 }): JSXElement => {
+  // eslint-disable-next-line prefer-const
+  let victor = document.getElementById('victor') as HTMLHeadingElement;
+
   const openModal = (winnerStatus: number): void => {
     if (props.gameMode === null) {
       props.overlay.style.display = 'none';
@@ -49,26 +49,19 @@ export const Modal = (props: {
   };
 
   createEffect(() => {
-    const handleModal = (): void => {
+    const handleCheck = (): void => {
       const winnerStatus = props.game.playerVictorious;
 
-      if (winnerStatus) openModal(winnerStatus);
+      if (winnerStatus && props.gameMode) openModal(winnerStatus);
       else props.overlay.style.display = 'none';
     };
 
-    document.addEventListener('attack', handleModal);
-    onCleanup(() => {
-      document.removeEventListener('attack', handleModal);
-    });
-  });
-
-  // Opponent Leaving
-  createEffect(() => {
     props.boardUpdateTrigger();
-    const winnerStatus = props.game.playerVictorious;
 
-    if (winnerStatus && props.gameMode) openModal(winnerStatus);
-    else props.overlay.style.display = 'none';
+    document.addEventListener('attack', handleCheck);
+    onCleanup(() => {
+      document.removeEventListener('attack', handleCheck);
+    });
   });
 
   return (
