@@ -73,13 +73,11 @@ export class OnlinePlayer {
       if (snapshot.exists()) {
         const room = { ...snapshot.data(), id: this.roomId } as GameRoom;
 
-        if (this._onRoomUpdateCallbacks.length > 0) {
+        if (this._onRoomUpdateCallbacks.length > 0)
           this._onRoomUpdateCallbacks.forEach(callback => {
             callback(room);
           });
-        } else {
-          this._pendingRoomUpdate = room;
-        }
+        else this._pendingRoomUpdate = room;
       }
     } catch (error) {
       if (error instanceof Error) console.error(error.message, error);
@@ -139,9 +137,10 @@ export class OnlinePlayer {
 
         if (shipElement) {
           this._markSunkShipVisuals(shipElement.shipCells);
-
           this._markAdjacentMisses(shipElement.shipCells);
         }
+
+        await this._checkVictory();
       } else if (result.hit) {
         // @ts-expect-error: Store hit marker for visual display
         this.opponentBoard.grid[coordinates.row][coordinates.col] = 1;
