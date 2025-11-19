@@ -29,7 +29,9 @@ import { type GameRoom } from '@/logic/matchmaking.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
 
-// FIXME: Victory Conditions
+// FIXME: Victory conditions on leave
+// FIXME: Victory conditions reset on leave
+// FIXME: Board animations swap on turn
 // TODO: Lobbies
 
 // * Whole app’s some serious Solid + OOP spaghetti code
