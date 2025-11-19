@@ -1,9 +1,12 @@
+import { GRID_SIZE } from '@/config/rules.ts';
 import { Board } from '@/logic/board.ts';
 import { Ship } from '@/logic/ship.ts';
 
 describe('board class', () => {
   const cleanBoard = {
-    grid: Array.from({ length: 10 }, () => Array<null>(10).fill(null)),
+    grid: Array.from({ length: GRID_SIZE }, () =>
+      Array<null>(GRID_SIZE).fill(null)
+    ),
     impacts: []
   };
   const board = new Board();

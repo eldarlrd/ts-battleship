@@ -1,3 +1,5 @@
+import { GRID_SIZE } from '@/config/rules.ts';
+import { successfullyPlace } from '@/lib/placement.ts';
 import { Player } from '@/logic/player.ts';
 import { Ship } from '@/logic/ship.ts';
 
@@ -6,8 +8,8 @@ describe('player interface', () => {
     const game = new Player(true);
 
     while (!game.playerVictorious)
-      for (let row = 0; row < 10; row++)
-        for (let col = 0; col < 10; col++) game.takeTurn({ row, col });
+      for (let row = 0; row < GRID_SIZE; row++)
+        for (let col = 0; col < GRID_SIZE; col++) game.takeTurn({ row, col });
 
     expect(game.playerVictorious).not.toBe(0);
   });
@@ -18,8 +20,8 @@ describe('player interface', () => {
     game.isCurrPlayerOne = false;
 
     while (!game.playerVictorious)
-      for (let row = 0; row < 10; row++)
-        for (let col = 0; col < 10; col++) {
+      for (let row = 0; row < GRID_SIZE; row++)
+        for (let col = 0; col < GRID_SIZE; col++) {
           game.takeTurn({ row, col });
           game.computerTurn();
         }
@@ -33,7 +35,7 @@ describe('player interface', () => {
     const shipLength = shipLengthArr[game.playerBoard.shipsPlaced];
     const ship = new Ship(shipLength);
 
-    const validPlacement = game.successfullyPlace(
+    const validPlacement = successfullyPlace(
       game.playerBoard,
       ship,
       false,
@@ -42,7 +44,7 @@ describe('player interface', () => {
       false
     );
 
-    const invalidPlacement = game.successfullyPlace(
+    const invalidPlacement = successfullyPlace(
       game.playerBoard,
       ship,
       false,

@@ -7,8 +7,10 @@ import {
   ERROR_NOT_IN_ROOM,
   ERROR_NOT_YOUR_TURN
 } from '@/config/errors.ts';
+import { GRID_SIZE } from '@/config/rules.ts';
 import { COLOR_VARIABLES } from '@/config/site.ts';
 import { errorToast } from '@/config/toast.ts';
+import { successfullyPlace } from '@/lib/placement.ts';
 import { Board, type Coordinates } from '@/logic/board.ts';
 import {
   findOrCreateRoom,
@@ -36,7 +38,6 @@ export class OnlinePlayer {
   private _pendingRoomUpdate: GameRoom | null;
   private _processedOpponentMoves: Set<string>;
   private _processedPlayerMoves: Set<string>;
-  private _currentRoom: GameRoom | null;
 
   public constructor(playerId: string) {
     this.playerVictorious = 0;
@@ -53,19 +54,10 @@ export class OnlinePlayer {
     this._pendingRoomUpdate = null;
     this._processedOpponentMoves = new Set<string>();
     this._processedPlayerMoves = new Set<string>();
-    this._currentRoom = null;
-  }
-
-  public get isCurrPlayerOne(): boolean {
-    return this.isCurrPlayerTurn;
   }
 
   public get computerBoard(): Board {
     return this.opponentBoard;
-  }
-
-  public computerTurn(): Coordinates {
-    return { row: 0, col: 0 };
   }
 
   public async joinMatchmaking(): Promise<void> {
@@ -81,8 +73,6 @@ export class OnlinePlayer {
       if (snapshot.exists()) {
         const room = { ...snapshot.data(), id: this.roomId } as GameRoom;
 
-        this._currentRoom = room;
-
         if (this._onRoomUpdateCallbacks.length > 0) {
           this._onRoomUpdateCallbacks.forEach(callback => {
             callback(room);
@@ -95,10 +85,6 @@ export class OnlinePlayer {
       if (error instanceof Error) console.error(error.message, error);
       throw new Error(ERROR_NO_CONNECTION);
     }
-  }
-
-  public getRoom(): GameRoom | null {
-    return this._currentRoom;
   }
 
   public setRoomUpdateCallback(callback: (room: GameRoom) => void): void {
@@ -173,48 +159,6 @@ export class OnlinePlayer {
     }
   }
 
-  public successfullyPlace(
-    board: Board,
-    ship: Ship,
-    isRandom: boolean,
-    manualRow = 0,
-    manualCol = 0,
-    isVertical = false
-  ): boolean {
-    let coords: Coordinates;
-
-    if (isRandom) {
-      let randomIsVertical = Math.random() < 0.5;
-
-      coords = {
-        row: Math.floor(Math.random() * 10),
-        col: Math.floor(Math.random() * 10)
-      };
-
-      while (!board.place(ship, coords, randomIsVertical)) {
-        randomIsVertical = Math.random() < 0.5;
-        coords = {
-          row: Math.floor(Math.random() * 10),
-          col: Math.floor(Math.random() * 10)
-        };
-      }
-
-      ship.isVertical = randomIsVertical;
-      ship.coords = coords;
-
-      return true;
-    } else {
-      coords = { row: manualRow, col: manualCol };
-
-      if (!board.place(ship, coords, isVertical)) return false;
-
-      ship.isVertical = isVertical;
-      ship.coords = coords;
-
-      return true;
-    }
-  }
-
   public async cleanup(): Promise<void> {
     if (this._unsubscribe) {
       this._unsubscribe();
@@ -230,6 +174,17 @@ export class OnlinePlayer {
     this._processedPlayerMoves.clear();
   }
 
+  public randomPlace(): void {
+    this.playerBoard = new Board();
+    const shipLengths = [5, 4, 3, 3, 2];
+
+    for (const length of shipLengths) {
+      const ship = new Ship(length);
+
+      successfullyPlace(this.playerBoard, ship, true);
+    }
+  }
+
   private _findSunkShipDetails(
     hitCoord: Coordinates,
     fullBoard: number[][]
@@ -239,8 +194,8 @@ export class OnlinePlayer {
     const shipCells: Coordinates[] = [];
 
     // Find all adjacent cells of a ship
-    for (let r = 0; r < 10; r++)
-      for (let c = 0; c < 10; c++)
+    for (let r = 0; r < GRID_SIZE; r++)
+      for (let c = 0; c < GRID_SIZE; c++)
         if (fullBoard[r][c] === shipLength) {
           const moveKey = `${r.toString()}-${c.toString()}`;
 
@@ -256,7 +211,7 @@ export class OnlinePlayer {
       // @ts-expect-error: Store hit marker for visual display
       this.opponentBoard.grid[coord.row][coord.col] = 2;
       const shipSunk = document.getElementById(
-        'p2-' + (coord.row * 10 + coord.col).toString()
+        'p2-' + (coord.row * GRID_SIZE + coord.col).toString()
       );
 
       if (shipSunk) {
@@ -264,17 +219,6 @@ export class OnlinePlayer {
         shipSunk.style.cursor = 'default';
       }
     });
-  }
-
-  public randomPlace(): void {
-    this.playerBoard = new Board();
-    const shipLengths = [5, 4, 3, 3, 2];
-
-    for (const length of shipLengths) {
-      const ship = new Ship(length);
-
-      this.successfullyPlace(this.playerBoard, ship, true);
-    }
   }
 
   private _markAdjacentMisses(shipCells: Coordinates[]): void {
@@ -286,7 +230,7 @@ export class OnlinePlayer {
 
       adjCells.forEach(coord => {
         const adjHit = document.getElementById(
-          'p2-' + (coord.row * 10 + coord.col).toString()
+          'p2-' + (coord.row * GRID_SIZE + coord.col).toString()
         );
 
         if (adjHit) {
@@ -312,8 +256,8 @@ export class OnlinePlayer {
   private _deserializeBoard(flatBoard: number[]): number[][] {
     const board2D: number[][] = [];
 
-    for (let i = 0; i < 10; i++)
-      board2D.push(flatBoard.slice(i * 10, (i + 1) * 10));
+    for (let i = 0; i < GRID_SIZE; i++)
+      board2D.push(flatBoard.slice(i * GRID_SIZE, (i + 1) * GRID_SIZE));
 
     return board2D;
   }
@@ -339,7 +283,6 @@ export class OnlinePlayer {
           return;
         }
 
-        this._currentRoom = room;
         this.roomStatus = room.status;
         this.isPlayer1 = room.player1.uid === this.playerId;
 
@@ -422,8 +365,8 @@ export class OnlinePlayer {
     let allShipsSunk = true;
 
     // Find all adjacent cells of a ship
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 10; j++) {
+    for (let i = 0; i < GRID_SIZE; i++) {
+      for (let j = 0; j < GRID_SIZE; j++) {
         const cell = opponentBoard[i][j];
 
         if (cell > 0 && cell <= 5) {

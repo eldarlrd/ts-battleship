@@ -19,7 +19,7 @@ import shipClearSound from '#/sfx/clear.opus';
 import shipDeploySound from '#/sfx/deploy.opus';
 import startSound from '#/sfx/start.opus';
 import { BoardControl } from '@/components/buttons/BoardControl.tsx';
-import { type GameMode } from '@/config/rules.ts';
+import { type GameMode, SHIP_COUNT, SHIPS } from '@/config/rules.ts';
 import {
   COLOR_VARIABLES,
   MATCHMAKING_STATUS,
@@ -228,7 +228,7 @@ export const Controls = (props: {
               }
             `}>
             <FaSolidShip />
-            <span id='ship-info'>5 Carrier</span>
+            <span id='ship-info'>{SHIPS[0]}</span>
           </span>
 
           <span
@@ -249,12 +249,12 @@ export const Controls = (props: {
               handleAction={() => {
                 if (props.gameMode === 'pve') {
                   props.setGame(new Player(true));
-                  props.game.playerBoard.shipsPlaced = 5;
+                  props.game.playerBoard.shipsPlaced = SHIP_COUNT;
                 } else {
                   const onlineGame = props.game as OnlinePlayer;
 
                   onlineGame.randomPlace();
-                  onlineGame.playerBoard.shipsPlaced = 5;
+                  onlineGame.playerBoard.shipsPlaced = SHIP_COUNT;
                 }
                 playSound(shipDeploySound);
                 setIsDoneSetup(true);
@@ -279,7 +279,7 @@ export const Controls = (props: {
                 }
                 playSound(shipClearSound);
                 setIsDoneSetup(false);
-                shipInfo().innerText = '5 Carrier';
+                shipInfo().innerText = SHIPS[0];
                 startButton().disabled = true;
 
                 if (props.gameMode === 'pvp')

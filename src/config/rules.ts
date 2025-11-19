@@ -1,5 +1,12 @@
 type GameMode = 'pve' | 'pvp';
 
+const LOBBY_ALPHABET =
+  '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+
+// TTL Duration
+const DURATION_IN_MINUTES = 15;
+const DURATION_MS = DURATION_IN_MINUTES * 60 * 1000;
+
 // Milton Bradley rules & Hasbro names
 const SHIPS = [
   '5 Carrier',
@@ -8,11 +15,14 @@ const SHIPS = [
   '3 Submarine',
   '2 Patrol Boat'
 ] as const;
+const GRID_SIZE = 10;
+const SHIP_COUNT = ~~(GRID_SIZE / 2);
 
-const DURATION_IN_MINUTES = 15;
-const DURATION_MS = DURATION_IN_MINUTES * 60 * 1000;
-
-const LOBBY_ALPHABET =
-  '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-
-export { type GameMode, SHIPS, DURATION_MS, LOBBY_ALPHABET };
+export {
+  type GameMode,
+  LOBBY_ALPHABET,
+  DURATION_MS,
+  SHIPS,
+  GRID_SIZE,
+  SHIP_COUNT
+};

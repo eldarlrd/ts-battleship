@@ -12,9 +12,10 @@ import {
 
 import shipDeploySound from '#/sfx/deploy.opus';
 import shipErrorSound from '#/sfx/error.opus';
-import { SHIPS } from '@/config/rules.ts';
+import { GRID_SIZE, SHIP_COUNT, SHIPS } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { playSound } from '@/lib/audio.ts';
+import { successfullyPlace } from '@/lib/placement.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
 import { Ship } from '@/logic/ship.ts';
@@ -43,10 +44,10 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     const board = props.game.playerBoard;
 
     // Clear all styles
-    for (let row = 0; row < 10; row++)
-      for (let col = 0; col < 10; col++) {
+    for (let row = 0; row < GRID_SIZE; row++)
+      for (let col = 0; col < GRID_SIZE; col++) {
         const element = document.getElementById(
-          playerId + (row * 10 + col).toString()
+          playerId + (row * GRID_SIZE + col).toString()
         );
 
         if (element) {
@@ -125,14 +126,14 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
   });
 
   const placeShip = (row: number, col: number): void => {
-    if (props.game.playerBoard.shipsPlaced >= 5) return;
+    if (props.game.playerBoard.shipsPlaced >= SHIP_COUNT) return;
 
     const shipLengthArr = [5, 4, 3, 3, 2];
     const shipLength = shipLengthArr[props.game.playerBoard.shipsPlaced];
     const ship = new Ship(shipLength);
 
     if (
-      props.game.successfullyPlace(
+      successfullyPlace(
         props.game.playerBoard,
         ship,
         false,
@@ -152,7 +153,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
           const currCol = cell.isVertical ? col : cell.coords.col + i;
 
           const element = document.getElementById(
-            playerId + (currRow * 10 + currCol).toString()
+            playerId + (currRow * GRID_SIZE + currCol).toString()
           );
 
           if (element) {
@@ -163,14 +164,14 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
 
       props.game.playerBoard.shipsPlaced++;
 
-      if (props.game.playerBoard.shipsPlaced >= 5) {
+      if (props.game.playerBoard.shipsPlaced >= SHIP_COUNT) {
         if (props.startButton) props.startButton.disabled = false;
         if (props.setIsDoneSetup) props.setIsDoneSetup(true);
       }
 
       if (props.shipInfo)
         props.shipInfo.innerText =
-          props.game.playerBoard.shipsPlaced >= 5 ?
+          props.game.playerBoard.shipsPlaced >= SHIP_COUNT ?
             'All Ships Ready!'
           : SHIPS[props.game.playerBoard.shipsPlaced];
     } else playSound(shipErrorSound);
@@ -195,7 +196,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
       if (!props.game.playerVictorious && !('isCurrPlayerTurn' in props.game)) {
         setIsComputerTurn(true);
         setTimeout((): void => {
-          const compCoord = props.game.computerTurn();
+          const compCoord = (props.game as Player).computerTurn();
 
           document.dispatchEvent(
             new CustomEvent('computerAttack', { detail: compCoord })
@@ -214,7 +215,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
       props.isPlayerBoard ? props.game.playerBoard : props.game.computerBoard;
 
     const element = document.getElementById(
-      playerId + (cellRow * 10 + cellCol).toString()
+      playerId + (cellRow * GRID_SIZE + cellCol).toString()
     );
 
     if (!element) return;
@@ -237,7 +238,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
           const currCol = cell.isVertical ? cellCol : cell.coords.col + i;
 
           const shipElement = document.getElementById(
-            playerId + (currRow * 10 + currCol).toString()
+            playerId + (currRow * GRID_SIZE + currCol).toString()
           );
 
           if (shipElement) {
@@ -251,7 +252,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
 
             adjCells.forEach(coord => {
               const adjHit = document.getElementById(
-                playerId + (coord.row * 10 + coord.col).toString()
+                playerId + (coord.row * GRID_SIZE + coord.col).toString()
               );
 
               if (adjHit) {
@@ -282,7 +283,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     if (
       !props.isPlacing ||
       !props.isPlayerBoard ||
-      props.game.playerBoard.shipsPlaced >= 5
+      props.game.playerBoard.shipsPlaced >= SHIP_COUNT
     )
       return;
 
@@ -303,7 +304,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
 
     for (const coord of potentialCoords) {
       // Out of Bounds Check
-      if (coord.row >= 10 || coord.col >= 10) {
+      if (coord.row >= GRID_SIZE || coord.col >= GRID_SIZE) {
         canPlace = false;
         break;
       }
@@ -318,7 +319,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
       for (let r = coord.row - 1; r <= coord.row + 1; r++) {
         for (let c = coord.col - 1; c <= coord.col + 1; c++) {
           if (r === coord.row && c === coord.col) continue;
-          if (r < 0 || r >= 10 || c < 0 || c >= 10) continue;
+          if (r < 0 || r >= GRID_SIZE || c < 0 || c >= GRID_SIZE) continue;
 
           const isPartOfNewShip = potentialCoords.some(
             pCoord => pCoord.row === r && pCoord.col === c
@@ -337,8 +338,9 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     }
 
     for (const coord of potentialCoords)
-      if (coord.row < 10 && coord.col < 10) {
-        const elementId = playerId + (coord.row * 10 + coord.col).toString();
+      if (coord.row < GRID_SIZE && coord.col < GRID_SIZE) {
+        const elementId =
+          playerId + (coord.row * GRID_SIZE + coord.col).toString();
         const element = document.getElementById(elementId);
 
         if (element) elementsToStyle.push(element);
@@ -394,8 +396,8 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
           font-weight: 600;
           display: grid;
           border: 1px solid ${COLOR_VARIABLES.grid};
-          grid-template-columns: repeat(10, 1fr);
-          grid-template-rows: repeat(10, 1fr);
+          grid-template-columns: repeat(${GRID_SIZE}, 1fr);
+          grid-template-rows: repeat(${GRID_SIZE}, 1fr);
           position: relative;
         `}>
         <For each={props.game.playerBoard.grid}>
@@ -404,11 +406,11 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
               {(gridElem, j) => (
                 <button
                   type='button'
-                  id={`${props.isPlayerBoard ? 'p1-' : 'p2-'}${(i() * 10 + j()).toString()}`}
+                  id={`${props.isPlayerBoard ? 'p1-' : 'p2-'}${(i() * GRID_SIZE + j()).toString()}`}
                   onClick={() => {
                     if (
                       props.isPlacing &&
-                      props.game.playerBoard.shipsPlaced < 5
+                      props.game.playerBoard.shipsPlaced < SHIP_COUNT
                     )
                       placeShip(i(), j());
                     if (!props.isPlayerBoard) attackCell(i(), j());

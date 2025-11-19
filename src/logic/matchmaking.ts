@@ -20,7 +20,7 @@ import {
   ERROR_NOT_YOUR_TURN
 } from '@/config/errors.ts';
 import { firestore } from '@/config/firebase.ts';
-import { DURATION_MS } from '@/config/rules.ts';
+import { DURATION_MS, GRID_SIZE } from '@/config/rules.ts';
 import { errorToast } from '@/config/toast.ts';
 
 interface Move {
@@ -193,14 +193,22 @@ const makeMove = async (
 
     const shipCells: { row: number; col: number }[] = [];
 
-    for (let c = col; c < 10 && opponentBoard[row][c] === shipLength; c++)
+    for (
+      let c = col;
+      c < GRID_SIZE && opponentBoard[row][c] === shipLength;
+      c++
+    )
       shipCells.push({ row, col: c });
     for (let c = col - 1; c >= 0 && opponentBoard[row][c] === shipLength; c--)
       shipCells.push({ row, col: c });
 
     if (shipCells.length !== shipLength) {
       shipCells.length = 0;
-      for (let r = row; r < 10 && opponentBoard[r][col] === shipLength; r++)
+      for (
+        let r = row;
+        r < GRID_SIZE && opponentBoard[r][col] === shipLength;
+        r++
+      )
         shipCells.push({ row: r, col });
       for (let r = row - 1; r >= 0 && opponentBoard[r][col] === shipLength; r--)
         shipCells.push({ row: r, col });

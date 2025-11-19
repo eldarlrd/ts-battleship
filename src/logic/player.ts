@@ -1,3 +1,5 @@
+import { GRID_SIZE } from '@/config/rules.ts';
+import { successfullyPlace } from '@/lib/placement.ts';
 import { Board, type Coordinates } from '@/logic/board.ts';
 import { Ship } from '@/logic/ship.ts';
 
@@ -57,54 +59,10 @@ export class Player {
     return this._targetMode ? this._smartTarget() : this._hitWithHeatmap();
   }
 
-  public successfullyPlace(
-    board: Board,
-    ship: Ship,
-    isRandom: boolean,
-    manualRow = 0,
-    manualCol = 0,
-    isVertical = false
-  ): boolean {
-    let coords: Coordinates;
-
-    if (isRandom) {
-      let randomIsVertical = Math.random() < 0.5;
-
-      coords = {
-        row: ~~(Math.random() * 10),
-        col: ~~(Math.random() * 10)
-      };
-
-      while (!board.place(ship, coords, randomIsVertical)) {
-        randomIsVertical = Math.random() < 0.5;
-        coords = {
-          row: ~~(Math.random() * 10),
-          col: ~~(Math.random() * 10)
-        };
-      }
-
-      ship.isVertical = randomIsVertical;
-    } else {
-      coords = {
-        row: manualRow,
-        col: manualCol
-      };
-
-      if (!board.place(ship, coords, isVertical)) return false;
-
-      ship.isVertical = isVertical;
-    }
-
-    ship.coords = coords;
-    board.place(ship, coords, ship.isVertical);
-
-    return true;
-  }
-
   private _generateHeatmap(): number[][] {
     const heatmap = Array.from(
-      { length: 10 },
-      () => Array(10).fill(0) as number[]
+      { length: GRID_SIZE },
+      () => Array(GRID_SIZE).fill(0) as number[]
     );
 
     // * Priority Target Weights
@@ -116,15 +74,15 @@ export class Player {
       const weight = getWeight(shipLength);
 
       // Try Horizontal
-      for (let row = 0; row < 10; row++)
-        for (let col = 0; col <= 10 - shipLength; col++)
+      for (let row = 0; row < GRID_SIZE; row++)
+        for (let col = 0; col <= GRID_SIZE - shipLength; col++)
           if (this._canPlaceShip(row, col, shipLength, false))
             for (let i = 0; i < shipLength; i++)
               heatmap[row][col + i] += weight;
 
       // Try Vertical
-      for (let row = 0; row <= 10 - shipLength; row++)
-        for (let col = 0; col < 10; col++)
+      for (let row = 0; row <= GRID_SIZE - shipLength; row++)
+        for (let col = 0; col < GRID_SIZE; col++)
           if (this._canPlaceShip(row, col, shipLength, true))
             for (let i = 0; i < shipLength; i++)
               heatmap[row + i][col] += weight;
@@ -170,8 +128,8 @@ export class Player {
 
     if (smallestShip > 2) this._useParity = false;
 
-    for (let row = 0; row < 10; row++)
-      for (let col = 0; col < 10; col++) {
+    for (let row = 0; row < GRID_SIZE; row++)
+      for (let col = 0; col < GRID_SIZE; col++) {
         const coord = { row, col };
 
         if (this._useParity && !this._matchesParity(coord)) continue;
@@ -214,8 +172,8 @@ export class Player {
 
     do {
       coordinates = {
-        row: ~~(Math.random() * 10),
-        col: ~~(Math.random() * 10)
+        row: ~~(Math.random() * GRID_SIZE),
+        col: ~~(Math.random() * GRID_SIZE)
       };
     } while (!this._isValidTarget(coordinates));
 
@@ -355,7 +313,8 @@ export class Player {
   private _isValidTarget(coord: Coordinates): boolean {
     const { row, col } = coord;
 
-    if (row < 0 || row >= 10 || col < 0 || col >= 10) return false;
+    if (row < 0 || row >= GRID_SIZE || col < 0 || col >= GRID_SIZE)
+      return false;
 
     return !this.playerBoard.impacts.some(
       impact => impact.row === row && impact.col === col
@@ -383,11 +342,11 @@ export class Player {
     const submarine = new Ship(3);
     const patrolBoat = new Ship(2);
 
-    this.successfullyPlace(board, carrier, isRandom);
-    this.successfullyPlace(board, battleship, isRandom);
-    this.successfullyPlace(board, destroyer, isRandom);
-    this.successfullyPlace(board, submarine, isRandom);
-    this.successfullyPlace(board, patrolBoat, isRandom);
+    successfullyPlace(board, carrier, isRandom);
+    successfullyPlace(board, battleship, isRandom);
+    successfullyPlace(board, destroyer, isRandom);
+    successfullyPlace(board, submarine, isRandom);
+    successfullyPlace(board, patrolBoat, isRandom);
   }
 
   private _checkVictory(): true | undefined {

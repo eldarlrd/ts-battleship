@@ -10,7 +10,7 @@ import {
 import defeatSound from '#/sfx/defeat.opus';
 import victorySound from '#/sfx/victory.opus';
 import { NewGame } from '@/components/buttons/NewGame.tsx';
-import { type GameMode } from '@/config/rules.ts';
+import { type GameMode, SHIP_COUNT } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { playSound } from '@/lib/audio.ts';
 import { type OnlinePlayer } from '@/logic/onlinePlayer.ts';
@@ -51,7 +51,7 @@ export const Modal = (props: {
   createEffect(() => {
     const handleCheck = (): void => {
       const winnerStatus = props.game.playerVictorious;
-      const isGameActive = props.game.playerBoard.shipsPlaced >= 5;
+      const isGameActive = props.game.playerBoard.shipsPlaced >= SHIP_COUNT;
 
       if (winnerStatus && props.gameMode && isGameActive)
         openModal(winnerStatus);

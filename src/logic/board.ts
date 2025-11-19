@@ -1,4 +1,5 @@
 import missSound from '#/sfx/splash.opus';
+import { GRID_SIZE } from '@/config/rules.ts';
 import { playSound } from '@/lib/audio.ts';
 import { type Ship } from '@/logic/ship.ts';
 
@@ -13,8 +14,8 @@ class Board {
   public shipsPlaced: number;
 
   public constructor() {
-    this.grid = Array.from({ length: 10 }, () =>
-      Array<Ship | null>(10).fill(null)
+    this.grid = Array.from({ length: GRID_SIZE }, () =>
+      Array<Ship | null>(GRID_SIZE).fill(null)
     );
     this.impacts = [];
     this.shipsPlaced = 0;
@@ -87,7 +88,12 @@ class Board {
       const nextRow = row + i * direction;
       const nextCol = col + i * (1 - direction);
 
-      if (nextRow < 0 || nextRow >= 10 || nextCol < 0 || nextCol >= 10)
+      if (
+        nextRow < 0 ||
+        nextRow >= GRID_SIZE ||
+        nextCol < 0 ||
+        nextCol >= GRID_SIZE
+      )
         return false;
       if (this.grid[nextRow][nextCol] !== null) return false;
       if (this._isAdjacent(nextRow, nextCol)) return false;
