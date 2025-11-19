@@ -29,8 +29,8 @@ import { type GameRoom } from '@/logic/matchmaking.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
 
-// FIXME: Modal Pops on Computer Win
-// TODO: Victory Conditions & Lobbies
+// FIXME: Victory Conditions
+// TODO: Lobbies
 
 // * Whole app’s some serious Solid + OOP spaghetti code
 export const App = (): JSXElement => {

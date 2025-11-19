@@ -51,8 +51,10 @@ export const Modal = (props: {
   createEffect(() => {
     const handleCheck = (): void => {
       const winnerStatus = props.game.playerVictorious;
+      const isGameActive = props.game.playerBoard.shipsPlaced >= 5;
 
-      if (winnerStatus && props.gameMode) openModal(winnerStatus);
+      if (winnerStatus && props.gameMode && isGameActive)
+        openModal(winnerStatus);
       else props.overlay.style.display = 'none';
     };
 
