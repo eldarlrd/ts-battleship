@@ -6,6 +6,7 @@ import solid from 'vite-plugin-solid';
 // https://vite.dev/config
 export default defineConfig({
   base: '/ts-battleship/',
+  resolve: { alias: { '@': '/src', '#': '/src/assets' } },
   plugins: [
     solid(),
     VitePWA({
@@ -19,14 +20,5 @@ export default defineConfig({
         globPatterns: ['**/*.{html,css,js,png,opus,woff2,webmanifest}']
       }
     })
-  ],
-  resolve: { alias: { '@': '/src', '#': '/src/assets' } },
-  // https://vitest.dev/config
-  test: {
-    globals: true,
-    restoreMocks: true,
-    environment: 'jsdom',
-    include: ['__tests__/**/*.{test,spec}.{ts,tsx}'],
-    coverage: { include: ['src/logic/*.{ts,tsx}'] }
-  }
+  ]
 });
