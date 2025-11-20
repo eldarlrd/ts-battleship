@@ -1,7 +1,7 @@
 {
   "name": "ts-battleship",
   "private": true,
-  "version": "1.4.11",
+  "version": "1.4.12",
   "type": "module",
   "keywords": [
     "battleship",
@@ -64,7 +64,7 @@
     "prettier": "^3.6.2",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.47.0",
-    "vite": "^7.2.2",
+    "vite": "^7.2.4",
     "vite-plugin-pwa": "^1.1.0",
     "vite-plugin-solid": "^2.11.10",
     "vite-tsconfig-paths": "^5.1.4",

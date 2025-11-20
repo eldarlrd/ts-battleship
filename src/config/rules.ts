@@ -7,7 +7,7 @@ const LOBBY_ALPHABET =
 const DURATION_IN_MINUTES = 15;
 const DURATION_MS = DURATION_IN_MINUTES * 60 * 1000;
 
-// Milton Bradley rules & Hasbro names
+// * Easy to change: Milton Bradley rules & Hasbro names
 const SHIPS = [
   '5 Carrier',
   '4 Battleship',
@@ -15,9 +15,11 @@ const SHIPS = [
   '3 Submarine',
   '2 Patrol Boat'
 ] as const;
-const GRID_SIZE = 5; // ! Temporary Size Decrease
-const SHIP_COUNT = ~~(GRID_SIZE / 2);
 const OG_SHIP_LENGTHS = [5, 4, 3, 3, 2];
+const GRID_SIZE = 5; // ! Temporary Size Decrease
+
+// Board Adjustment
+const SHIP_COUNT = ~~(GRID_SIZE / 2);
 const SHIP_LENGTHS = OG_SHIP_LENGTHS.slice(0, SHIP_COUNT);
 
 export {

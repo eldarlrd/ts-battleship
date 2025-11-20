@@ -1,7 +1,11 @@
 import { css } from '@emotion/css';
 import { CgSpinnerTwoAlt } from 'solid-icons/cg';
 import { FaSolidRobot, FaSolidUser } from 'solid-icons/fa';
-import { IoVolumeHighSharp, IoVolumeMuteSharp } from 'solid-icons/io';
+import {
+  IoChevronBackSharp,
+  IoVolumeHighSharp,
+  IoVolumeMuteSharp
+} from 'solid-icons/io';
 import { TbTargetArrow } from 'solid-icons/tb';
 import { createSignal, type JSXElement, onCleanup } from 'solid-js';
 
@@ -159,29 +163,75 @@ export const App = (): JSXElement => {
         <div
           class={css`
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            flex: 1;
-            gap: 0.5rem;
-            padding: 0 1rem;
-            font-size: 1.5rem;
-
-            & svg {
-              font-size: 1.5rem;
-            }
+            gap: 0.25rem;
           `}>
-          <CgSpinnerTwoAlt
+          <div
             class={css`
-              animation: spin 1.5s linear infinite;
+              display: inherit;
+              justify-content: center;
+              align-items: center;
+              flex: 1;
+              gap: 0.5rem;
+              padding: 0 1rem;
+              font-size: 1.5rem;
 
-              @keyframes spin {
-                to {
-                  transform: rotate(360deg);
+              & svg {
+                font-size: 1.5rem;
+              }
+            `}>
+            <CgSpinnerTwoAlt
+              class={css`
+                animation: spin 1.5s linear infinite;
+
+                @keyframes spin {
+                  to {
+                    transform: rotate(360deg);
+                  }
+                }
+              `}
+            />
+            {matchmakingStatus() || MATCHMAKING_STATUS.connecting}
+          </div>
+          <button
+            type='button'
+            onClick={() => {
+              const currentGame = game();
+
+              if (currentGame instanceof OnlinePlayer)
+                void currentGame.cleanup();
+
+              void setGameMode(null);
+              setGame(new Player());
+              setMatchmakingStatus('');
+            }}
+            class={css`
+              border: none;
+              cursor: pointer;
+              background: transparent;
+              display: inherit;
+              align-items: center;
+              color: ${COLOR_VARIABLES.secondary};
+              width: 3rem;
+              height: 3.5rem;
+              padding: 0.125rem 0 0;
+              margin-left: -1.75rem;
+              font-size: 1.375rem;
+
+              &:active {
+                color: ${COLOR_VARIABLES.hover};
+              }
+
+              ${MEDIA_QUERIES.mouse} {
+                &:hover {
+                  color: ${COLOR_VARIABLES.hover};
                 }
               }
-            `}
-          />
-          {matchmakingStatus() || MATCHMAKING_STATUS.connecting}
+            `}>
+            <IoChevronBackSharp size='1.75rem' /> Back
+          </button>
         </div>
       )}
 

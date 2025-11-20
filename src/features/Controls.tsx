@@ -120,19 +120,6 @@ export const Controls = (props: {
         <div
           class={css`
             display: inherit;
-            gap: 3rem;
-
-            ${MEDIA_QUERIES.sm} {
-              gap: 4rem;
-            }
-
-            ${MEDIA_QUERIES.md} {
-              gap: 5rem;
-            }
-
-            ${MEDIA_QUERIES.lg} {
-              gap: 6rem;
-            }
           `}>
           <button
             type='button'
@@ -141,6 +128,7 @@ export const Controls = (props: {
               void props.setGameMode(null);
             }}
             class={css`
+              z-index: 1;
               border: none;
               cursor: pointer;
               background: transparent;
@@ -167,6 +155,8 @@ export const Controls = (props: {
           <h1
             class={css`
               flex-grow: 1;
+              text-align: center;
+              margin-left: -2rem;
             `}>
             New Game
           </h1>
