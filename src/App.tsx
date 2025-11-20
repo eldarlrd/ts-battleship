@@ -33,9 +33,6 @@ import { type GameRoom } from '@/logic/matchmaking.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
 
-// FIXME: Victory conditions reset on leave
-// TODO: Lobbies
-
 // * Whole app’s some serious Solid + OOP spaghetti code
 export const App = (): JSXElement => {
   // eslint-disable-next-line prefer-const

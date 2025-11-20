@@ -292,7 +292,7 @@ const leaveRoom = async (roomId: string, playerId: string): Promise<void> => {
 
   if (room.status === 'waiting' || room.status === 'ready')
     await deleteDoc(roomRef);
-  else {
+  else if (room.status !== 'finished') {
     const winnerId = isPlayer1 ? room.player2!.uid : room.player1.uid;
 
     await declareWinner(roomId, winnerId);
