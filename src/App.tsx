@@ -57,6 +57,14 @@ export const App = (): JSXElement => {
         const onlineGame = new OnlinePlayer(uid);
 
         await onlineGame.joinMatchmaking();
+
+        // Zombie check
+        if (gameMode() !== 'pvp') {
+          void onlineGame.cleanup();
+
+          return;
+        }
+
         onlineGame.setRoomUpdateCallback((room: GameRoom | null) => {
           if (!room) {
             errorToast(ERROR_OPPONENT_LEFT);
@@ -203,9 +211,10 @@ export const App = (): JSXElement => {
               if (currentGame instanceof OnlinePlayer)
                 void currentGame.cleanup();
 
+              setIsAuthenticating(false);
+              setMatchmakingStatus('');
               void setGameMode(null);
               setGame(new Player());
-              setMatchmakingStatus('');
             }}
             class={css`
               border: none;

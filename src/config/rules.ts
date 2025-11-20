@@ -16,7 +16,7 @@ const SHIPS = [
   '2 Patrol Boat'
 ] as const;
 const OG_SHIP_LENGTHS = [5, 4, 3, 3, 2];
-const GRID_SIZE = 5; // ! Temporary Size Decrease
+const GRID_SIZE = 10;
 
 // Board Adjustment
 const SHIP_COUNT = ~~(GRID_SIZE / 2);

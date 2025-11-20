@@ -179,10 +179,10 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
   const attackCell = (row: number, col: number): void => {
     if (props.game.playerVictorious) return;
 
-    if ('isCurrPlayerTurn' in props.game && !props.game.isCurrPlayerTurn)
+    if (props.game instanceof OnlinePlayer && !props.game.isCurrPlayerTurn)
       return;
 
-    if (!('isCurrPlayerTurn' in props.game) && isComputerTurn()) return;
+    if (props.game instanceof Player && isComputerTurn()) return;
 
     const isSuccessfulHit = props.game.takeTurn({ row, col });
     const moveDelay = 1500; // 1.5 seconds
@@ -190,7 +190,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     if (isSuccessfulHit) {
       checkImpact(row, col);
       document.dispatchEvent(new Event('attack'));
-      if (!('isCurrPlayerTurn' in props.game)) props.setIsOpponentTurn?.(true);
+      if (props.game instanceof Player) props.setIsOpponentTurn?.(true);
 
       if (!props.game.playerVictorious && props.game instanceof Player) {
         setIsComputerTurn(true);
