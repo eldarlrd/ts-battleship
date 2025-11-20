@@ -35,7 +35,6 @@ import { Player } from '@/logic/player.ts';
 
 // FIXME: Victory conditions on leave
 // FIXME: Victory conditions reset on leave
-// FIXME: Board animations swap on turn
 // TODO: Lobbies
 
 // * Whole app’s some serious Solid + OOP spaghetti code
@@ -73,8 +72,6 @@ export const App = (): JSXElement => {
             return;
           }
 
-          setBoardUpdateTrigger(prev => prev + 1);
-
           switch (room.status) {
             case 'waiting':
               if (!room.player2)
@@ -88,6 +85,7 @@ export const App = (): JSXElement => {
 
             case 'playing':
               setMatchmakingStatus('');
+              setIsOpponentTurn(!onlineGame.isCurrPlayerTurn);
               setBoardUpdateTrigger(prev => prev + 1);
           }
         });

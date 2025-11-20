@@ -88,13 +88,17 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
               checkImpact(impact.row, impact.col);
             });
 
+            console.log('if', props.isOpponentTurn);
+
             props.setIsOpponentTurn?.(prev => !prev);
           } else {
             props.game.opponentBoard.impacts.forEach(impact => {
               checkImpact(impact.row, impact.col);
             });
 
-            props.setIsOpponentTurn?.(prev => prev);
+            console.log('else', props.isOpponentTurn);
+
+            props.setIsOpponentTurn?.(prev => !prev);
           }
         }
       },
@@ -104,7 +108,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
 
   onMount(() => {
     if (props.game instanceof OnlinePlayer)
-      props.setIsOpponentTurn?.(!props.game.isPlayer1);
+      props.setIsOpponentTurn?.(props.game.isPlayer1);
 
     if (props.isPlayerBoard && !(props.game instanceof OnlinePlayer)) {
       const handleComputerAttack = (event: Event): void => {
