@@ -33,7 +33,6 @@ import { type GameRoom } from '@/logic/matchmaking.ts';
 import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
 import { Player } from '@/logic/player.ts';
 
-// FIXME: Victory conditions on leave
 // FIXME: Victory conditions reset on leave
 // TODO: Lobbies
 
@@ -87,6 +86,12 @@ export const App = (): JSXElement => {
               setMatchmakingStatus('');
               setIsOpponentTurn(!onlineGame.isCurrPlayerTurn);
               setBoardUpdateTrigger(prev => prev + 1);
+              break;
+
+            case 'finished':
+              setMatchmakingStatus('');
+              setBoardUpdateTrigger(prev => prev + 1);
+              setIsControlUp(false);
           }
         });
 

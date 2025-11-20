@@ -88,15 +88,11 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
               checkImpact(impact.row, impact.col);
             });
 
-            console.log('if', props.isOpponentTurn);
-
             props.setIsOpponentTurn?.(prev => !prev);
           } else {
             props.game.opponentBoard.impacts.forEach(impact => {
               checkImpact(impact.row, impact.col);
             });
-
-            console.log('else', props.isOpponentTurn);
 
             props.setIsOpponentTurn?.(prev => !prev);
           }
@@ -196,7 +192,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
       document.dispatchEvent(new Event('attack'));
       if (!('isCurrPlayerTurn' in props.game)) props.setIsOpponentTurn?.(true);
 
-      if (!props.game.playerVictorious && !('isCurrPlayerTurn' in props.game)) {
+      if (!props.game.playerVictorious && props.game instanceof Player) {
         setIsComputerTurn(true);
         setTimeout((): void => {
           const compCoord = (props.game as Player).computerTurn();

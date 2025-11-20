@@ -53,12 +53,15 @@ export const Modal = (props: {
       const winnerStatus = props.game.playerVictorious;
       const isGameActive = props.game.playerBoard.shipsPlaced >= SHIP_COUNT;
 
+      console.log(winnerStatus);
+
       if (winnerStatus && props.gameMode && isGameActive)
         openModal(winnerStatus);
       else props.overlay.style.display = 'none';
     };
 
     props.boardUpdateTrigger();
+    handleCheck();
 
     document.addEventListener('attack', handleCheck);
     onCleanup(() => {
