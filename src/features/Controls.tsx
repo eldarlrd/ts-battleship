@@ -18,22 +18,22 @@ import {
 import shipClearSound from '#/sfx/clear.opus';
 import shipDeploySound from '#/sfx/deploy.opus';
 import startSound from '#/sfx/start.opus';
-import { BoardControl } from '@/components/buttons/BoardControl.tsx';
+import BoardControl from '@/components/buttons/BoardControl.tsx';
 import { type GameMode, SHIP_COUNT, SHIPS } from '@/config/rules.ts';
 import {
   COLOR_VARIABLES,
   MATCHMAKING_STATUS,
   MEDIA_QUERIES
 } from '@/config/site.ts';
-import { errorToast } from '@/config/toast.ts';
-import { Gameboard } from '@/features/Gameboard.tsx';
+import errorToast from '@/config/toast.ts';
+import Gameboard from '@/features/Gameboard.tsx';
 import { playSound } from '@/lib/audio.ts';
 import { Board } from '@/logic/board.ts';
-import { type GameRoom } from '@/logic/matchmaking.ts';
-import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
-import { Player } from '@/logic/player.ts';
+import OnlinePlayer from '@/logic/onlinePlayer.ts';
+import Player from '@/logic/player.ts';
+import { type GameRoom } from '@/models/matchmaking.model.ts';
 
-export const Controls = (props: {
+const Controls = (props: {
   game: Player | OnlinePlayer;
   setGame: Setter<Player | OnlinePlayer>;
   setIsControlUp: Setter<boolean>;
@@ -355,3 +355,5 @@ export const Controls = (props: {
     </div>
   );
 };
+
+export default Controls;

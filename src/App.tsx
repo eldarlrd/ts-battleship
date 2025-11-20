@@ -14,7 +14,7 @@ import Footer from '@/components/banners/Footer.tsx';
 import Header from '@/components/banners/Header.tsx';
 import Toast from '@/components/banners/Toast.tsx';
 import '@fontsource-variable/stick-no-bills';
-import { NewGame } from '@/components/buttons/NewGame.tsx';
+import NewGame from '@/components/buttons/NewGame.tsx';
 import { ERROR_OPPONENT_LEFT } from '@/config/errors.ts';
 import { signInAnonymous } from '@/config/firebase.ts';
 import { type GameMode } from '@/config/rules.ts';
@@ -23,18 +23,20 @@ import {
   MATCHMAKING_STATUS,
   MEDIA_QUERIES
 } from '@/config/site.ts';
-import { errorToast } from '@/config/toast.ts';
-import { Controls } from '@/features/Controls.tsx';
-import { Gameboard } from '@/features/Gameboard.tsx';
-import { Modal } from '@/features/Modal.tsx';
+import errorToast from '@/config/toast.ts';
+import Controls from '@/features/Controls.tsx';
+import Gameboard from '@/features/Gameboard.tsx';
+import Modal from '@/features/Modal.tsx';
 import ModeSelection from '@/features/ModeSelection.tsx';
 import { isMuted, toggleMute } from '@/lib/audio.ts';
-import { type GameRoom } from '@/logic/matchmaking.ts';
-import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
-import { Player } from '@/logic/player.ts';
+import OnlinePlayer from '@/logic/onlinePlayer.ts';
+import Player from '@/logic/player.ts';
+import { type GameRoom } from '@/models/matchmaking.model.ts';
+
+// TODO: Lobby
 
 // * Whole app’s some serious Solid + OOP spaghetti code
-export const App = (): JSXElement => {
+const App = (): JSXElement => {
   // eslint-disable-next-line prefer-const
   let overlay = document.getElementById('overlay') as HTMLDivElement;
 
@@ -448,6 +450,8 @@ export const App = (): JSXElement => {
     </div>
   );
 };
+
+export default App;
 
 // Easter Egg
 console.log('Pride of a nation, a beast made of steel!');

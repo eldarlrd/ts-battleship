@@ -1,7 +1,7 @@
 import { GRID_SIZE, SHIP_LENGTHS } from '@/config/rules.ts';
-import { successfullyPlace } from '@/lib/placement.ts';
-import { Player } from '@/logic/player.ts';
-import { Ship } from '@/logic/ship.ts';
+import successfullyPlace from '@/lib/placement.ts';
+import Player from '@/logic/player.ts';
+import Ship from '@/logic/ship.ts';
 
 describe('player interface', () => {
   it('players take turns', () => {

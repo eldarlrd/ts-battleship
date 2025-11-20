@@ -6,8 +6,7 @@ import {
   type JSXElement,
   on,
   onCleanup,
-  onMount,
-  type Setter
+  onMount
 } from 'solid-js';
 
 import shipDeploySound from '#/sfx/deploy.opus';
@@ -15,26 +14,13 @@ import shipErrorSound from '#/sfx/error.opus';
 import { GRID_SIZE, SHIP_COUNT, SHIP_LENGTHS, SHIPS } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { playSound } from '@/lib/audio.ts';
-import { successfullyPlace } from '@/lib/placement.ts';
-import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
-import { Player } from '@/logic/player.ts';
-import { Ship } from '@/logic/ship.ts';
+import successfullyPlace from '@/lib/placement.ts';
+import OnlinePlayer from '@/logic/onlinePlayer.ts';
+import Player from '@/logic/player.ts';
+import Ship from '@/logic/ship.ts';
+import { type GameboardSettings } from '@/models/gameboard.model.ts';
 
-interface GameboardSettings {
-  isPlayerBoard: boolean;
-  isPlacing: boolean;
-  isVertical: boolean;
-  isOpponentTurn?: boolean;
-  game: Player | OnlinePlayer;
-  shipInfo?: HTMLSpanElement;
-  startButton?: HTMLButtonElement;
-  setIsDoneSetup?: Setter<boolean>;
-  setIsOpponentTurn?: Setter<boolean>;
-  boardUpdateTrigger?: () => number;
-  placementRefreshTrigger?: () => number;
-}
-
-export const Gameboard = (props: GameboardSettings): JSXElement => {
+const Gameboard = (props: GameboardSettings): JSXElement => {
   const [isComputerTurn, setIsComputerTurn] = createSignal(false);
 
   const refreshBoardVisuals = (): void => {
@@ -469,3 +455,5 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     </div>
   );
 };
+
+export default Gameboard;

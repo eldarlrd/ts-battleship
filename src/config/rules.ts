@@ -1,4 +1,5 @@
 type GameMode = 'pve' | 'pvp';
+type Status = 'waiting' | 'ready' | 'playing' | 'finished';
 
 const LOBBY_ALPHABET =
   '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -24,6 +25,7 @@ const SHIP_LENGTHS = OG_SHIP_LENGTHS.slice(0, SHIP_COUNT);
 
 export {
   type GameMode,
+  type Status,
   LOBBY_ALPHABET,
   DURATION_MS,
   SHIPS,

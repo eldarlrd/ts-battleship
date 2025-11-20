@@ -7,10 +7,10 @@ import {
   ERROR_NOT_IN_ROOM,
   ERROR_NOT_YOUR_TURN
 } from '@/config/errors.ts';
-import { GRID_SIZE, SHIP_LENGTHS } from '@/config/rules.ts';
+import { GRID_SIZE, SHIP_LENGTHS, type Status } from '@/config/rules.ts';
 import { COLOR_VARIABLES } from '@/config/site.ts';
-import { errorToast } from '@/config/toast.ts';
-import { successfullyPlace } from '@/lib/placement.ts';
+import errorToast from '@/config/toast.ts';
+import successfullyPlace from '@/lib/placement.ts';
 import { Board, type Coordinates } from '@/logic/board.ts';
 import {
   findOrCreateRoom,
@@ -18,12 +18,12 @@ import {
   makeMove,
   subscribeToRoom,
   declareWinner,
-  leaveRoom,
-  type GameRoom
+  leaveRoom
 } from '@/logic/matchmaking.ts';
-import { Ship } from '@/logic/ship.ts';
+import Ship from '@/logic/ship.ts';
+import { type GameRoom } from '@/models/matchmaking.model.ts';
 
-export class OnlinePlayer {
+class OnlinePlayer {
   public playerVictorious: number;
   public playerBoard: Board;
   public opponentBoard: Board;
@@ -32,7 +32,7 @@ export class OnlinePlayer {
   public playerId: string;
   public opponentId: string | null;
   public isPlayer1: boolean;
-  public roomStatus: 'waiting' | 'ready' | 'playing' | 'finished';
+  public roomStatus: Status;
   private _unsubscribe: Unsubscribe | null;
   private _onRoomUpdateCallbacks: ((room: GameRoom) => void)[];
   private _pendingRoomUpdate: GameRoom | null;
@@ -385,3 +385,5 @@ export class OnlinePlayer {
     }
   }
 }
+
+export default OnlinePlayer;

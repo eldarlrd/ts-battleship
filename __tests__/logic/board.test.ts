@@ -1,6 +1,6 @@
 import { GRID_SIZE } from '@/config/rules.ts';
 import { Board } from '@/logic/board.ts';
-import { Ship } from '@/logic/ship.ts';
+import Ship from '@/logic/ship.ts';
 
 describe('board class', () => {
   const cleanBoard = {

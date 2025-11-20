@@ -21,42 +21,12 @@ import {
 } from '@/config/errors.ts';
 import { firestore } from '@/config/firebase.ts';
 import { DURATION_MS, GRID_SIZE } from '@/config/rules.ts';
-import { errorToast } from '@/config/toast.ts';
-
-interface Move {
-  row: number;
-  col: number;
-  hit: boolean;
-  sunk?: boolean;
-  sunkShipLength?: number;
-}
-
-interface GameRoom {
-  id: string;
-  player1: {
-    uid: string;
-    ready: boolean;
-    board?: number[][];
-  };
-  player2?: {
-    uid: string;
-    ready: boolean;
-    board?: number[][];
-  };
-  currentTurn?: string;
-  status: 'waiting' | 'ready' | 'playing' | 'finished';
-  winner?: string;
-  moves?: Record<string, Move[]>;
-  sunkShipsCount?: Record<string, number>;
-  expireAt: Timestamp;
-}
-
-interface MoveResult {
-  row: number;
-  col: number;
-  hit: boolean;
-  sunk?: boolean;
-}
+import errorToast from '@/config/toast.ts';
+import {
+  type GameRoom,
+  type Move,
+  type MoveResult
+} from '@/models/matchmaking.model.ts';
 
 const createGameRoom = async (playerId: string): Promise<string> => {
   const roomsRef = collection(firestore, 'rooms');
@@ -300,9 +270,6 @@ const leaveRoom = async (roomId: string, playerId: string): Promise<void> => {
 };
 
 export {
-  type Move,
-  type GameRoom,
-  type MoveResult,
   createGameRoom,
   joinGameRoom,
   findOrCreateRoom,

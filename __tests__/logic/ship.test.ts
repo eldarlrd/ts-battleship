@@ -1,4 +1,4 @@
-import { Ship } from '@/logic/ship.ts';
+import Ship from '@/logic/ship.ts';
 
 describe('ship class', () => {
   const battleship = new Ship(4);

@@ -1,9 +1,9 @@
 import { GRID_SIZE, SHIP_LENGTHS } from '@/config/rules.ts';
-import { successfullyPlace } from '@/lib/placement.ts';
+import successfullyPlace from '@/lib/placement.ts';
 import { Board, type Coordinates } from '@/logic/board.ts';
-import { Ship } from '@/logic/ship.ts';
+import Ship from '@/logic/ship.ts';
 
-export class Player {
+class Player {
   public playerVictorious: number;
   public playerBoard: Board;
   public computerBoard: Board;
@@ -356,3 +356,5 @@ export class Player {
     }
   }
 }
+
+export default Player;

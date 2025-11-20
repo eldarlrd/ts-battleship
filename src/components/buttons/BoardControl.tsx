@@ -3,7 +3,7 @@ import { type JSXElement } from 'solid-js';
 
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 
-export const BoardControl = (props: {
+const BoardControl = (props: {
   handleAction: () => void;
   icon: JSXElement;
   isDisabled: boolean;
@@ -56,3 +56,5 @@ export const BoardControl = (props: {
     {props.icon}
   </button>
 );
+
+export default BoardControl;

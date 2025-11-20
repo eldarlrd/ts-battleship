@@ -9,7 +9,7 @@ interface ShipStats {
   hit(): void;
 }
 
-export class Ship implements ShipStats {
+class Ship implements ShipStats {
   public length: number;
   public sunk: boolean;
   public coords: Coordinates;
@@ -39,3 +39,5 @@ export class Ship implements ShipStats {
     } else playSound(shipHitSound);
   }
 }
+
+export default Ship;

@@ -20,7 +20,7 @@
 
 import { render } from 'solid-js/web';
 
-import { App } from '@/App.tsx';
+import App from '@/App.tsx';
 import { ERROR_SERVICE_WORKER } from '@/config/errors.ts';
 
 const root = document.getElementById('root');

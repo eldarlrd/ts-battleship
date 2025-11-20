@@ -5,10 +5,10 @@ import newGameSound from '#/sfx/new-game.opus';
 import { type GameMode } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { playSound } from '@/lib/audio.ts';
-import { OnlinePlayer } from '@/logic/onlinePlayer.ts';
-import { Player } from '@/logic/player.ts';
+import OnlinePlayer from '@/logic/onlinePlayer.ts';
+import Player from '@/logic/player.ts';
 
-export const NewGame = (props: {
+const NewGame = (props: {
   game?: Player | OnlinePlayer;
   setGame: Setter<Player | OnlinePlayer>;
   setIsControlUp: Setter<boolean>;
@@ -60,3 +60,5 @@ export const NewGame = (props: {
     </button>
   );
 };
+
+export default NewGame;

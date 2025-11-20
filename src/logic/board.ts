@@ -1,7 +1,7 @@
 import missSound from '#/sfx/splash.opus';
 import { GRID_SIZE } from '@/config/rules.ts';
 import { playSound } from '@/lib/audio.ts';
-import { type Ship } from '@/logic/ship.ts';
+import type Ship from '@/logic/ship.ts';
 
 interface Coordinates {
   row: number;

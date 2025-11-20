@@ -1,8 +1,8 @@
 import { GRID_SIZE } from '@/config/rules.ts';
 import { type Board, type Coordinates } from '@/logic/board.ts';
-import { type Ship } from '@/logic/ship.ts';
+import type Ship from '@/logic/ship.ts';
 
-export const successfullyPlace = (
+const successfullyPlace = (
   board: Board,
   ship: Ship,
   isRandom: boolean,
@@ -37,3 +37,5 @@ export const successfullyPlace = (
 
   return true;
 };
+
+export default successfullyPlace;

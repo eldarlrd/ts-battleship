@@ -9,14 +9,14 @@ import {
 
 import defeatSound from '#/sfx/defeat.opus';
 import victorySound from '#/sfx/victory.opus';
-import { NewGame } from '@/components/buttons/NewGame.tsx';
+import NewGame from '@/components/buttons/NewGame.tsx';
 import { type GameMode, SHIP_COUNT } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { playSound } from '@/lib/audio.ts';
-import { type OnlinePlayer } from '@/logic/onlinePlayer.ts';
-import { type Player } from '@/logic/player.ts';
+import type OnlinePlayer from '@/logic/onlinePlayer.ts';
+import type Player from '@/logic/player.ts';
 
-export const Modal = (props: {
+const Modal = (props: {
   game: Player | OnlinePlayer;
   setGame: Setter<Player | OnlinePlayer>;
   setIsControlUp: Setter<boolean>;
@@ -133,3 +133,5 @@ export const Modal = (props: {
     </div>
   );
 };
+
+export default Modal;
