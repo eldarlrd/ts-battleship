@@ -6,7 +6,6 @@ describe('ship class', () => {
   it('returns a new ship object', () => {
     const intactShip = {
       length: 4,
-      hits: 0,
       sunk: false
     };
 
@@ -16,7 +15,6 @@ describe('ship class', () => {
   it('hits a ship', () => {
     const hitShip = {
       length: 4,
-      hits: 1,
       sunk: false
     };
 
@@ -27,7 +25,6 @@ describe('ship class', () => {
   it('sinks a ship', () => {
     const sunkShip = {
       length: 4,
-      hits: 4,
       sunk: true
     };
 

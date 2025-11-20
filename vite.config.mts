@@ -1,3 +1,4 @@
+/// <reference types='vitest/config' />
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import solid from 'vite-plugin-solid';
@@ -19,5 +20,17 @@ export default defineConfig({
         globPatterns: ['**/*.{html,css,js,png,opus,woff2,webmanifest}']
       }
     })
-  ]
+  ],
+  // @ts-expect-error: missing config key
+  // https://vitest.dev/config
+  test: {
+    globals: true,
+    restoreMocks: true,
+    environment: 'jsdom',
+    include: ['__tests__/**/*.{test,spec}.{ts,tsx}'],
+    coverage: {
+      include: ['src/logic/*.{ts,tsx}'],
+      exclude: ['src/logic/{matchmaking,onlinePlayer}.{ts,tsx}']
+    }
+  }
 });

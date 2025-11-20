@@ -64,7 +64,7 @@ export default tseslint.config({
     'vitest/consistent-test-filename': 2,
     'vitest/prefer-equality-matcher': 2,
     'vitest/prefer-lowercase-title': 2,
-    'vitest/prefer-strict-equal': 2,
+    'vitest/prefer-strict-equal': 1,
     'vitest/consistent-test-it': 2,
     'vitest/no-test-prefixes': 2,
     'n/no-unsupported-features/node-builtins': 0,

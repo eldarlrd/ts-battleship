@@ -14,6 +14,34 @@ describe('player interface', () => {
     expect(game.playerVictorious).not.toBe(0);
   });
 
+  it('player defeats computer', () => {
+    const game = new Player();
+
+    vi.spyOn(game.computerBoard, 'isGameOver').mockReturnValue(true);
+    game.isCurrPlayerOne = true;
+    const won = game.takeTurn({ row: 0, col: 0 });
+
+    expect(won).toBe(true);
+  });
+
+  it('random target on collision', () => {
+    const game = new Player();
+
+    game.playerBoard.impacts.push({ row: 0, col: 0 });
+    const randomSpy = vi.spyOn(Math, 'random');
+
+    randomSpy
+      .mockReturnValueOnce(0.05)
+      .mockReturnValueOnce(0.05)
+      .mockReturnValueOnce(0.15)
+      .mockReturnValueOnce(0.15);
+
+    const coords = game.getRandomValidTarget();
+
+    expect(coords).toStrictEqual({ row: 1, col: 1 });
+    expect(randomSpy).toHaveBeenCalledTimes(4);
+  });
+
   it('computer takes a turn', () => {
     const game = new Player(true);
 

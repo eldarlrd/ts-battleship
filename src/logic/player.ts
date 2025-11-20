@@ -10,10 +10,10 @@ class Player {
   public isCurrPlayerOne: boolean;
 
   // * Computer Targeting System
+  public currentDirection: { row: number; col: number } | null;
   private _targetMode: boolean;
   private _targetQueue: Coordinates[];
   private _hitHistory: Coordinates[];
-  private _currentDirection: { row: number; col: number } | null;
 
   // * Density Heatmap
   private readonly _remainingShipLengths: number[];
@@ -33,7 +33,7 @@ class Player {
     this._targetMode = false;
     this._targetQueue = [];
     this._hitHistory = [];
-    this._currentDirection = null;
+    this.currentDirection = null;
 
     this._remainingShipLengths = [5, 4, 3, 3, 2];
 
@@ -57,6 +57,19 @@ class Player {
 
   public computerTurn(): Coordinates {
     return this._targetMode ? this._smartTarget() : this._hitWithHeatmap();
+  }
+
+  public getRandomValidTarget(): Coordinates {
+    let coordinates: Coordinates;
+
+    do {
+      coordinates = {
+        row: ~~(Math.random() * GRID_SIZE),
+        col: ~~(Math.random() * GRID_SIZE)
+      };
+    } while (!this._isValidTarget(coordinates));
+
+    return coordinates;
   }
 
   private _generateHeatmap(): number[][] {
@@ -151,7 +164,7 @@ class Player {
 
     const coordinates =
       bestTargets[~~(Math.random() * bestTargets.length)] ||
-      this._getRandomValidTarget();
+      this.getRandomValidTarget();
 
     this.takeTurn(coordinates);
 
@@ -163,19 +176,6 @@ class Player {
       this._hitHistory.push(coordinates);
       this._addCardinalDirections(coordinates);
     }
-
-    return coordinates;
-  }
-
-  private _getRandomValidTarget(): Coordinates {
-    let coordinates: Coordinates;
-
-    do {
-      coordinates = {
-        row: ~~(Math.random() * GRID_SIZE),
-        col: ~~(Math.random() * GRID_SIZE)
-      };
-    } while (!this._isValidTarget(coordinates));
 
     return coordinates;
   }
@@ -193,7 +193,7 @@ class Player {
     }
 
     if (coordinates === null) {
-      if (this._currentDirection !== null && this._hitHistory.length > 0) {
+      if (this.currentDirection !== null && this._hitHistory.length > 0) {
         this._reverseDirection();
 
         while (this._targetQueue.length > 0) {
@@ -227,7 +227,7 @@ class Player {
         if (index > -1) this._remainingShipLengths.splice(index, 1);
         this._resetTargetMode();
       } else this._updateTargetStrategy(coordinates);
-    } else if (this._currentDirection !== null && this._hitHistory.length > 0)
+    } else if (this.currentDirection !== null && this._hitHistory.length > 0)
       this._reverseDirection();
 
     return coordinates;
@@ -241,13 +241,13 @@ class Player {
 
       if (first.row === second.row)
         // Horizontal
-        this._currentDirection = {
+        this.currentDirection = {
           row: 0,
           col: second.col > first.col ? 1 : -1
         };
       else
         // Vertical
-        this._currentDirection = {
+        this.currentDirection = {
           row: second.row > first.row ? 1 : -1,
           col: 0
         };
@@ -274,23 +274,22 @@ class Player {
   }
 
   private _continueInDirection(lastHit: Coordinates): void {
-    if (this._currentDirection === null) return;
+    if (this.currentDirection === null) return;
 
     const next = {
-      row: lastHit.row + this._currentDirection.row,
-      col: lastHit.col + this._currentDirection.col
+      row: lastHit.row + this.currentDirection.row,
+      col: lastHit.col + this.currentDirection.col
     };
 
     if (this._isValidTarget(next)) this._targetQueue.unshift(next);
   }
 
   private _reverseDirection(): void {
-    if (this._currentDirection === null || this._hitHistory.length === 0)
-      return;
+    if (this.currentDirection === null || this._hitHistory.length === 0) return;
 
-    this._currentDirection = {
-      row: -this._currentDirection.row,
-      col: -this._currentDirection.col
+    this.currentDirection = {
+      row: -this.currentDirection.row,
+      col: -this.currentDirection.col
     };
 
     const firstHit = this._hitHistory[0];
@@ -300,8 +299,8 @@ class Player {
 
     while (true) {
       current = {
-        row: current.row + this._currentDirection.row,
-        col: current.col + this._currentDirection.col
+        row: current.row + this.currentDirection.row,
+        col: current.col + this.currentDirection.col
       };
 
       if (!this._isValidTarget(current)) break;
@@ -325,7 +324,7 @@ class Player {
     this._targetMode = false;
     this._targetQueue = [];
     this._hitHistory = [];
-    this._currentDirection = null;
+    this.currentDirection = null;
 
     // Reset Parity
     if (this._remainingShipLengths.length > 0) {
