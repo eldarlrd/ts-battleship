@@ -15,7 +15,7 @@ const SHIPS = [
   '3 Submarine',
   '2 Patrol Boat'
 ] as const;
-const GRID_SIZE = 8; // ! Temporary Size Decrease
+const GRID_SIZE = 5; // ! Temporary Size Decrease
 const SHIP_COUNT = ~~(GRID_SIZE / 2);
 const OG_SHIP_LENGTHS = [5, 4, 3, 3, 2];
 const SHIP_LENGTHS = OG_SHIP_LENGTHS.slice(0, SHIP_COUNT);

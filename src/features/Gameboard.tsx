@@ -171,7 +171,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
       if (props.shipInfo)
         props.shipInfo.innerText =
           props.game.playerBoard.shipsPlaced >= SHIP_COUNT ?
-            'All Ships Ready!'
+            'Battle ready!'
           : SHIPS[props.game.playerBoard.shipsPlaced];
     } else playSound(shipErrorSound);
   };
@@ -396,7 +396,10 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
           border: 1px solid ${COLOR_VARIABLES.grid};
           grid-template-columns: repeat(${GRID_SIZE}, 1fr);
           grid-template-rows: repeat(${GRID_SIZE}, 1fr);
+          max-width: 26.375rem;
+          min-width: 19.5rem;
           position: relative;
+          aspect-ratio: 1;
         `}>
         <For each={props.game.playerBoard.grid}>
           {(gridRow, i) => (
