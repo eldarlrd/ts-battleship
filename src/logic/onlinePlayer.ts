@@ -7,7 +7,7 @@ import {
   ERROR_NOT_IN_ROOM,
   ERROR_NOT_YOUR_TURN
 } from '@/config/errors.ts';
-import { GRID_SIZE } from '@/config/rules.ts';
+import { GRID_SIZE, SHIP_LENGTHS } from '@/config/rules.ts';
 import { COLOR_VARIABLES } from '@/config/site.ts';
 import { errorToast } from '@/config/toast.ts';
 import { successfullyPlace } from '@/lib/placement.ts';
@@ -175,9 +175,8 @@ export class OnlinePlayer {
 
   public randomPlace(): void {
     this.playerBoard = new Board();
-    const shipLengths = [5, 4, 3, 3, 2];
 
-    for (const length of shipLengths) {
+    for (const length of SHIP_LENGTHS) {
       const ship = new Ship(length);
 
       successfullyPlace(this.playerBoard, ship, true);

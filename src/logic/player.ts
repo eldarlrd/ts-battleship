@@ -1,4 +1,4 @@
-import { GRID_SIZE } from '@/config/rules.ts';
+import { GRID_SIZE, SHIP_LENGTHS } from '@/config/rules.ts';
 import { successfullyPlace } from '@/lib/placement.ts';
 import { Board, type Coordinates } from '@/logic/board.ts';
 import { Ship } from '@/logic/ship.ts';
@@ -336,17 +336,11 @@ export class Player {
   }
 
   private _randomPlace(board: Board, isRandom = true): void {
-    const carrier = new Ship(5);
-    const battleship = new Ship(4);
-    const destroyer = new Ship(3);
-    const submarine = new Ship(3);
-    const patrolBoat = new Ship(2);
+    for (const length of SHIP_LENGTHS) {
+      const ship = new Ship(length);
 
-    successfullyPlace(board, carrier, isRandom);
-    successfullyPlace(board, battleship, isRandom);
-    successfullyPlace(board, destroyer, isRandom);
-    successfullyPlace(board, submarine, isRandom);
-    successfullyPlace(board, patrolBoat, isRandom);
+      successfullyPlace(board, ship, isRandom);
+    }
   }
 
   private _checkVictory(): true | undefined {

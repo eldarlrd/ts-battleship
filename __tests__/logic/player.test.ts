@@ -1,4 +1,4 @@
-import { GRID_SIZE } from '@/config/rules.ts';
+import { GRID_SIZE, SHIP_LENGTHS } from '@/config/rules.ts';
 import { successfullyPlace } from '@/lib/placement.ts';
 import { Player } from '@/logic/player.ts';
 import { Ship } from '@/logic/ship.ts';
@@ -31,8 +31,7 @@ describe('player interface', () => {
 
   it('players place ships manually', () => {
     const game = new Player();
-    const shipLengthArr = [5, 4, 3, 3, 2];
-    const shipLength = shipLengthArr[game.playerBoard.shipsPlaced];
+    const shipLength = SHIP_LENGTHS[game.playerBoard.shipsPlaced];
     const ship = new Ship(shipLength);
 
     const validPlacement = successfullyPlace(

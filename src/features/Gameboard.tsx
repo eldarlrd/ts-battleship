@@ -12,7 +12,7 @@ import {
 
 import shipDeploySound from '#/sfx/deploy.opus';
 import shipErrorSound from '#/sfx/error.opus';
-import { GRID_SIZE, SHIP_COUNT, SHIPS } from '@/config/rules.ts';
+import { GRID_SIZE, SHIP_COUNT, SHIP_LENGTHS, SHIPS } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { playSound } from '@/lib/audio.ts';
 import { successfullyPlace } from '@/lib/placement.ts';
@@ -128,8 +128,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
   const placeShip = (row: number, col: number): void => {
     if (props.game.playerBoard.shipsPlaced >= SHIP_COUNT) return;
 
-    const shipLengthArr = [5, 4, 3, 3, 2];
-    const shipLength = shipLengthArr[props.game.playerBoard.shipsPlaced];
+    const shipLength = SHIP_LENGTHS[props.game.playerBoard.shipsPlaced];
     const ship = new Ship(shipLength);
 
     if (
@@ -287,8 +286,7 @@ export const Gameboard = (props: GameboardSettings): JSXElement => {
     )
       return;
 
-    const shipLengthArr = [5, 4, 3, 3, 2];
-    const shipLength = shipLengthArr[props.game.playerBoard.shipsPlaced];
+    const shipLength = SHIP_LENGTHS[props.game.playerBoard.shipsPlaced];
     const playerId = 'p1-';
 
     let canPlace = true;
