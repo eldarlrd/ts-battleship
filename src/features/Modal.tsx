@@ -38,12 +38,12 @@ const Modal = (props: {
     props.overlay.style.display = 'flex';
 
     if (winnerStatus === 1) {
-      victor.innerText = 'Player Wins!';
+      victor.innerText = 'Player wins!';
       playSound(victorySound);
     } else {
       const opponentName = props.gameMode === 'pvp' ? 'Opponent' : 'Computer';
 
-      victor.innerText = `${opponentName} Wins...`;
+      victor.innerText = `${opponentName} wins...`;
       playSound(defeatSound);
     }
   };

@@ -248,7 +248,7 @@ const Controls = (props: {
                 }
                 playSound(shipDeploySound);
                 setIsDoneSetup(true);
-                shipInfo().innerText = 'Battle ready!';
+                shipInfo().innerText = 'Combat ready!';
 
                 if (props.gameMode === 'pvp')
                   setPlacementRefreshTrigger(prev => prev + 1);

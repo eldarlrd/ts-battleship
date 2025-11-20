@@ -5,6 +5,7 @@ import { type JSXElement } from 'solid-js';
 import { type GameMode } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 
+// TODO: Lobby
 const ModeSelection = (props: {
   setGameMode: (mode: GameMode) => void | Promise<void>;
 }): JSXElement => (
@@ -99,7 +100,7 @@ const ModeSelection = (props: {
             }
           `}>
           <FaSolidRobot />
-          <span>PvE</span>
+          <span>Computer</span>
         </button>
 
         <button
@@ -148,7 +149,7 @@ const ModeSelection = (props: {
             }
           `}>
           <FaSolidUserGroup />
-          <span>PvP</span>
+          <span>Public</span>
         </button>
       </div>
     </section>

@@ -33,8 +33,6 @@ import OnlinePlayer from '@/logic/onlinePlayer.ts';
 import Player from '@/logic/player.ts';
 import { type GameRoom } from '@/models/matchmaking.model.ts';
 
-// TODO: Lobby
-
 // * Whole app’s some serious Solid + OOP spaghetti code
 const App = (): JSXElement => {
   // eslint-disable-next-line prefer-const

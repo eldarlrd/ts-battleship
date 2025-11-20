@@ -157,7 +157,7 @@ const Gameboard = (props: GameboardSettings): JSXElement => {
       if (props.shipInfo)
         props.shipInfo.innerText =
           props.game.playerBoard.shipsPlaced >= SHIP_COUNT ?
-            'Battle ready!'
+            'Combat ready!'
           : SHIPS[props.game.playerBoard.shipsPlaced];
     } else playSound(shipErrorSound);
   };
