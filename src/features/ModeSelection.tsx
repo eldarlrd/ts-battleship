@@ -7,7 +7,12 @@ import Tile from '@/components/buttons/Tile.tsx';
 import { type GameMode } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 
-// TODO: Lobby
+/*
+  TODO: Lobby
+    1. Create private room w/ key
+    2. Search only public rooms
+    3. Toast on no room
+ */
 const ModeSelection = (props: {
   setGameMode: (mode: GameMode) => void | Promise<void>;
 }): JSXElement => {
@@ -133,11 +138,6 @@ const ModeSelection = (props: {
                   background: ${COLOR_VARIABLES.secondary};
                   transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
-                  ::selection {
-                    color: ${COLOR_VARIABLES.secondary};
-                    background: ${COLOR_VARIABLES.primary};
-                  }
-
                   &:hover {
                     outline-color: ${COLOR_VARIABLES.hover};
                   }
@@ -169,6 +169,7 @@ const ModeSelection = (props: {
                   &:disabled {
                     color: ${COLOR_VARIABLES.ship};
                     background: ${COLOR_VARIABLES.hover};
+                    border-color: ${COLOR_VARIABLES.ship};
                   }
 
                   &:active {

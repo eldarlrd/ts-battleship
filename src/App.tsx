@@ -138,8 +138,8 @@ const App = (): JSXElement => {
         font-family: 'Stick No Bills Variable', sans-serif;
 
         *::selection {
-          color: ${COLOR_VARIABLES.primary};
-          background: ${COLOR_VARIABLES.secondary};
+          color: ${COLOR_VARIABLES.secondary};
+          background: ${COLOR_VARIABLES.primary};
         }
 
         & button {
