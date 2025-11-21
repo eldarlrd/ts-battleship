@@ -2,13 +2,9 @@ import { css } from '@emotion/css';
 import { type JSXElement } from 'solid-js';
 
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
+import { type BoardControls } from '@/models/gameboard.model.ts';
 
-const BoardControl = (props: {
-  handleAction: () => void;
-  icon: JSXElement;
-  isDisabled: boolean;
-  title: string;
-}): JSXElement => (
+const BoardControl = (props: BoardControls): JSXElement => (
   <button
     type='button'
     title={props.title}
@@ -26,7 +22,7 @@ const BoardControl = (props: {
       border-radius: 0.125rem;
       color: ${COLOR_VARIABLES.grid};
       background: ${COLOR_VARIABLES.secondary};
-      outline: 2px solid ${COLOR_VARIABLES.grid};
+      outline: 0.125rem solid ${COLOR_VARIABLES.grid};
       transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
       &:active {

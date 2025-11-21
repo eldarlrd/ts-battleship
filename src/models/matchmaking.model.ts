@@ -1,10 +1,9 @@
 import { type Timestamp } from 'firebase/firestore';
 
 import { type Status } from '@/config/rules.ts';
+import { type Coordinates } from '@/models/gameboard.model.ts';
 
-interface MoveResult {
-  row: number;
-  col: number;
+interface MoveResult extends Coordinates {
   hit: boolean;
   sunk?: boolean;
 }

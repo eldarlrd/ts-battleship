@@ -1,6 +1,7 @@
 import { GRID_SIZE } from '@/config/rules.ts';
-import { type Board, type Coordinates } from '@/logic/board.ts';
+import type Board from '@/logic/board.ts';
 import type Ship from '@/logic/ship.ts';
+import { type Coordinates } from '@/models/gameboard.model.ts';
 
 const successfullyPlace = (
   board: Board,

@@ -5,7 +5,7 @@ import { GRID_SIZE, SHIP_LENGTHS, type Status } from '@/config/rules.ts';
 import { COLOR_VARIABLES } from '@/config/site.ts';
 import errorToast from '@/config/toast.ts';
 import successfullyPlace from '@/lib/placement.ts';
-import { Board, type Coordinates } from '@/logic/board.ts';
+import Board from '@/logic/board.ts';
 import {
   findOrCreateRoom,
   setPlayerReady,
@@ -15,6 +15,7 @@ import {
   leaveRoom
 } from '@/logic/matchmaking.ts';
 import Ship from '@/logic/ship.ts';
+import { type Coordinates } from '@/models/gameboard.model.ts';
 import { type GameRoom } from '@/models/matchmaking.model.ts';
 
 class OnlinePlayer {
@@ -79,7 +80,9 @@ class OnlinePlayer {
     }
   }
 
-  public setRoomUpdateCallback(callback: (room: GameRoom) => void): void {
+  public setRoomUpdateCallback(
+    callback: (room: GameRoom | null) => void
+  ): void {
     this._onRoomUpdateCallbacks.push(callback);
 
     if (this._pendingRoomUpdate) {

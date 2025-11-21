@@ -1,30 +1,15 @@
 import { css } from '@emotion/css';
-import {
-  createEffect,
-  onCleanup,
-  type JSXElement,
-  type Setter,
-  type Accessor
-} from 'solid-js';
+import { createEffect, onCleanup, type JSXElement } from 'solid-js';
 
 import defeatSound from '#/sfx/defeat.opus';
 import victorySound from '#/sfx/victory.opus';
 import NewGame from '@/components/buttons/NewGame.tsx';
-import { type GameMode, SHIP_COUNT } from '@/config/rules.ts';
+import { SHIP_COUNT } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 import { playSound } from '@/lib/audio.ts';
-import type OnlinePlayer from '@/logic/onlinePlayer.ts';
-import type Player from '@/logic/player.ts';
+import { type ModalControls } from '@/models/gamecontrols.model.ts';
 
-const Modal = (props: {
-  overlay: HTMLDivElement;
-  gameMode?: GameMode | null;
-  game: Player | OnlinePlayer;
-  setIsControlUp: Setter<boolean>;
-  setGameMode: Setter<GameMode | null>;
-  boardUpdateTrigger: Accessor<number>;
-  setGame: Setter<Player | OnlinePlayer>;
-}): JSXElement => {
+const Modal = (props: ModalControls): JSXElement => {
   // eslint-disable-next-line prefer-const
   let victor = document.getElementById('victor') as HTMLHeadingElement;
 
@@ -94,7 +79,7 @@ const Modal = (props: {
           border-radius: 0.125rem;
           background: ${COLOR_VARIABLES.primary};
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-          border: 2px solid ${COLOR_VARIABLES.secondary};
+          border: 0.125rem solid ${COLOR_VARIABLES.secondary};
 
           ${MEDIA_QUERIES.sm} {
             padding: 3rem;
@@ -125,7 +110,7 @@ const Modal = (props: {
           overlay={props.overlay}
           setGameMode={props.setGameMode}
           setIsControlUp={props.setIsControlUp}
-          gameMode={props.gameMode ?? undefined}
+          gameMode={props.gameMode!}
         />
       </section>
     </div>

@@ -29,7 +29,7 @@ const ModeSelection = (props: {
         border-radius: 0.125rem;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         background: ${COLOR_VARIABLES.primary};
-        border: 2px solid ${COLOR_VARIABLES.secondary};
+        border: 0.125rem solid ${COLOR_VARIABLES.secondary};
       `}>
       <h1
         class={css`
@@ -72,7 +72,7 @@ const ModeSelection = (props: {
             border-radius: 0.125rem;
             color: ${COLOR_VARIABLES.secondary};
             background: ${COLOR_VARIABLES.primary};
-            border: 2px solid ${COLOR_VARIABLES.secondary};
+            border: 0.125rem solid ${COLOR_VARIABLES.secondary};
             transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
             svg {
@@ -121,7 +121,7 @@ const ModeSelection = (props: {
             border-radius: 0.125rem;
             color: ${COLOR_VARIABLES.secondary};
             background: ${COLOR_VARIABLES.primary};
-            border: 2px solid ${COLOR_VARIABLES.secondary};
+            border: 0.125rem solid ${COLOR_VARIABLES.secondary};
             transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
             svg {

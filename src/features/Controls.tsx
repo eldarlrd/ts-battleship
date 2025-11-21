@@ -7,19 +7,13 @@ import {
   FaSolidShip
 } from 'solid-icons/fa';
 import { IoChevronBackSharp, IoDice, IoTrashBin } from 'solid-icons/io';
-import {
-  type Setter,
-  type JSXElement,
-  createSignal,
-  onMount,
-  untrack
-} from 'solid-js';
+import { type JSXElement, createSignal, onMount, untrack } from 'solid-js';
 
 import shipClearSound from '#/sfx/clear.opus';
 import shipDeploySound from '#/sfx/deploy.opus';
 import startSound from '#/sfx/start.opus';
 import BoardControl from '@/components/buttons/BoardControl.tsx';
-import { type GameMode, SHIP_COUNT, SHIPS } from '@/config/rules.ts';
+import { SHIP_COUNT, SHIPS } from '@/config/rules.ts';
 import {
   COLOR_VARIABLES,
   MATCHMAKING_STATUS,
@@ -28,18 +22,12 @@ import {
 import errorToast from '@/config/toast.ts';
 import Gameboard from '@/features/Gameboard.tsx';
 import { playSound } from '@/lib/audio.ts';
-import { Board } from '@/logic/board.ts';
+import Board from '@/logic/board.ts';
 import OnlinePlayer from '@/logic/onlinePlayer.ts';
 import Player from '@/logic/player.ts';
-import { type GameRoom } from '@/models/matchmaking.model.ts';
+import { type GameControls } from '@/models/gamecontrols.model.ts';
 
-const Controls = (props: {
-  gameMode: GameMode;
-  game: Player | OnlinePlayer;
-  setIsControlUp: Setter<boolean>;
-  setGame: Setter<Player | OnlinePlayer>;
-  setGameMode: Setter<GameMode | null>;
-}): JSXElement => {
+const Controls = (props: GameControls): JSXElement => {
   const [isVertical, setIsVertical] = createSignal(false);
   const [isDoneSetup, setIsDoneSetup] = createSignal(false);
   const [waitingForOpponent, setWaitingForOpponent] = createSignal(false);
@@ -59,7 +47,7 @@ const Controls = (props: {
       const onlineGame = props.game;
 
       // eslint-disable-next-line solid/reactivity
-      onlineGame.setRoomUpdateCallback((room: GameRoom | null) => {
+      onlineGame.setRoomUpdateCallback(room => {
         if (room?.status === 'playing' && untrack(waitingForOpponent)) {
           setWaitingForOpponent(false);
           props.setIsControlUp(false);
@@ -115,7 +103,7 @@ const Controls = (props: {
           border-radius: 0.125rem;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
           background: ${COLOR_VARIABLES.primary};
-          border: 2px solid ${COLOR_VARIABLES.secondary};
+          border: 0.125rem solid ${COLOR_VARIABLES.secondary};
         `}>
         <div
           class={css`
@@ -326,7 +314,7 @@ const Controls = (props: {
               border-radius: 0.125rem;
               color: ${COLOR_VARIABLES.grid};
               background: ${COLOR_VARIABLES.secondary};
-              outline: 2px solid ${COLOR_VARIABLES.grid};
+              outline: 0.125rem solid ${COLOR_VARIABLES.grid};
               transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
               &:active {

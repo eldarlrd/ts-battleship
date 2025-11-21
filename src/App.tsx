@@ -1,20 +1,17 @@
 import { css } from '@emotion/css';
 import { CgSpinnerTwoAlt } from 'solid-icons/cg';
 import { FaSolidRobot, FaSolidUser } from 'solid-icons/fa';
-import {
-  IoChevronBackSharp,
-  IoVolumeHighSharp,
-  IoVolumeMuteSharp
-} from 'solid-icons/io';
-import { TbTargetArrow } from 'solid-icons/tb';
+import { IoChevronBackSharp } from 'solid-icons/io';
 import { createSignal, type JSXElement, onCleanup } from 'solid-js';
 
 import 'modern-normalize/modern-normalize.css';
 import Footer from '@/components/banners/Footer.tsx';
 import Header from '@/components/banners/Header.tsx';
 import Toast from '@/components/banners/Toast.tsx';
+import Mute from '@/components/buttons/Mute.tsx';
 import '@fontsource-variable/stick-no-bills';
 import NewGame from '@/components/buttons/NewGame.tsx';
+import Target from '@/components/icons/Target.tsx';
 import { ERRORS } from '@/config/errors.ts';
 import { signInAnonymous } from '@/config/firebase.ts';
 import { type GameMode } from '@/config/rules.ts';
@@ -28,10 +25,8 @@ import Controls from '@/features/Controls.tsx';
 import Gameboard from '@/features/Gameboard.tsx';
 import Modal from '@/features/Modal.tsx';
 import ModeSelection from '@/features/ModeSelection.tsx';
-import { isMuted, toggleMute } from '@/lib/audio.ts';
 import OnlinePlayer from '@/logic/onlinePlayer.ts';
 import Player from '@/logic/player.ts';
-import { type GameRoom } from '@/models/matchmaking.model.ts';
 
 // * Whole app’s some serious Solid + OOP spaghetti code
 const App = (): JSXElement => {
@@ -65,7 +60,7 @@ const App = (): JSXElement => {
           return;
         }
 
-        onlineGame.setRoomUpdateCallback((room: GameRoom | null) => {
+        onlineGame.setRoomUpdateCallback(room => {
           if (!room) {
             errorToast(ERRORS.OPPONENT_LEFT);
             setGameMode(null);
@@ -303,22 +298,7 @@ const App = (): JSXElement => {
               `}>
               <span>
                 <FaSolidUser /> Player
-                {isOpponentTurn() && (
-                  <TbTargetArrow
-                    size='1.25rem'
-                    class={css`
-                      margin-left: 0.25rem;
-                      vertical-align: middle;
-                      animation: spin 1.5s linear infinite;
-
-                      @keyframes spin {
-                        to {
-                          transform: rotate(360deg);
-                        }
-                      }
-                    `}
-                  />
-                )}
+                {isOpponentTurn() && <Target />}
               </span>
               <Gameboard
                 game={game()}
@@ -346,41 +326,11 @@ const App = (): JSXElement => {
                 {gameMode() === 'pve' ?
                   <>
                     <FaSolidRobot /> Computer
-                    {!isOpponentTurn() && (
-                      <TbTargetArrow
-                        size='1.25rem'
-                        class={css`
-                          margin-left: 0.25rem;
-                          vertical-align: middle;
-                          animation: spin 1.5s linear infinite;
-
-                          @keyframes spin {
-                            to {
-                              transform: rotate(360deg);
-                            }
-                          }
-                        `}
-                      />
-                    )}
+                    {!isOpponentTurn() && <Target />}
                   </>
                 : <>
                     <FaSolidUser /> Opponent
-                    {!isOpponentTurn() && (
-                      <TbTargetArrow
-                        size='1.25rem'
-                        class={css`
-                          margin-left: 0.25rem;
-                          vertical-align: middle;
-                          animation: spin 1.5s linear infinite;
-
-                          @keyframes spin {
-                            to {
-                              transform: rotate(360deg);
-                            }
-                          }
-                        `}
-                      />
-                    )}
+                    {!isOpponentTurn() && <Target />}
                   </>
                 }
               </span>
@@ -409,36 +359,7 @@ const App = (): JSXElement => {
               setGameMode={setGameMode}
               setIsControlUp={setIsControlUp}
             />
-            <button
-              type='button'
-              onClick={toggleMute}
-              class={css`
-                width: 3rem;
-                border: none;
-                height: 3.5rem;
-                cursor: pointer;
-                display: inherit;
-                font-size: 1.5rem;
-                padding: 0.125rem;
-                align-items: center;
-                background: transparent;
-                justify-content: center;
-                color: ${COLOR_VARIABLES.secondary};
-
-                &:active {
-                  color: ${COLOR_VARIABLES.hover};
-                }
-
-                ${MEDIA_QUERIES.mouse} {
-                  &:hover {
-                    color: ${COLOR_VARIABLES.hover};
-                  }
-                }
-              `}>
-              {isMuted() ?
-                <IoVolumeMuteSharp size='1.75rem' />
-              : <IoVolumeHighSharp size='1.75rem' />}
-            </button>
+            <Mute />
           </div>
         </main>
       )}

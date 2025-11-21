@@ -1,7 +1,7 @@
 import shipHitSound from '#/sfx/ship-hit.opus';
 import shipSunkSound from '#/sfx/ship-sunk.opus';
 import { playSound } from '@/lib/audio.ts';
-import { type Coordinates } from '@/logic/board.ts';
+import { type Coordinates } from '@/models/gameboard.model.ts';
 
 interface ShipStats {
   length: number;

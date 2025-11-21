@@ -1,7 +1,8 @@
 import { GRID_SIZE, SHIP_LENGTHS } from '@/config/rules.ts';
 import successfullyPlace from '@/lib/placement.ts';
-import { Board, type Coordinates } from '@/logic/board.ts';
+import Board from '@/logic/board.ts';
 import Ship from '@/logic/ship.ts';
+import { type Coordinates } from '@/models/gameboard.model.ts';
 
 class Player {
   public playerVictorious: number;
