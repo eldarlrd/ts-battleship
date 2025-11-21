@@ -34,20 +34,20 @@ import Player from '@/logic/player.ts';
 import { type GameRoom } from '@/models/matchmaking.model.ts';
 
 const Controls = (props: {
-  game: Player | OnlinePlayer;
-  setGame: Setter<Player | OnlinePlayer>;
-  setIsControlUp: Setter<boolean>;
   gameMode: GameMode;
+  game: Player | OnlinePlayer;
+  setIsControlUp: Setter<boolean>;
+  setGame: Setter<Player | OnlinePlayer>;
   setGameMode: Setter<GameMode | null>;
 }): JSXElement => {
-  const [isDoneSetup, setIsDoneSetup] = createSignal(false);
   const [isVertical, setIsVertical] = createSignal(false);
+  const [isDoneSetup, setIsDoneSetup] = createSignal(false);
+  const [waitingForOpponent, setWaitingForOpponent] = createSignal(false);
   const [shipInfo, setShipInfo] = createSignal((<></>) as HTMLSpanElement);
+  const [placementRefreshTrigger, setPlacementRefreshTrigger] = createSignal(0);
   const [startButton, setStartButton] = createSignal(
     (<></>) as HTMLButtonElement
   );
-  const [waitingForOpponent, setWaitingForOpponent] = createSignal(false);
-  const [placementRefreshTrigger, setPlacementRefreshTrigger] = createSignal(0);
 
   onMount(() => {
     setShipInfo(document.getElementById('ship-info') as HTMLSpanElement);
@@ -95,27 +95,27 @@ const Controls = (props: {
     <div
       id='controls'
       class={css`
-        display: flex;
         width: 100%;
         height: 100%;
-        justify-content: center;
+        display: flex;
         align-items: center;
+        justify-content: center;
       `}>
       <section
         class={css`
-          display: inherit;
-          flex-direction: column;
-          padding: 1rem;
           margin: 1rem;
           gap: 0.75rem;
-          width: 23.75rem;
-          min-width: fit-content;
+          padding: 1rem;
           max-width: 98%;
+          width: 23.75rem;
+          display: inherit;
           line-height: 1rem;
-          background: ${COLOR_VARIABLES.primary};
-          border: 2px solid ${COLOR_VARIABLES.secondary};
+          min-width: fit-content;
+          flex-direction: column;
           border-radius: 0.125rem;
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+          background: ${COLOR_VARIABLES.primary};
+          border: 2px solid ${COLOR_VARIABLES.secondary};
         `}>
         <div
           class={css`
@@ -129,16 +129,16 @@ const Controls = (props: {
             }}
             class={css`
               z-index: 1;
-              border: none;
-              cursor: pointer;
-              background: transparent;
-              display: inherit;
-              align-items: center;
-              color: ${COLOR_VARIABLES.secondary};
               width: 3rem;
+              border: none;
               height: 3.5rem;
-              padding: 0.125rem 0 0;
+              cursor: pointer;
+              display: inherit;
               font-size: 1.625rem;
+              align-items: center;
+              padding: 0.125rem 0 0;
+              background: transparent;
+              color: ${COLOR_VARIABLES.secondary};
 
               &:active {
                 color: ${COLOR_VARIABLES.hover};
@@ -172,11 +172,11 @@ const Controls = (props: {
           <FaSolidUser /> Player
         </span>
         <Gameboard
-          isPlayerBoard={true}
           isPlacing={true}
-          isVertical={isVertical()}
           game={props.game}
+          isPlayerBoard={true}
           shipInfo={shipInfo()}
+          isVertical={isVertical()}
           startButton={startButton()}
           setIsDoneSetup={setIsDoneSetup}
           placementRefreshTrigger={placementRefreshTrigger}
@@ -185,10 +185,10 @@ const Controls = (props: {
         <div
           id='panel'
           class={css`
-            display: inherit;
-            justify-content: space-between;
-            align-items: center;
             gap: 0.5rem;
+            display: inherit;
+            align-items: center;
+            justify-content: space-between;
           `}>
           <span
             id='ship-selection'
@@ -196,8 +196,8 @@ const Controls = (props: {
               font-size: 1.5rem;
 
               svg {
-                vertical-align: middle;
                 font-size: 1.375rem;
+                vertical-align: middle;
                 padding-right: 0.375rem;
               }
 
@@ -223,8 +223,8 @@ const Controls = (props: {
 
           <span
             class={css`
-              display: inherit;
               gap: 0.5rem;
+              display: inherit;
             `}>
             <BoardControl
               handleAction={() => {
@@ -285,15 +285,15 @@ const Controls = (props: {
         {waitingForOpponent() ?
           <div
             class={css`
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              padding: 1rem;
-              font-size: 1.5rem;
-              height: 3.25rem;
-              line-height: 1;
               gap: 0.5rem;
+              padding: 1rem;
+              display: flex;
+              line-height: 1;
+              height: 3.25rem;
+              font-size: 1.5rem;
               text-align: center;
+              align-items: center;
+              justify-content: center;
             `}>
             <CgSpinnerTwoAlt
               class={css`
@@ -317,15 +317,15 @@ const Controls = (props: {
             }}
             class={css`
               border: 0;
-              border-radius: 0.125rem;
               cursor: pointer;
-              font-size: 1.5rem;
-              font-weight: 500;
-              min-width: 7.625rem;
               height: 3.25rem;
               padding: 0.5rem;
-              background: ${COLOR_VARIABLES.secondary};
+              font-weight: 500;
+              font-size: 1.5rem;
+              min-width: 7.625rem;
+              border-radius: 0.125rem;
               color: ${COLOR_VARIABLES.grid};
+              background: ${COLOR_VARIABLES.secondary};
               outline: 2px solid ${COLOR_VARIABLES.grid};
               transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 

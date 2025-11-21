@@ -13,12 +13,7 @@ import {
   type Unsubscribe
 } from 'firebase/firestore';
 
-import {
-  ERROR_FULL_ROOM,
-  ERROR_NO_ROOM,
-  ERROR_NOT_AVAILABLE,
-  ERROR_NOT_YOUR_TURN
-} from '@/config/errors.ts';
+import { ERRORS } from '@/config/errors.ts';
 import { firestore } from '@/config/firebase.ts';
 import { DURATION_MS, GRID_SIZE } from '@/config/rules.ts';
 import errorToast from '@/config/toast.ts';
@@ -62,13 +57,12 @@ const joinGameRoom = async (
   const roomRef = doc(firestore, 'rooms', roomId);
   const snapshot = await getDoc(roomRef);
 
-  if (!snapshot.exists()) throw new Error(ERROR_NO_ROOM);
+  if (!snapshot.exists()) throw new Error(ERRORS.NO_ROOM);
 
   const room = snapshot.data() as GameRoom;
 
-  if (room.player2) throw new Error(ERROR_FULL_ROOM);
-
-  if (room.status !== 'waiting') throw new Error(ERROR_NOT_AVAILABLE);
+  if (room.player2) throw new Error(ERRORS.FULL_ROOM);
+  if (room.status !== 'waiting') throw new Error(ERRORS.NOT_AVAILABLE);
 
   await updateDoc(roomRef, {
     player2: {
@@ -113,7 +107,7 @@ const setPlayerReady = async (
   const roomRef = doc(firestore, 'rooms', roomId);
   const snapshot = await getDoc(roomRef);
 
-  if (!snapshot.exists()) throw new Error(ERROR_NO_ROOM);
+  if (!snapshot.exists()) throw new Error(ERRORS.NO_ROOM);
 
   const room = snapshot.data() as GameRoom;
   const isPlayer1 = room.player1.uid === playerId;
@@ -145,11 +139,11 @@ const makeMove = async (
   const roomRef = doc(firestore, 'rooms', roomId);
   const snapshot = await getDoc(roomRef);
 
-  if (!snapshot.exists()) throw new Error(ERROR_NO_ROOM);
+  if (!snapshot.exists()) throw new Error(ERRORS.NO_ROOM);
 
   const room = snapshot.data() as GameRoom;
 
-  if (room.currentTurn !== playerId) throw new Error(ERROR_NOT_YOUR_TURN);
+  if (room.currentTurn !== playerId) throw new Error(ERRORS.NOT_YOUR_TURN);
 
   const cell = opponentBoard[row][col];
   const hit = cell > 0 && cell <= 5;

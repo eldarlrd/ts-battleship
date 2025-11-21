@@ -38,8 +38,8 @@ describe('player interface', () => {
 
     const coords = game.getRandomValidTarget();
 
-    expect(coords).toStrictEqual({ row: 1, col: 1 });
     expect(randomSpy).toHaveBeenCalledTimes(4);
+    expect(coords).toStrictEqual({ row: 1, col: 1 });
   });
 
   it('computer takes a turn', () => {

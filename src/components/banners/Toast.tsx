@@ -13,9 +13,9 @@ const Toast = (): JSXElement => (
       className: css`
         width: 12.25rem;
         font-size: 1.25rem;
+        border: 2px solid ${COLOR_VARIABLES.primary};
         color: ${COLOR_VARIABLES.primary} !important;
         background: ${COLOR_VARIABLES.secondary} !important;
-        border: 2px solid ${COLOR_VARIABLES.primary};
 
         & [role='status'] {
           justify-content: center;

@@ -9,12 +9,12 @@ import OnlinePlayer from '@/logic/onlinePlayer.ts';
 import Player from '@/logic/player.ts';
 
 const NewGame = (props: {
-  game?: Player | OnlinePlayer;
-  setGame: Setter<Player | OnlinePlayer>;
-  setIsControlUp: Setter<boolean>;
-  overlay?: HTMLDivElement;
   gameMode?: GameMode;
+  overlay?: HTMLDivElement;
+  game?: Player | OnlinePlayer;
+  setIsControlUp: Setter<boolean>;
   setGameMode: Setter<GameMode | null>;
+  setGame: Setter<Player | OnlinePlayer>;
 }): JSXElement => {
   const handleNewGame = async (): Promise<void> => {
     if (props.game && props.game instanceof OnlinePlayer)
@@ -35,14 +35,14 @@ const NewGame = (props: {
       }}
       class={css`
         border: 0;
-        border-radius: 0.125rem;
         cursor: pointer;
-        font-size: 1.5rem;
         font-weight: 500;
         padding: 0.75rem;
+        font-size: 1.5rem;
         min-width: 7.625rem;
-        background: ${COLOR_VARIABLES.secondary};
+        border-radius: 0.125rem;
         color: ${COLOR_VARIABLES.grid};
+        background: ${COLOR_VARIABLES.secondary};
         outline: 2px solid ${COLOR_VARIABLES.grid};
         transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 

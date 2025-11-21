@@ -15,7 +15,7 @@ import Header from '@/components/banners/Header.tsx';
 import Toast from '@/components/banners/Toast.tsx';
 import '@fontsource-variable/stick-no-bills';
 import NewGame from '@/components/buttons/NewGame.tsx';
-import { ERROR_OPPONENT_LEFT } from '@/config/errors.ts';
+import { ERRORS } from '@/config/errors.ts';
 import { signInAnonymous } from '@/config/firebase.ts';
 import { type GameMode } from '@/config/rules.ts';
 import {
@@ -67,7 +67,7 @@ const App = (): JSXElement => {
 
         onlineGame.setRoomUpdateCallback((room: GameRoom | null) => {
           if (!room) {
-            errorToast(ERROR_OPPONENT_LEFT);
+            errorToast(ERRORS.OPPONENT_LEFT);
             setGameMode(null);
             setGame(new Player());
             setMatchmakingStatus('');
@@ -131,20 +131,20 @@ const App = (): JSXElement => {
     <div
       id='app'
       class={css`
-        font-family: 'Stick No Bills Variable', sans-serif;
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        align-items: center;
         user-select: none;
         min-height: 100dvh;
+        align-items: center;
+        flex-direction: column;
+        justify-content: space-between;
+        color: ${COLOR_VARIABLES.secondary};
         background: ${COLOR_VARIABLES.primary};
         accent-color: ${COLOR_VARIABLES.secondary};
-        color: ${COLOR_VARIABLES.secondary};
+        font-family: 'Stick No Bills Variable', sans-serif;
 
         *::selection {
-          background: ${COLOR_VARIABLES.secondary};
           color: ${COLOR_VARIABLES.primary};
+          background: ${COLOR_VARIABLES.secondary};
         }
 
         & button {
@@ -154,10 +154,10 @@ const App = (): JSXElement => {
       <Modal
         game={game()}
         setGame={setGame}
-        setIsControlUp={setIsControlUp}
         overlay={overlay}
         gameMode={gameMode()}
         setGameMode={setGameMode}
+        setIsControlUp={setIsControlUp}
         boardUpdateTrigger={boardUpdateTrigger}
       />
 
@@ -170,21 +170,21 @@ const App = (): JSXElement => {
       {(isAuthenticating() || matchmakingStatus()) && (
         <div
           class={css`
+            gap: 0.25rem;
             display: flex;
+            align-items: center;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            gap: 0.25rem;
           `}>
           <div
             class={css`
-              display: inherit;
-              justify-content: center;
-              align-items: center;
               flex: 1;
               gap: 0.5rem;
               padding: 0 1rem;
+              display: inherit;
               font-size: 1.5rem;
+              align-items: center;
+              justify-content: center;
 
               & svg {
                 font-size: 1.5rem;
@@ -217,17 +217,17 @@ const App = (): JSXElement => {
               setGame(new Player());
             }}
             class={css`
+              width: 3rem;
               border: none;
+              height: 3.5rem;
               cursor: pointer;
-              background: transparent;
               display: inherit;
               align-items: center;
-              color: ${COLOR_VARIABLES.secondary};
-              width: 3rem;
-              height: 3.5rem;
-              padding: 0.125rem 0 0;
-              margin-left: -1.75rem;
               font-size: 1.375rem;
+              margin-left: -1.75rem;
+              padding: 0.125rem 0 0;
+              background: transparent;
+              color: ${COLOR_VARIABLES.secondary};
 
               &:active {
                 color: ${COLOR_VARIABLES.hover};
@@ -252,9 +252,9 @@ const App = (): JSXElement => {
           <Controls
             game={game()}
             setGame={setGame}
-            setIsControlUp={setIsControlUp}
             gameMode={gameMode()!}
             setGameMode={setGameMode}
+            setIsControlUp={setIsControlUp}
           />
         )}
 
@@ -262,24 +262,24 @@ const App = (): JSXElement => {
         <main
           class={css`
             display: inherit;
+            margin: 1.5rem auto;
+            align-items: center;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
-            margin: 1.5rem auto;
           `}>
           <div
             class={css`
+              gap: 1.5rem;
               display: inherit;
+              font-size: 1.75rem;
+              margin-bottom: 2rem;
+              align-items: center;
               justify-content: center;
               flex-direction: column;
-              align-items: center;
-              margin-bottom: 2rem;
-              font-size: 1.75rem;
-              gap: 1.5rem;
 
               ${MEDIA_QUERIES.sm} {
-                flex-direction: row;
                 gap: 2rem;
+                flex-direction: row;
               }
 
               ${MEDIA_QUERIES.md} {
@@ -292,10 +292,10 @@ const App = (): JSXElement => {
             `}>
             <span
               class={css`
+                gap: 0.25rem;
                 display: inherit;
                 flex-direction: column;
                 justify-content: center;
-                gap: 0.25rem;
 
                 & svg {
                   font-size: 1.25rem;
@@ -307,8 +307,8 @@ const App = (): JSXElement => {
                   <TbTargetArrow
                     size='1.25rem'
                     class={css`
-                      vertical-align: middle;
                       margin-left: 0.25rem;
+                      vertical-align: middle;
                       animation: spin 1.5s linear infinite;
 
                       @keyframes spin {
@@ -321,10 +321,10 @@ const App = (): JSXElement => {
                 )}
               </span>
               <Gameboard
-                isPlayerBoard={true}
+                game={game()}
                 isPlacing={false}
                 isVertical={false}
-                game={game()}
+                isPlayerBoard={true}
                 isOpponentTurn={isOpponentTurn()}
                 setIsOpponentTurn={setIsOpponentTurn}
                 boardUpdateTrigger={boardUpdateTrigger}
@@ -333,10 +333,10 @@ const App = (): JSXElement => {
 
             <span
               class={css`
+                gap: 0.25rem;
                 display: inherit;
                 flex-direction: column;
                 justify-content: center;
-                gap: 0.25rem;
 
                 svg {
                   font-size: 1.5rem;
@@ -350,8 +350,8 @@ const App = (): JSXElement => {
                       <TbTargetArrow
                         size='1.25rem'
                         class={css`
-                          vertical-align: middle;
                           margin-left: 0.25rem;
+                          vertical-align: middle;
                           animation: spin 1.5s linear infinite;
 
                           @keyframes spin {
@@ -369,8 +369,8 @@ const App = (): JSXElement => {
                       <TbTargetArrow
                         size='1.25rem'
                         class={css`
-                          vertical-align: middle;
                           margin-left: 0.25rem;
+                          vertical-align: middle;
                           animation: spin 1.5s linear infinite;
 
                           @keyframes spin {
@@ -385,10 +385,10 @@ const App = (): JSXElement => {
                 }
               </span>
               <Gameboard
-                isPlayerBoard={false}
+                game={game()}
                 isPlacing={false}
                 isVertical={false}
-                game={game()}
+                isPlayerBoard={false}
                 isOpponentTurn={!isOpponentTurn()}
                 setIsOpponentTurn={setIsOpponentTurn}
                 boardUpdateTrigger={boardUpdateTrigger}
@@ -398,32 +398,32 @@ const App = (): JSXElement => {
 
           <div
             class={css`
+              gap: 0.5rem;
               display: inherit;
               margin-left: 3.5rem;
-              gap: 0.5rem;
             `}>
             <NewGame
               game={game()}
               setGame={setGame}
-              setIsControlUp={setIsControlUp}
               gameMode={gameMode()!}
               setGameMode={setGameMode}
+              setIsControlUp={setIsControlUp}
             />
             <button
               type='button'
               onClick={toggleMute}
               class={css`
-                border: none;
-                cursor: pointer;
-                background: transparent;
-                display: inherit;
-                justify-content: center;
-                align-items: center;
-                color: ${COLOR_VARIABLES.secondary};
                 width: 3rem;
+                border: none;
                 height: 3.5rem;
-                padding: 0.125rem;
+                cursor: pointer;
+                display: inherit;
                 font-size: 1.5rem;
+                padding: 0.125rem;
+                align-items: center;
+                background: transparent;
+                justify-content: center;
+                color: ${COLOR_VARIABLES.secondary};
 
                 &:active {
                   color: ${COLOR_VARIABLES.hover};

@@ -339,21 +339,21 @@ const Gameboard = (props: GameboardSettings): JSXElement => {
   };
 
   const spinnerContainer = css`
-    position: relative;
     padding: 3px;
     margin: -3px;
-    border-radius: 0.125rem;
     overflow: hidden;
+    position: relative;
     isolation: isolate;
+    border-radius: 0.125rem;
 
     &:before {
       content: '';
-      position: absolute;
       top: -100%;
       left: -100%;
       width: 300%;
       height: 300%;
       z-index: -1;
+      position: absolute;
 
       background: conic-gradient(
         ${COLOR_VARIABLES.secondary} 0% 16%,
@@ -376,16 +376,16 @@ const Gameboard = (props: GameboardSettings): JSXElement => {
     <div class={props.isOpponentTurn ? spinnerContainer : ''}>
       <section
         class={css`
-          font-size: 2.5rem;
-          font-weight: 600;
           display: grid;
-          border: 1px solid ${COLOR_VARIABLES.grid};
-          grid-template-columns: repeat(${GRID_SIZE}, 1fr);
-          grid-template-rows: repeat(${GRID_SIZE}, 1fr);
-          max-width: 26.375rem;
+          aspect-ratio: 1;
+          font-weight: 600;
+          font-size: 2.5rem;
           min-width: 19.5rem;
           position: relative;
-          aspect-ratio: 1;
+          max-width: 26.375rem;
+          border: 1px solid ${COLOR_VARIABLES.grid};
+          grid-template-rows: repeat(${GRID_SIZE}, 1fr);
+          grid-template-columns: repeat(${GRID_SIZE}, 1fr);
         `}>
         <For each={props.game.playerBoard.grid}>
           {(gridRow, i) => (
@@ -409,12 +409,12 @@ const Gameboard = (props: GameboardSettings): JSXElement => {
                     handleCellHover(i(), j(), false);
                   }}
                   class={css`
+                    text-align: center;
                     background: ${gridElem && props.isPlayerBoard ?
                       COLOR_VARIABLES.ship
                     : COLOR_VARIABLES.secondary};
                     border: 1px solid ${COLOR_VARIABLES.grid};
                     padding: ${props.isPlacing ? '14.5px' : '15.5px'};
-                    text-align: center;
                     cursor: ${(!props.isPlayerBoard ||
                       (props.isPlacing && !gridElem)) &&
                     'pointer'};

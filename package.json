@@ -1,7 +1,7 @@
 {
   "name": "ts-battleship",
   "private": true,
-  "version": "1.5.3",
+  "version": "1.5.4",
   "type": "module",
   "keywords": [
     "battleship",
@@ -45,7 +45,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@types/eslint-plugin-jsx-a11y": "^6.10.1",
-    "@vitest/coverage-v8": "^4.0.10",
+    "@vitest/coverage-v8": "^4.0.12",
     "@vitest/eslint-plugin": "^1.4.3",
     "esbuild": "^0.27.0",
     "eslint": "^9.39.1",
@@ -68,7 +68,7 @@
     "vite-plugin-pwa": "^1.1.0",
     "vite-plugin-solid": "^2.11.10",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^4.0.10",
+    "vitest": "^4.0.12",
     "workbox-core": "^7.4.0",
     "workbox-precaching": "^7.4.0"
   }

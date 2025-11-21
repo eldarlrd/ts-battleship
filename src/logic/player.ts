@@ -348,6 +348,7 @@ class Player {
 
       return true;
     }
+
     if (this.computerBoard.isGameOver()) {
       this.playerVictorious = 1;
 

@@ -48,6 +48,7 @@ describe('board class', () => {
 
     // Overlapping hit
     board.fire({ row: 1, col: 1 });
+
     expect(board).toMatchObject(hitBoard);
   });
 
@@ -65,6 +66,7 @@ describe('board class', () => {
     // Sinking the Patrol Boat
     board.fire({ row: 5, col: 5 });
     board.fire({ row: 5, col: 6 });
+
     expect(board.hitAdjacent({ row: 5, col: 6 })).toStrictEqual(adjOffsets);
   });
 
@@ -73,6 +75,7 @@ describe('board class', () => {
     board.fire({ row: 2, col: 2 });
     board.fire({ row: 3, col: 2 });
     board.fire({ row: 4, col: 2 });
+
     expect(board.isGameOver()).toBe(true);
   });
 });

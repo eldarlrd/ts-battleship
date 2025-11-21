@@ -4,9 +4,9 @@ import { type JSXElement } from 'solid-js';
 const Header = (): JSXElement => (
   <header
     class={css`
-      font-size: 2.5rem;
-      font-weight: 600;
       margin: 1rem;
+      font-weight: 600;
+      font-size: 2.5rem;
     `}>
     TS Battleship
   </header>

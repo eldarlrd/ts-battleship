@@ -17,13 +17,13 @@ import type OnlinePlayer from '@/logic/onlinePlayer.ts';
 import type Player from '@/logic/player.ts';
 
 const Modal = (props: {
-  game: Player | OnlinePlayer;
-  setGame: Setter<Player | OnlinePlayer>;
-  setIsControlUp: Setter<boolean>;
   overlay: HTMLDivElement;
   gameMode?: GameMode | null;
+  game: Player | OnlinePlayer;
+  setIsControlUp: Setter<boolean>;
   setGameMode: Setter<GameMode | null>;
   boardUpdateTrigger: Accessor<number>;
+  setGame: Setter<Player | OnlinePlayer>;
 }): JSXElement => {
   // eslint-disable-next-line prefer-const
   let victor = document.getElementById('victor') as HTMLHeadingElement;
@@ -53,8 +53,6 @@ const Modal = (props: {
       const winnerStatus = props.game.playerVictorious;
       const isGameActive = props.game.playerBoard.shipsPlaced >= SHIP_COUNT;
 
-      console.log(winnerStatus);
-
       if (winnerStatus && props.gameMode && isGameActive)
         openModal(winnerStatus);
       else props.overlay.style.display = 'none';
@@ -74,29 +72,29 @@ const Modal = (props: {
       ref={props.overlay}
       id='overlay'
       class={css`
-        display: none;
-        position: fixed;
         top: 0;
         left: 0;
+        z-index: 1;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.75);
-        justify-content: center;
+        display: none;
+        position: fixed;
         align-items: center;
-        z-index: 1;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.75);
       `}>
       <section
         class={css`
-          display: inherit;
-          flex-direction: column;
-          padding: 1rem;
           margin: 1rem;
           gap: 0.75rem;
+          padding: 1rem;
+          display: inherit;
           line-height: 1rem;
-          background: ${COLOR_VARIABLES.primary};
-          border: 2px solid ${COLOR_VARIABLES.secondary};
+          flex-direction: column;
           border-radius: 0.125rem;
+          background: ${COLOR_VARIABLES.primary};
           box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+          border: 2px solid ${COLOR_VARIABLES.secondary};
 
           ${MEDIA_QUERIES.sm} {
             padding: 3rem;
@@ -114,9 +112,9 @@ const Modal = (props: {
           ref={victor}
           id='victor'
           class={css`
+            line-height: 1em;
             font-size: 2.5rem;
             text-align: center;
-            line-height: 1em;
           `}>
           {props.game.playerVictorious}
         </h1>
@@ -124,10 +122,10 @@ const Modal = (props: {
         <NewGame
           game={props.game}
           setGame={props.setGame}
-          setIsControlUp={props.setIsControlUp}
           overlay={props.overlay}
-          gameMode={props.gameMode ?? undefined}
           setGameMode={props.setGameMode}
+          setIsControlUp={props.setIsControlUp}
+          gameMode={props.gameMode ?? undefined}
         />
       </section>
     </div>

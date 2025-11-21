@@ -18,14 +18,14 @@ const BoardControl = (props: {
     }}
     class={css`
       border: 0;
-      border-radius: 0.125rem;
+      padding: 0.5rem;
       cursor: pointer;
-      font-size: 1.375rem;
       font-weight: 500;
       line-height: 1rem;
-      padding: 0.5rem;
-      background: ${COLOR_VARIABLES.secondary};
+      font-size: 1.375rem;
+      border-radius: 0.125rem;
       color: ${COLOR_VARIABLES.grid};
+      background: ${COLOR_VARIABLES.secondary};
       outline: 2px solid ${COLOR_VARIABLES.grid};
       transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -45,8 +45,8 @@ const BoardControl = (props: {
       }
 
       ${MEDIA_QUERIES.md} {
-        font-size: 1.5rem;
         padding: 0.75rem;
+        font-size: 1.5rem;
       }
 
       ${MEDIA_QUERIES.lg} {

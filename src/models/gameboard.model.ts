@@ -4,15 +4,15 @@ import type OnlinePlayer from '@/logic/onlinePlayer.ts';
 import type Player from '@/logic/player.ts';
 
 export interface GameboardSettings {
-  isPlayerBoard: boolean;
   isPlacing: boolean;
   isVertical: boolean;
+  isPlayerBoard: boolean;
   isOpponentTurn?: boolean;
-  game: Player | OnlinePlayer;
   shipInfo?: HTMLSpanElement;
+  game: Player | OnlinePlayer;
   startButton?: HTMLButtonElement;
   setIsDoneSetup?: Setter<boolean>;
-  setIsOpponentTurn?: Setter<boolean>;
   boardUpdateTrigger?: () => number;
+  setIsOpponentTurn?: Setter<boolean>;
   placementRefreshTrigger?: () => number;
 }

@@ -21,14 +21,14 @@ interface PlayerBoard {
 
 interface GameRoom {
   id: string;
-  player1: PlayerBoard;
-  player2?: PlayerBoard;
-  currentTurn?: string;
   status: Status;
   winner?: string;
+  expireAt: Timestamp;
+  currentTurn?: string;
+  player1: PlayerBoard;
+  player2?: PlayerBoard;
   moves?: Record<string, Move[]>;
   sunkShipsCount?: Record<string, number>;
-  expireAt: Timestamp;
 }
 
 export type { MoveResult, Move, PlayerBoard, GameRoom };
