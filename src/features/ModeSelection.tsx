@@ -16,14 +16,22 @@ import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 const ModeSelection = (props: {
   setGameMode: (mode: GameMode) => void | Promise<void>;
 }): JSXElement => {
-  const ALLOWED_REGEX = /[^0-9A-Za-z]/g;
+  const INVALID_CHARS = /[^0-9A-Za-z]/g;
   const [lobbyKey, setLobbyKey] = createSignal('');
+
+  const handleKeyDown = (e: KeyboardEvent): void => {
+    if (e.key.length > 1 || e.ctrlKey || e.metaKey || e.altKey) return;
+
+    if (e.key.match(INVALID_CHARS)) e.preventDefault();
+  };
 
   const handleKeyInput = (
     e: InputEvent & { currentTarget: HTMLInputElement }
   ): void => {
     const originalValue = e.currentTarget.value;
-    const filteredValue = originalValue.replace(ALLOWED_REGEX, '');
+    const filteredValue = originalValue.replace(INVALID_CHARS, '');
+
+    if (originalValue !== filteredValue) e.currentTarget.value = filteredValue;
 
     setLobbyKey(filteredValue);
   };
@@ -126,6 +134,7 @@ const ModeSelection = (props: {
                 name='lobby-key'
                 value={lobbyKey()}
                 onInput={handleKeyInput}
+                onKeyDown={handleKeyDown}
                 class={css`
                   width: 100%;
                   border: none;
