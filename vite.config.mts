@@ -21,7 +21,6 @@ export default defineConfig({
       }
     })
   ],
-  // @ts-expect-error: missing config key
   // https://vitest.dev/config
   test: {
     globals: true,
