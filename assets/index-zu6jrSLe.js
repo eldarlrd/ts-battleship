@@ -578,7 +578,7 @@ This typically indicates that your device does not have a healthy Internet conne
                   }
                 }
               `}}),null),z(x,()=>m()||Xn.connecting,null),$.$$click=()=>{const y=r();y instanceof vt&&y.cleanup(),l(!1),p(""),t(null),s(new nt),S(null)},z($,B(Cd,{size:"1.75rem"}),v),ne(y=>{var _=K`
-            gap: 0.5rem;
+            gap: 0.75rem;
             display: flex;
             align-items: center;
             flex-direction: column;
@@ -603,7 +603,7 @@ This typically indicates that your device does not have a healthy Internet conne
               display: inherit;
               align-items: center;
               font-size: 1.375rem;
-              margin-left: -1.75rem;
+              margin-left: -2.5rem;
               background: transparent;
               color: ${M.secondary};
 
