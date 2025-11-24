@@ -78,7 +78,8 @@ const App = (): JSXElement => {
             return;
           }
 
-          if (room.lobbyKey) setLobbyCode(room.lobbyKey);
+          if (room.lobbyKey && pvpMode === 'private_create')
+            setLobbyCode(room.lobbyKey);
 
           switch (room.status) {
             case 'waiting':
