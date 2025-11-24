@@ -1,4 +1,5 @@
 import { css } from '@emotion/css';
+import { BiSolidKey } from 'solid-icons/bi';
 import { CgSpinnerTwoAlt } from 'solid-icons/cg';
 import { FaSolidRobot, FaSolidUser } from 'solid-icons/fa';
 import { IoChevronBackSharp } from 'solid-icons/io';
@@ -14,7 +15,7 @@ import NewGame from '@/components/buttons/NewGame.tsx';
 import Target from '@/components/icons/Target.tsx';
 import { ERRORS } from '@/config/errors.ts';
 import { signInAnonymous } from '@/config/firebase.ts';
-import { type GameMode } from '@/config/rules.ts';
+import { type GameMode, type PVPMode } from '@/config/rules.ts';
 import {
   COLOR_VARIABLES,
   MATCHMAKING_STATUS,
@@ -40,8 +41,13 @@ const App = (): JSXElement => {
   const [isOpponentTurn, setIsOpponentTurn] = createSignal(false);
   const [matchmakingStatus, setMatchmakingStatus] = createSignal('');
   const [boardUpdateTrigger, setBoardUpdateTrigger] = createSignal(0);
+  const [lobbyCode, setLobbyCode] = createSignal<string | null>(null);
 
-  const handleModeSelection = async (mode: GameMode): Promise<void> => {
+  const handleModeSelection = async (
+    mode: GameMode,
+    pvpMode?: PVPMode,
+    key?: string
+  ): Promise<void> => {
     setGameMode(mode);
 
     if (mode === 'pvp') {
@@ -51,7 +57,7 @@ const App = (): JSXElement => {
         const uid = await signInAnonymous();
         const onlineGame = new OnlinePlayer(uid);
 
-        await onlineGame.joinMatchmaking();
+        await onlineGame.joinMatchmaking(pvpMode, key);
 
         // Zombie check
         if (gameMode() !== 'pvp') {
@@ -67,9 +73,12 @@ const App = (): JSXElement => {
             setGame(new Player());
             setMatchmakingStatus('');
             setIsControlUp(true);
+            setLobbyCode(null);
 
             return;
           }
+
+          if (room.lobbyKey) setLobbyCode(room.lobbyKey);
 
           switch (room.status) {
             case 'waiting':
@@ -106,6 +115,7 @@ const App = (): JSXElement => {
         setGame(new Player());
         setMatchmakingStatus('');
         setIsControlUp(true);
+        setLobbyCode(null);
       } finally {
         setIsAuthenticating(false);
       }
@@ -165,12 +175,32 @@ const App = (): JSXElement => {
       {(isAuthenticating() || matchmakingStatus()) && (
         <div
           class={css`
-            gap: 0.25rem;
+            gap: 0.5rem;
             display: flex;
             align-items: center;
             flex-direction: column;
             justify-content: center;
           `}>
+          {lobbyCode() && (
+            <div
+              class={css`
+                gap: 0.25rem;
+                display: inherit;
+                font-weight: 500;
+                user-select: text;
+                font-size: 1.5rem;
+                align-items: center;
+
+                &::selection {
+                  color: ${COLOR_VARIABLES.primary};
+                  background: ${COLOR_VARIABLES.secondary};
+                }
+              `}>
+              <BiSolidKey size='1.5rem' />
+              {lobbyCode()}
+            </div>
+          )}
+
           <div
             class={css`
               flex: 1;
@@ -198,6 +228,7 @@ const App = (): JSXElement => {
             />
             {matchmakingStatus() || MATCHMAKING_STATUS.connecting}
           </div>
+
           <button
             type='button'
             onClick={() => {
@@ -210,17 +241,17 @@ const App = (): JSXElement => {
               setMatchmakingStatus('');
               void setGameMode(null);
               setGame(new Player());
+              setLobbyCode(null);
             }}
             class={css`
               width: 3rem;
               border: none;
-              height: 3.5rem;
+              height: 3rem;
               cursor: pointer;
               display: inherit;
               align-items: center;
               font-size: 1.375rem;
               margin-left: -1.75rem;
-              padding: 0.125rem 0 0;
               background: transparent;
               color: ${COLOR_VARIABLES.secondary};
 

@@ -12,42 +12,56 @@ import {
   Timestamp,
   type Unsubscribe
 } from 'firebase/firestore';
+import { customAlphabet } from 'nanoid';
 
 import { ERRORS } from '@/config/errors.ts';
 import { firestore } from '@/config/firebase.ts';
-import { DURATION_MS, GRID_SIZE } from '@/config/rules.ts';
-import errorToast from '@/config/toast.ts';
+import { DURATION_MS, GRID_SIZE, LOBBY_ALPHABET } from '@/config/rules.ts';
 import {
   type GameRoom,
   type Move,
   type MoveResult
 } from '@/models/matchmaking.model.ts';
 
-const createGameRoom = async (playerId: string): Promise<string> => {
-  const roomsRef = collection(firestore, 'rooms');
-  const newRoomRef = doc(roomsRef);
-  const roomId = newRoomRef.id;
+const generateLobbyKey = customAlphabet(LOBBY_ALPHABET, 6);
 
-  // TTL Timestamp
-  const futureDate = new Date(Date.now() + DURATION_MS);
-  const expireAt = Timestamp.fromDate(futureDate);
+const createGameRoom = async (
+  playerId: string,
+  isPrivate = false
+): Promise<string> => {
+  try {
+    const roomsRef = collection(firestore, 'rooms');
+    const newRoomRef = doc(roomsRef);
+    const roomId = newRoomRef.id;
 
-  await setDoc(newRoomRef, {
-    player1: {
-      uid: playerId,
-      ready: false
-    },
-    status: 'waiting',
-    moves: {
-      [playerId]: []
-    },
-    sunkShipsCount: {
-      [playerId]: 0
-    },
-    expireAt
-  });
+    // TTL Timestamp
+    const futureDate = new Date(Date.now() + DURATION_MS);
+    const expireAt = Timestamp.fromDate(futureDate);
 
-  return roomId;
+    const lobbyKeyField = isPrivate ? { lobbyKey: generateLobbyKey() } : {};
+
+    await setDoc(newRoomRef, {
+      player1: {
+        uid: playerId,
+        ready: false
+      },
+      private: isPrivate,
+      status: 'waiting',
+      moves: {
+        [playerId]: []
+      },
+      sunkShipsCount: {
+        [playerId]: 0
+      },
+      expireAt,
+      ...lobbyKeyField
+    });
+
+    return roomId;
+  } catch (error: unknown) {
+    if (error instanceof Error) console.error(error);
+    throw new Error(ERRORS.CREATE_ROOM_FAILED);
+  }
 };
 
 const joinGameRoom = async (
@@ -76,9 +90,34 @@ const joinGameRoom = async (
   return true;
 };
 
+const joinPrivateGame = async (
+  key: string,
+  playerId: string
+): Promise<string> => {
+  const roomsRef = collection(firestore, 'rooms');
+  const q = query(
+    roomsRef,
+    where('lobbyKey', '==', key),
+    where('status', '==', 'waiting')
+  );
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) throw new Error(ERRORS.NO_ROOM);
+
+  const roomId = snapshot.docs[0].id;
+
+  await joinGameRoom(roomId, playerId);
+
+  return roomId;
+};
+
 const findOrCreateRoom = async (playerId: string): Promise<string> => {
   const roomsRef = collection(firestore, 'rooms');
-  const q = query(roomsRef, where('status', '==', 'waiting'));
+  const q = query(
+    roomsRef,
+    where('private', '==', false),
+    where('status', '==', 'waiting')
+  );
   const snapshot = await getDocs(q);
 
   for (const docSnap of snapshot.docs) {
@@ -91,13 +130,19 @@ const findOrCreateRoom = async (playerId: string): Promise<string> => {
 
         return roomId;
       } catch (error: unknown) {
-        if (error instanceof Error) errorToast(error.message);
+        if (error instanceof Error) {
+          console.error(error.message);
+          throw new Error(ERRORS.NO_CONNECTION);
+        }
       }
     }
   }
 
   return await createGameRoom(playerId);
 };
+
+const createPrivateRoom = async (playerId: string): Promise<string> =>
+  await createGameRoom(playerId, true);
 
 const setPlayerReady = async (
   roomId: string,
@@ -267,6 +312,8 @@ export {
   createGameRoom,
   joinGameRoom,
   findOrCreateRoom,
+  createPrivateRoom,
+  joinPrivateGame,
   setPlayerReady,
   makeMove,
   declareWinner,

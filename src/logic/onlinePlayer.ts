@@ -1,7 +1,12 @@
 import { type Unsubscribe } from 'firebase/firestore';
 
 import { ERRORS } from '@/config/errors.ts';
-import { GRID_SIZE, SHIP_LENGTHS, type Status } from '@/config/rules.ts';
+import {
+  GRID_SIZE,
+  type PVPMode,
+  SHIP_LENGTHS,
+  type Status
+} from '@/config/rules.ts';
 import { COLOR_VARIABLES } from '@/config/site.ts';
 import errorToast from '@/config/toast.ts';
 import successfullyPlace from '@/lib/placement.ts';
@@ -12,7 +17,9 @@ import {
   makeMove,
   subscribeToRoom,
   declareWinner,
-  leaveRoom
+  leaveRoom,
+  createPrivateRoom,
+  joinPrivateGame
 } from '@/logic/matchmaking.ts';
 import Ship from '@/logic/ship.ts';
 import { type Coordinates } from '@/models/gameboard.model.ts';
@@ -55,9 +62,26 @@ class OnlinePlayer {
     return this.opponentBoard;
   }
 
-  public async joinMatchmaking(): Promise<void> {
+  public async joinMatchmaking(pvpMode?: PVPMode, key?: string): Promise<void> {
     try {
-      this.roomId = await findOrCreateRoom(this.playerId);
+      let roomId: string;
+
+      switch (pvpMode) {
+        case 'private_create':
+          roomId = await createPrivateRoom(this.playerId);
+          break;
+
+        case 'private_join':
+          roomId = await joinPrivateGame(key!, this.playerId);
+          break;
+
+        case 'public':
+        default:
+          roomId = await findOrCreateRoom(this.playerId);
+          break;
+      }
+
+      this.roomId = roomId;
       this._setupRoomSubscription();
 
       const { getDoc, doc } = await import('firebase/firestore');
@@ -76,7 +100,7 @@ class OnlinePlayer {
       }
     } catch (error) {
       if (error instanceof Error) console.error(error.message, error);
-      throw new Error(ERRORS.NO_CONNECTION);
+      throw error;
     }
   }
 

@@ -22,6 +22,8 @@ interface GameRoom {
   id: string;
   status: Status;
   winner?: string;
+  private: boolean;
+  lobbyKey?: string;
   expireAt: Timestamp;
   currentTurn?: string;
   player1: PlayerBoard;

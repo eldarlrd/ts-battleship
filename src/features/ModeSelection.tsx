@@ -4,17 +4,16 @@ import { FaSolidRobot, FaSolidUserGroup } from 'solid-icons/fa';
 import { createMemo, createSignal, type JSXElement } from 'solid-js';
 
 import Tile from '@/components/buttons/Tile.tsx';
-import { type GameMode } from '@/config/rules.ts';
+import { type GameMode, type PVPMode } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 
-/*
-  TODO: Lobby
-    1. Create private room w/ key
-    2. Search only public rooms
-    3. Toast on no room
- */
+// TODO: Toast on no room
 const ModeSelection = (props: {
-  setGameMode: (mode: GameMode) => void | Promise<void>;
+  setGameMode: (
+    mode: GameMode,
+    pvpMode?: PVPMode,
+    key?: string
+  ) => void | Promise<void>;
 }): JSXElement => {
   const INVALID_CHARS = /[^0-9A-Za-z]/g;
   const [lobbyKey, setLobbyKey] = createSignal('');
@@ -95,7 +94,7 @@ const ModeSelection = (props: {
           />
 
           <Tile
-            setGameMode={() => void props.setGameMode('pvp')}
+            setGameMode={() => void props.setGameMode('pvp', 'public')}
             children={
               <>
                 <FaSolidUserGroup />
@@ -112,7 +111,9 @@ const ModeSelection = (props: {
               flex-direction: column;
             `}>
             <Tile
-              setGameMode={() => void props.setGameMode('pvp')}
+              setGameMode={() =>
+                void props.setGameMode('pvp', 'private_create')
+              }
               children={
                 <>
                   <BiSolidLock />
@@ -160,9 +161,13 @@ const ModeSelection = (props: {
                 title='Join'
                 type='button'
                 disabled={!isJoinEnabled()}
+                onClick={() =>
+                  void props.setGameMode('pvp', 'private_join', lobbyKey())
+                }
                 class={css`
                   line-height: 0;
                   aspect-ratio: 1;
+                  cursor: pointer;
                   font-size: 1rem;
                   font-weight: 500;
                   border-radius: 0.125rem;
@@ -175,23 +180,23 @@ const ModeSelection = (props: {
                     font-size: 1.25rem;
                   }
 
-                  &:disabled {
-                    color: ${COLOR_VARIABLES.ship};
-                    background: ${COLOR_VARIABLES.hover};
-                    border-color: ${COLOR_VARIABLES.ship};
-                  }
-
                   &:active {
                     color: ${COLOR_VARIABLES.primary};
                     background: ${COLOR_VARIABLES.secondary};
                   }
 
                   ${MEDIA_QUERIES.mouse} {
-                    &:hover:not(&:disabled) {
-                      cursor: pointer;
+                    &:hover {
                       color: ${COLOR_VARIABLES.primary};
                       background: ${COLOR_VARIABLES.secondary};
                     }
+                  }
+
+                  &:disabled {
+                    cursor: not-allowed;
+                    color: ${COLOR_VARIABLES.ship};
+                    background: ${COLOR_VARIABLES.hover};
+                    border-color: ${COLOR_VARIABLES.ship};
                   }
 
                   ${MEDIA_QUERIES.md} {

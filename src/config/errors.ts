@@ -8,6 +8,7 @@ const ERRORS = {
   NO_OPPONENT_BOARD: 'No opponent board.',
   NOT_YOUR_TURN: 'Not your turn.',
   NO_CONNECTION: 'Connection failed.',
+  CREATE_ROOM_FAILED: 'Room creation failed.',
   ONLINE_FAILED: 'Online Sign In failed.',
   OPPONENT_LEFT: 'Opponent left.'
 };
