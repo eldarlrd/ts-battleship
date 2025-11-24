@@ -7,7 +7,6 @@ import Tile from '@/components/buttons/Tile.tsx';
 import { type GameMode, type PVPMode } from '@/config/rules.ts';
 import { COLOR_VARIABLES, MEDIA_QUERIES } from '@/config/site.ts';
 
-// TODO: Toast on no room
 const ModeSelection = (props: {
   setGameMode: (
     mode: GameMode,
@@ -15,12 +14,12 @@ const ModeSelection = (props: {
     key?: string
   ) => void | Promise<void>;
 }): JSXElement => {
+  const MAX_LENGTH = 6;
   const INVALID_CHARS = /[^0-9A-Za-z]/g;
   const [lobbyKey, setLobbyKey] = createSignal('');
 
   const handleKeyDown = (e: KeyboardEvent): void => {
     if (e.key.length > 1 || e.ctrlKey || e.metaKey || e.altKey) return;
-
     if (e.key.match(INVALID_CHARS)) e.preventDefault();
   };
 
@@ -28,14 +27,17 @@ const ModeSelection = (props: {
     e: InputEvent & { currentTarget: HTMLInputElement }
   ): void => {
     const originalValue = e.currentTarget.value;
-    const filteredValue = originalValue.replace(INVALID_CHARS, '');
+    let filteredValue = originalValue.replace(INVALID_CHARS, '');
+
+    if (filteredValue.length > MAX_LENGTH)
+      filteredValue = filteredValue.substring(0, MAX_LENGTH);
 
     if (originalValue !== filteredValue) e.currentTarget.value = filteredValue;
 
     setLobbyKey(filteredValue);
   };
 
-  const isJoinEnabled = createMemo(() => lobbyKey().length === 6);
+  const isJoinEnabled = createMemo(() => lobbyKey().length === MAX_LENGTH);
 
   return (
     <div
@@ -75,7 +77,7 @@ const ModeSelection = (props: {
 
         <div
           class={css`
-            gap: 1rem;
+            gap: 0.625rem;
             display: inherit;
             flex-direction: column;
 
@@ -131,9 +133,9 @@ const ModeSelection = (props: {
               <input
                 title=''
                 type='text'
-                maxLength={6}
                 name='lobby-key'
                 value={lobbyKey()}
+                maxLength={MAX_LENGTH}
                 onInput={handleKeyInput}
                 onKeyDown={handleKeyDown}
                 class={css`
@@ -157,6 +159,7 @@ const ModeSelection = (props: {
                   }
                 `}
               />
+
               <button
                 title='Join'
                 type='button'
