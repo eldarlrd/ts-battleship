@@ -175,7 +175,7 @@ const App = (): JSXElement => {
       {(isAuthenticating() || matchmakingStatus()) && (
         <div
           class={css`
-            gap: 0.5rem;
+            gap: 0.75rem;
             display: flex;
             align-items: center;
             flex-direction: column;
@@ -251,7 +251,7 @@ const App = (): JSXElement => {
               display: inherit;
               align-items: center;
               font-size: 1.375rem;
-              margin-left: -1.75rem;
+              margin-left: -2.5rem;
               background: transparent;
               color: ${COLOR_VARIABLES.secondary};
 
